@@ -6,6 +6,7 @@ import {
     Sprite,
     Container,
     Assets,
+    Texture,
 } from "../deps/pixi.ts"
 
 export const init =
@@ -16,11 +17,48 @@ export class Entry {
     project
     renderer?: Renderer
     events: Record<string, (() => void)[]>
+    scenes: Record<string, Container>
+    textures: Record<string, Texture>
+    objects: Record<string, Sprite>
     constructor(project: Project) {
         this.project = project
         this.events = {
             start: []
         }
+
+        this.scenes = Object.fromEntries(
+            project.scenes.map(
+                ({id}) => [id, new Container()]
+            )
+        )
+        this.textures = Object.fromEntries(
+            project.objects.map(({sprite}) =>
+                sprite.pictures.map(
+                    ({id, fileurl}) => {
+                        const texture = Texture.from(fileurl)
+                        return [
+                            id,
+                            texture,
+                        ]
+                    }
+                )
+            )
+            .flat()
+        )
+        this.objects = Object.fromEntries(
+            project.objects.map(
+                ({id, selectedPictureId, scene}) => {
+                    const sprite = Sprite.from(
+                        this.textures[selectedPictureId]
+                    )
+                    this.scenes[scene].addChild(sprite)
+                    return [
+                        id,
+                        sprite,
+                    ]
+                }
+            )
+        )
     }
     async init() {
         // @ts-ignore: Unknown error???
@@ -41,6 +79,11 @@ export class Entry {
     start() {
         this.emit("start")
     }
+    render() {
+        this.renderer!.render({
+            container: Object.values(this.scenes)[0]
+        })
+    }
 
     when_run_button_click(f: () => void) {
         this.on("start", f)
@@ -55,6 +98,7 @@ export class Entry {
                     return
                 }
                 f()
+                this.render()
             }
         )
         ticker.start()
