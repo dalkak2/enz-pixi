@@ -29,7 +29,13 @@ export class Entry {
     async init() {
         this.scenes = Object.fromEntries(
             this.project.scenes.map(
-                ({id}) => [id, new Container()]
+                ({id}) => {
+                    const container = new Container()
+                    return [
+                        id,
+                        container,
+                    ]
+                }
             )
         )
         this.textures = Object.fromEntries(await Promise.all(
@@ -60,6 +66,10 @@ export class Entry {
                     const sprite = Sprite.from(
                         this.textures[selectedPictureId]
                     )
+                    sprite.anchor.set(0.5)
+                    sprite.x = entity.x + 240
+                    sprite.y = -entity.y + 135
+                    console.log(sprite.x, sprite.y)
                     this.scenes[scene].addChild(sprite)
                     return [
                         id,
@@ -88,6 +98,7 @@ export class Entry {
         this.emit("start")
     }
     render() {
+        Object.values(this.scenes)[0].x
         this.renderer!.render({
             container: Object.values(this.scenes)[0]
         })
@@ -121,8 +132,8 @@ export class Entry {
         this.objects[id].y += n
     }
     locate_xy(x: number, y: number, id: string) {
-        this.objects[id].x = x
-        this.objects[id].y = y
+        this.objects[id].x = x + 240
+        this.objects[id].y = -y + 135
     }
     calc_rand(a: number, b: number) {
         return Math.random() * (b - a) + a
