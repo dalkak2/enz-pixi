@@ -69,7 +69,10 @@ export class Entry {
                     sprite.anchor.set(0.5)
                     sprite.x = entity.x + 240
                     sprite.y = -entity.y + 135
-                    console.log(sprite.x, sprite.y)
+                    sprite.scale = {
+                        x: entity.scaleX,
+                        y: entity.scaleY,
+                    }
                     this.scenes[scene].addChild(sprite)
                     return [
                         id,
