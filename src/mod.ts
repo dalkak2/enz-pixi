@@ -17,34 +17,32 @@ export class Entry {
     project
     renderer?: Renderer
     events: Record<string, (() => void)[]>
-    scenes: Record<string, Container>
-    textures: Record<string, Texture>
-    objects: Record<string, Sprite>
-    loaders: Promise<unknown>[] = []
+    scenes: Record<string, Container> = {}
+    textures: Record<string, Texture> = {}
+    objects: Record<string, Sprite> = {}
     constructor(project: Project) {
         this.project = project
         this.events = {
             start: []
         }
-
+    }
+    async init() {
         this.scenes = Object.fromEntries(
-            project.scenes.map(
+            this.project.scenes.map(
                 ({id}) => [id, new Container()]
             )
         )
-        this.textures = Object.fromEntries(
-            project.objects.map(({sprite}) =>
+        this.textures = Object.fromEntries(await Promise.all(
+            this.project.objects.map(({sprite}) =>
                 sprite.pictures.map(
-                    ({id, fileurl, filename, imageType}) => {
+                    async ({id, fileurl, filename, imageType}) => {
                         const url = `/image/${
                             filename
                             ? (filename + `.${imageType}`)
                             : fileurl.substring(1)
                         }`
-                        console.log("A")
-                        this.loaders.push(Assets.load(url))
+                        await Assets.load(url)
                         const texture = Texture.from(url)
-                        console.log("B")
                         return [
                             id,
                             texture,
@@ -53,10 +51,12 @@ export class Entry {
                 )
             )
             .flat()
-        )
+        ))
+        console.log(this.textures)
         this.objects = Object.fromEntries(
-            project.objects.map(
+            this.project.objects.map(
                 ({id, selectedPictureId, scene}) => {
+                    console.log(selectedPictureId)
                     const sprite = Sprite.from(
                         this.textures[selectedPictureId]
                     )
@@ -68,11 +68,7 @@ export class Entry {
                 }
             )
         )
-    }
-    async init() {
         console.log("Init")
-        await Promise.all(this.loaders)
-        console.log("Loaded")
         // @ts-ignore: Unknown error???
         return this.renderer = await autoDetectRenderer({
             width: 480,
