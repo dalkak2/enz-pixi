@@ -6,4 +6,4 @@ export const js = async (id: string) =>
         .then(JSON.stringify)
         .then(parseProject)
         .then(projectToJs)
-        .then(x => `import { init, Entry } from "/src/mod.ts"` + "\n\n" + x)
+        .then(x => `import { init } from "/src/mod.ts"` + "\nconst Entry =\n" + x)

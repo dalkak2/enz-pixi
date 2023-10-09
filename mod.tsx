@@ -1,18 +1,16 @@
 /** @jsx jsx */
 /** @jsxFrag Fragment */
 
-import { Hono } from "https://deno.land/x/hono@v3.8.0-rc.2/mod.ts"
+import { Hono, Context } from "https://deno.land/x/hono@v3.8.0-rc.2/mod.ts"
 import { serveStatic, jsx, Fragment } from "https://deno.land/x/hono@v3.8.0-rc.2/middleware.ts"
 
 import * as api from "./api/mod.ts"
 
 const app = new Hono()
 
-app.use("/static/*", serveStatic({root: "./"}))
-
 import { transpile } from "https://deno.land/x/emit@0.25.0/mod.ts"
 
-app.get("/src/*", async c => {
+const scriptHandler = async (c: Context) => {
     const url = new URL(c.req.url)
     const target = new URL("." + url.pathname, import.meta.url)
     const result = await transpile(
@@ -25,7 +23,10 @@ app.get("/src/*", async c => {
         result.get(target.href)
         || `throw new Error("Transpile failed")`
     )
-})
+}
+
+app.get("/src/*", scriptHandler)
+app.get("/deps/*", scriptHandler)
 
 app.get("/api/project/:id", async c => c.json(
     await api.project(c.req.param("id"))
@@ -35,11 +36,18 @@ app.get("/api/js/:id", async c => {
     return c.body(await api.js(c.req.param("id")))
 })
 
-app.get("/p/:id", c => c.html(
-    <script type="module">
-        import project from "/api/{c.req.param("id")}" with {`{ type: "json" }`}
-        console.log(project)
-    </script>
-))
+app.get("/p/:id", c => c.html(`
+    <!doctype html>
+    <html>
+        <head>
+        </head>
+        <body>
+            <script
+                type="module"
+                src="/api/js/${c.req.param("id")}"
+            ></script>
+        </body>
+    </html>
+`))
 
 Deno.serve(app.fetch)

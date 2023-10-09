@@ -1,0 +1,1 @@
+export * from "https://esm.sh/v132/pixi.js@8.0.0-beta.5"
