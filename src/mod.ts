@@ -87,6 +87,7 @@ export class Entry {
             width: 480,
             height: 270,
             backgroundColor: "#fff",
+            resolution: 4
         })
     }
     emit(eventName: string) {
