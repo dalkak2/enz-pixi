@@ -42,10 +42,10 @@ app.get("/p/:id", c => c.html(`
         <head>
         </head>
         <body>
-            <script
-                type="module"
-                src="/api/js/${c.req.param("id")}"
-            ></script>
+            <script type="module">
+                import { Entry } from "/api/js/${c.req.param("id")}"
+                Entry.start()
+            </script>
         </body>
     </html>
 `))
