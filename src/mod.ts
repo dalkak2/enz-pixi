@@ -1,5 +1,12 @@
 import { Project } from "../deps/enz.ts"
-import { Ticker } from "../deps/pixi.ts"
+import {
+    Ticker,
+    autoDetectRenderer,
+    Renderer,
+    Sprite,
+    Container,
+    Assets,
+} from "../deps/pixi.ts"
 
 export const init =
     (project: Project) =>
@@ -7,12 +14,21 @@ export const init =
 
 export class Entry {
     project
+    renderer?: Renderer
     events: Record<string, (() => void)[]>
     constructor(project: Project) {
         this.project = project
         this.events = {
             start: []
         }
+    }
+    async init() {
+        // @ts-ignore: Unknown error???
+        return this.renderer = await autoDetectRenderer({
+            width: 480,
+            height: 270,
+            backgroundColor: "#fff",
+        })
     }
     emit(eventName: string) {
         this.events[eventName].forEach(

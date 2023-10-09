@@ -40,12 +40,23 @@ app.get("/p/:id", c => c.html(`
     <!doctype html>
     <html>
         <head>
+            <style>
+                app {
+                    display: inline-block;
+                }
+            </style>
         </head>
-        <body>
+        <body class="p(5) bg(#dee)">
+            <app class="r(5) b(2) clip"/>
+
             <script type="module">
                 import { Entry } from "/api/js/${c.req.param("id")}"
+                const renderer = await Entry.init()
+                document.querySelector("app")
+                    .appendChild(renderer.canvas)
                 Entry.start()
             </script>
+            <script src="https://unpkg.com/adorable-css@1.4.3"></script>
         </body>
     </html>
 `))
