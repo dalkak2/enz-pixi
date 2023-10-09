@@ -55,7 +55,7 @@ export class Entry {
         console.log(this.textures)
         this.objects = Object.fromEntries(
             this.project.objects.map(
-                ({id, selectedPictureId, scene}) => {
+                ({id, selectedPictureId, scene, entity}) => {
                     console.log(selectedPictureId)
                     const sprite = Sprite.from(
                         this.textures[selectedPictureId]
@@ -96,22 +96,35 @@ export class Entry {
     when_run_button_click(f: () => void) {
         this.on("start", f)
     }
-    repeat_basic(n: number, f: () => void) {
+    repeat_inf(f: (ticker: Ticker) => void) {
         const ticker = new Ticker
-        let i = 0
-        ticker.add(
-            () => {
-                if (++i > n) {
-                    ticker.destroy()
-                    return
-                }
-                f()
-                this.render()
-            }
-        )
+        ticker.add(ticker => {
+            f(ticker)
+            this.render()
+        })
         ticker.start()
     }
-    move_direction(n: number, obj: string) {
-        console.log(n)
+    repeat_basic(n: number, f: () => void) {
+        let i = 0
+        this.repeat_inf(ticker => {
+            if (++i > n) {
+                ticker.destroy()
+                return
+            }
+            f()
+        })
+    }
+    move_x(n: number, id: string) {
+        this.objects[id].x += n
+    }
+    move_y(n: number, id: string) {
+        this.objects[id].y += n
+    }
+    locate_xy(x: number, y: number, id: string) {
+        this.objects[id].x = x
+        this.objects[id].y = y
+    }
+    calc_rand(a: number, b: number) {
+        return Math.random() * (b - a) + a
     }
 }
