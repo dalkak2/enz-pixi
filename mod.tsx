@@ -28,6 +28,25 @@ const scriptHandler = async (c: Context) => {
 app.get("/src/*", scriptHandler)
 app.get("/deps/*", scriptHandler)
 
+app.get("/image/lib/entry-js/images/media/:name", async c => c.body(
+    await fetch(
+        `https://playentry.org/lib/entry-js/images/media/${c.req.param("name")}`
+    ).then(x => x.body)
+))
+app.get("/image/:id", async c => {
+    const id = c.req.param("id")
+    const [a,b,d,e] = id
+    return c.body(
+        await fetch(
+            `https://playentry.org/uploads/${
+                a + b
+            }/${
+                d + e
+            }/image/${id}`
+        ).then(x => x.body)
+    )
+})
+
 app.get("/api/project/:id", async c => c.json(
     await api.project(c.req.param("id"))
 ))

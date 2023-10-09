@@ -7,7 +7,7 @@ import {
     Container,
     Assets,
     Texture,
-} from "../deps/pixi.ts"
+} from "https://esm.sh/v132/pixi.js@8.0.0-beta.5"
 
 export const init =
     (project: Project) =>
@@ -20,6 +20,7 @@ export class Entry {
     scenes: Record<string, Container>
     textures: Record<string, Texture>
     objects: Record<string, Sprite>
+    loaders: Promise<unknown>[] = []
     constructor(project: Project) {
         this.project = project
         this.events = {
@@ -34,8 +35,16 @@ export class Entry {
         this.textures = Object.fromEntries(
             project.objects.map(({sprite}) =>
                 sprite.pictures.map(
-                    ({id, fileurl}) => {
-                        const texture = Texture.from(fileurl)
+                    ({id, fileurl, filename, imageType}) => {
+                        const url = `/image/${
+                            filename
+                            ? (filename + `.${imageType}`)
+                            : fileurl.substring(1)
+                        }`
+                        console.log("A")
+                        this.loaders.push(Assets.load(url))
+                        const texture = Texture.from(url)
+                        console.log("B")
                         return [
                             id,
                             texture,
@@ -61,6 +70,9 @@ export class Entry {
         )
     }
     async init() {
+        console.log("Init")
+        await Promise.all(this.loaders)
+        console.log("Loaded")
         // @ts-ignore: Unknown error???
         return this.renderer = await autoDetectRenderer({
             width: 480,
@@ -104,5 +116,6 @@ export class Entry {
         ticker.start()
     }
     move_direction(n: number, obj: string) {
+        console.log(n)
     }
 }
