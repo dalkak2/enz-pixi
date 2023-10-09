@@ -18,9 +18,11 @@ const query = `
 `
 
 export const project = async (id: string) =>
-    await entryApi({
-        query,
-        variables: {
-            id,
-        }
-    })
+    (
+        await entryApi({
+            query,
+            variables: {
+                id,
+            }
+        }).then(x => x.json())
+    ).data.project

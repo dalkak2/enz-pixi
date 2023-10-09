@@ -27,4 +27,4 @@ export const entryApi =
                     "csrf-token": csrfToken,
                 }
             }
-        ).then(x => x.text())
+        )
