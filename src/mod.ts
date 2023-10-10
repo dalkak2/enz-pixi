@@ -107,6 +107,12 @@ export class Entry {
             container: Object.values(this.scenes)[0]
         })
     }
+    wait_tick() {
+        this.render()
+        return new Promise(o => {
+            requestAnimationFrame(o)
+        })
+    }
 
     wait_second(sec: number) {
         this.render()
@@ -128,7 +134,7 @@ export class Entry {
                 }
             })
             if (breaker) break
-            await this.wait_second(0)
+            await this.wait_tick()
         }
     }
     async repeat_basic(n: number, f: () => Promise<void>) {
