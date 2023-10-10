@@ -73,7 +73,7 @@ export class Entry {
         ))
         console.log(this.textures)
         this.objects = Object.fromEntries(
-            this.project.objects.map(
+            this.project.objects.toReversed().map(
                 ({id, selectedPictureId, scene, entity}) => {
                     console.log(selectedPictureId)
                     const sprite = Sprite.from(
