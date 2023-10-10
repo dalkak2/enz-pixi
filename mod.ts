@@ -1,8 +1,4 @@
-/** @jsx jsx */
-/** @jsxFrag Fragment */
-
 import { Hono, Context } from "https://deno.land/x/hono@v3.8.0-rc.2/mod.ts"
-import { serveStatic, jsx, Fragment } from "https://deno.land/x/hono@v3.8.0-rc.2/middleware.ts"
 
 import * as api from "./api/mod.ts"
 
