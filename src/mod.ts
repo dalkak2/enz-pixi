@@ -18,6 +18,7 @@ export class Entry {
     renderer?: Renderer
     events: Record<string, (() => void)[]>
     scenes: Record<string, Container> = {}
+    variables: Record<string, string | number> = {}
     textures: Record<string, Texture> = {}
     objects: Record<string, Sprite> = {}
     constructor(project: Project) {
@@ -34,6 +35,16 @@ export class Entry {
                     return [
                         id,
                         container,
+                    ]
+                }
+            )
+        )
+        this.variables = Object.fromEntries(
+            this.project.variables.map(
+                ({id, value}) => {
+                    return [
+                        id,
+                        value,
                     ]
                 }
             )
@@ -166,5 +177,13 @@ export class Entry {
     /* 계산 */
     calc_rand(a: number, b: number) {
         return Math.random() * (b - a) + a
+    }
+
+    /* 자료 */
+    get_variable(id: string) {
+        return this.variables[id]
+    }
+    set_variable(id: string, value: string | number) {
+        this.variables[id] = value
     }
 }
