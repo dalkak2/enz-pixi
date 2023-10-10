@@ -70,9 +70,9 @@ app.get("/p/:id", c => c.html(`
 
             <script type="module">
                 import { Entry } from "/api/js/${c.req.param("id")}"
-                const renderer = await Entry.init()
-                document.querySelector("app")
-                    .appendChild(renderer.canvas)
+                await Entry.init(
+                    document.querySelector("app")
+                )
                 Entry.start()
             </script>
             <script src="https://unpkg.com/adorable-css@1.4.3"></script>

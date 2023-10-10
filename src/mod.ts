@@ -21,13 +21,15 @@ export class Entry {
     variables: Record<string, string | number> = {}
     textures: Record<string, Texture> = {}
     objects: Record<string, Sprite> = {}
+
+    pressedKeys: Record<number, boolean | undefined> = {}
     constructor(project: Project) {
         this.project = project
         this.events = {
             start: []
         }
     }
-    async init() {
+    async init(parent: HTMLElement) {
         this.scenes = Object.fromEntries(
             this.project.scenes.map(
                 ({id}) => {
@@ -92,14 +94,23 @@ export class Entry {
                 }
             )
         )
+
+        document.body.addEventListener("keydown", event => {
+            this.pressedKeys[event.keyCode] = true
+        })
+        document.body.addEventListener("keyup", event => {
+            this.pressedKeys[event.keyCode] = false
+        })
+
         console.log("Init")
         // @ts-ignore: Unknown error???
-        return this.renderer = await autoDetectRenderer({
+        this.renderer = await autoDetectRenderer({
             width: 480,
             height: 270,
             backgroundColor: "#fff",
             resolution: 4
         })
+        parent.appendChild(this.renderer.canvas)
     }
     emit(eventName: string) {
         this.events[eventName].forEach(
@@ -161,13 +172,16 @@ export class Entry {
             await this.wait_tick()
         }
     }
+    async _if(state: boolean, f: () => Promise<void>) {
+        if (state) await f()
+    }
 
     /* 움직임 */
     move_x(n: number, id: string) {
         this.objects[id].x += n
     }
     move_y(n: number, id: string) {
-        this.objects[id].y += n
+        this.objects[id].y -= n
     }
     locate_xy(x: number, y: number, id: string) {
         this.objects[id].x = x + 240
@@ -177,6 +191,11 @@ export class Entry {
     /* 생김새 */
     dialog(text: string, type: "speak" | "think", objId: string) {
         console.log(`Object_${objId} ${type}s:`, text)
+    }
+
+    /* 판단 */
+    is_press_some_key(keyCode: string) {
+        return !!this.pressedKeys[Number(keyCode)]
     }
 
     /* 계산 */
@@ -198,6 +217,10 @@ export class Entry {
     /* 자료 */
     get_variable(id: string) {
         return this.variables[id]
+    }
+    change_variable(id: string, value: number) {
+        // @ts-ignore: lol
+        this.variables[id] += Number(value)
     }
     set_variable(id: string, value: string | number) {
         this.variables[id] = value
