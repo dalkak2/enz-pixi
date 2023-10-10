@@ -174,6 +174,11 @@ export class Entry {
         this.objects[id].y = -y + 135
     }
 
+    /* 생김새 */
+    dialog(text: string, type: "speak" | "think", objId: string) {
+        console.log(`Object_${objId} ${type}s:`, text)
+    }
+
     /* 계산 */
     calc_rand(a: number, b: number) {
         return Math.random() * (b - a) + a
