@@ -8,16 +8,24 @@ export const js = async (id: string) =>
         .then(projectToJs)
         .then(x => x
             .replaceAll(
+                "= (",
+                "= async (",
+            )
+            .replaceAll(
                 "() =>",
                 "async () =>",
             )
             .replaceAll(
-                "Entry.wait",
-                "await Entry.wait",
+                "Entry.wait_",
+                "await Entry.wait_",
             )
             .replaceAll(
-                "Entry.repeat",
-                "await Entry.repeat",
+                "Entry.repeat_",
+                "await Entry.repeat_",
+            )
+            .replaceAll(
+                /(Entry\.func_.{4}\()/g,
+                "await $1",
             )
             .replaceAll(
                 "Entry._if",
