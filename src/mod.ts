@@ -114,14 +114,27 @@ export class Entry {
         })
     }
 
+    /* 시작 */
+    when_run_button_click(f: () => void) {
+        this.on("start", f)
+    }
+    
+    /* 흐름 */
     wait_second(sec: number) {
         this.render()
         return new Promise(o => {
             setTimeout(o, sec * 1000)
         })
     }
-    when_run_button_click(f: () => void) {
-        this.on("start", f)
+    async repeat_basic(n: number, f: () => Promise<void>) {
+        let i = 0
+        await this.repeat_inf(async ctx => {
+            if (++i > n) {
+                ctx.destroy()
+                return
+            }
+            await f()
+        })
     }
     async repeat_inf(f: (ctx: {
         destroy: () => void
@@ -137,16 +150,8 @@ export class Entry {
             await this.wait_tick()
         }
     }
-    async repeat_basic(n: number, f: () => Promise<void>) {
-        let i = 0
-        await this.repeat_inf(async ctx => {
-            if (++i > n) {
-                ctx.destroy()
-                return
-            }
-            await f()
-        })
-    }
+
+    /* 움직임 */
     move_x(n: number, id: string) {
         this.objects[id].x += n
     }
@@ -157,6 +162,8 @@ export class Entry {
         this.objects[id].x = x + 240
         this.objects[id].y = -y + 135
     }
+
+    /* 계산 */
     calc_rand(a: number, b: number) {
         return Math.random() * (b - a) + a
     }
