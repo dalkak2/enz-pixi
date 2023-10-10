@@ -108,25 +108,37 @@ export class Entry {
         })
     }
 
+    wait_second(sec: number) {
+        this.render()
+        return new Promise(o => {
+            setTimeout(o, sec * 1000)
+        })
+    }
     when_run_button_click(f: () => void) {
         this.on("start", f)
     }
-    repeat_inf(f: (ticker: Ticker) => void) {
-        const ticker = new Ticker
-        ticker.add(ticker => {
-            f(ticker)
-            this.render()
-        })
-        ticker.start()
+    async repeat_inf(f: (ctx: {
+        destroy: () => void
+    }) => Promise<void>) {
+        let breaker = false
+        while (true) {
+            await f({
+                destroy: () => {
+                    breaker = true
+                }
+            })
+            if (breaker) break
+            await this.wait_second(0)
+        }
     }
-    repeat_basic(n: number, f: () => void) {
+    async repeat_basic(n: number, f: () => Promise<void>) {
         let i = 0
-        this.repeat_inf(ticker => {
+        await this.repeat_inf(async ctx => {
             if (++i > n) {
-                ticker.destroy()
+                ctx.destroy()
                 return
             }
-            f()
+            await f()
         })
     }
     move_x(n: number, id: string) {
