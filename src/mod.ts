@@ -180,6 +180,17 @@ export class Entry {
     }
 
     /* 계산 */
+    calc_basic(
+        a: number,
+        op: "PLUS" | "MINUS" | "MULTI" | "DIVIDE",
+        b: number,
+    ) {
+        if (op == "PLUS")   return a + b
+        if (op == "MINUS")  return a - b
+        if (op == "MULTI")  return a * b
+        if (op == "DIVIDE") return a / b
+        throw "nope!"
+    }
     calc_rand(a: number, b: number) {
         return Math.random() * (b - a) + a
     }
