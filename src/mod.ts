@@ -176,6 +176,14 @@ export class Entry {
     async _if(state: boolean, f: () => Promise<void>) {
         if (state) await f()
     }
+    async if_else(
+        state: boolean,
+        o: () => Promise<void>,
+        x: () => Promise<void>,
+    ) {
+        if (state) await o()
+        else await x()
+    }
 
     /* 움직임 */
     move_x(n: number, id: string) {
@@ -225,6 +233,8 @@ export class Entry {
         op: "PLUS" | "MINUS" | "MULTI" | "DIVIDE",
         b: number,
     ) {
+        a = Number(a)
+        b = Number(b)
         if (op == "PLUS")   return a + b
         if (op == "MINUS")  return a - b
         if (op == "MULTI")  return a * b

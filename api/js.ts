@@ -31,5 +31,9 @@ export const js = async (id: string) =>
                 "Entry._if",
                 "await Entry._if",
             )
+            .replaceAll(
+                "Entry.if_else",
+                "await Entry.if_else",
+            )
         )
         .then(x => `import { init } from "/src/mod.ts"` + "\nexport const Entry =\n" + x)
