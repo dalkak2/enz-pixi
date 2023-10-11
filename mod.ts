@@ -1,4 +1,12 @@
 import { Hono, Context } from "https://deno.land/x/hono@v3.8.0-rc.2/mod.ts"
+import { etag } from "https://deno.land/x/hono@v3.8.0-rc.2/middleware.ts"
+
+import { assert } from "https://deno.land/std@0.203.0/assert/mod.ts"
+
+import {
+    ensureFile,
+    exists,
+} from "https://deno.land/std@0.203.0/fs/mod.ts"
 
 import * as api from "./api/mod.ts"
 
@@ -9,18 +17,38 @@ import { transpile } from "https://deno.land/x/emit@0.25.0/mod.ts"
 const scriptHandler = async (c: Context) => {
     const url = new URL(c.req.url)
     const target = new URL("." + url.pathname, import.meta.url)
-    const result = await transpile(
-        target,
-        { cacheRoot: Deno.cwd() },
-    )
+    
+    console.log("Transpile", url.pathname)
+    let result
+    if (await exists("deps/local" + url.pathname)) {
+        const source = await Deno.stat("." + url.pathname)
+        const target = await Deno.stat("deps/local" + url.pathname)
+        assert(source.mtime)
+        assert(target.mtime)
+        if (source.mtime < target.mtime) {
+            console.log("Load from cache")
+            result = await Deno.readTextFile("deps/local" + url.pathname)
+        }
+    }
+    if (!result) {
+        console.time(url.pathname)
+        result = (await transpile(
+            target,
+            { cacheRoot: Deno.cwd() },
+        )).get(target.href)
+        console.timeEnd(url.pathname)
+        assert(result)
+        Deno.writeTextFile("deps/local" + url.pathname, result)
+    }
 
     c.header("content-type", "application/javascript; charset=utf-8")
     return c.body(
-        result.get(target.href)
+        result
         || `throw new Error("Transpile failed")`
     )
 }
 
+app.use("/*", etag({weak: true}))
 app.get("/src/*", scriptHandler)
 app.get("/deps/*", scriptHandler)
 
