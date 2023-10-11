@@ -7,6 +7,7 @@ import {
     Container,
     Assets,
     Texture,
+    TextString,
 } from "https://esm.sh/v132/pixi.js@8.0.0-beta.5"
 
 export const init =
@@ -197,6 +198,26 @@ export class Entry {
     is_press_some_key(keyCode: string) {
         return !!this.pressedKeys[Number(keyCode)]
     }
+    boolean_basic_operator(
+        a: number | string,
+        op:
+            | "EQUAL"
+            | "NOT_EQUAL"
+            | "GREATER"
+            | "LESS"
+            | "GREATER_OR_EQUAL"
+            | "LESS_OR_EQUAL"
+            ,
+        b: number | string,
+    ) {
+        if (op == "EQUAL")              return a == b
+        if (op == "NOT_EQUAL")          return a != b
+        if (op == "GREATER")            return a > b
+        if (op == "LESS")               return a < b
+        if (op == "GREATER_OR_EQUAL")   return a >= b
+        if (op == "LESS_OR_EQUAL")      return a <= b
+    }
+
 
     /* 계산 */
     calc_basic(
