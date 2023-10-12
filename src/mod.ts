@@ -275,6 +275,13 @@ export class Entry {
             this.objects[id].alpha = amount / 100
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
+    set_scale_size(newSize: number, id: string) {
+        const obj = this.objects[id]
+        const prevSize = (obj.width * obj.scale.x + obj.height * obj.scale.y) / 2
+        const scale = newSize / prevSize
+        obj.scale.x *= scale
+        obj.scale.y *= scale
+    }
 
     /* 판단 */
     is_press_some_key(keyCode: string) {
