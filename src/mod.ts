@@ -19,6 +19,10 @@ const mod =
     (a: number, n: number) =>
         ((a % n) + n) % n
 
+const toDegrees =
+    (rad: number) =>
+        rad * 180 / Math.PI
+
 export class EntrySprite extends Sprite {
     textureIds: string[] = []
     currentTextureIndex = 0
@@ -313,6 +317,41 @@ export class Entry {
     }
     calc_rand(a: number, b: number) {
         return Math.random() * (b - a) + a
+    }
+    calc_operation(
+        n: number,
+        op:
+            | "square"
+            | "root"
+            | "sin"
+            | "cos"
+            | "tan"
+            | "asin"
+            | "acos"
+            | "atan"
+            | "log"
+            | "ln"
+            | "unnatural"
+            | "floor"
+            | "ceil"
+            | "round"
+            | "factorial"
+            | "abs"
+    ) {
+        switch (op) {
+            case "square": return n * n
+            case "root": return Math.sqrt(n)
+            case "log": return Math.log(n) / Math.LN10
+            case "ln": return Math.log(n)
+            case "asin":
+            case "acos":
+            case "atan":
+                return toDegrees(Math[op](n))
+            case "unnatural": return n % 1
+            case "factorial": throw "Unimplemented: factorial"
+            default: return Math[op](n)
+        }
+
     }
 
     /* 자료 */
