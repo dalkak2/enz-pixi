@@ -8,11 +8,25 @@ import {
     Assets,
     Texture,
     TextString,
+    returnFilterEffect,
 } from "https://esm.sh/v132/pixi.js@8.0.0-beta.5"
 
 export const init =
     (project: Project) =>
         new Entry(project)
+
+const mod =
+    (a: number, n: number) =>
+        ((a % n) + n) % n
+
+export class EntrySprite extends Sprite {
+    textureIds: string[] = []
+    currentTextureIndex = 0
+
+    constructor(...args: ConstructorParameters<typeof Sprite>) {
+        super(...args)
+    }
+}
 
 export class Entry {
     project
@@ -21,7 +35,7 @@ export class Entry {
     scenes: Record<string, Container> = {}
     variables: Record<string, string | number> = {}
     textures: Record<string, Texture> = {}
-    objects: Record<string, Sprite> = {}
+    objects: Record<string, EntrySprite> = {}
 
     pressedKeys: Record<number, boolean | undefined> = {}
     constructor(project: Project) {
@@ -75,11 +89,24 @@ export class Entry {
         console.log(this.textures)
         this.objects = Object.fromEntries(
             this.project.objects.toReversed().map(
-                ({id, selectedPictureId, scene, entity}) => {
+                ({
+                    id,
+                    selectedPictureId,
+                    scene,
+                    entity,
+                    sprite: {
+                        pictures,
+                        sounds,
+                    },
+                }) => {
                     console.log(selectedPictureId)
-                    const sprite = Sprite.from(
+                    const sprite = new EntrySprite(
                         this.textures[selectedPictureId]
                     )
+                    sprite.textureIds = pictures.map(
+                        ({id}) => id
+                    )
+                    sprite.currentTextureIndex = sprite.textureIds.indexOf("selectedPictureId")
                     sprite.anchor.set(0.5)
                     sprite.x = entity.x + 240
                     sprite.y = -entity.y + 135
@@ -200,6 +227,25 @@ export class Entry {
     /* 생김새 */
     dialog(text: string, type: "speak" | "think", objId: string) {
         console.log(`Object_${objId} ${type}s:`, text)
+    }
+    change_to_next_shape(type: "next" | "prev", id: string) {
+        const obj = this.objects[id]
+        if (type == "next") {
+            obj.currentTextureIndex += 1
+        }
+        if (type == "prev") {
+            obj.currentTextureIndex -= 1
+        }
+        obj.currentTextureIndex =
+            mod(
+                obj.currentTextureIndex,
+                obj.textureIds.length,
+            )
+        obj.texture = this.textures[
+            obj.textureIds[
+                obj.currentTextureIndex
+            ]
+        ]
     }
     add_effect_amount(
         type:
