@@ -201,6 +201,30 @@ export class Entry {
     dialog(text: string, type: "speak" | "think", objId: string) {
         console.log(`Object_${objId} ${type}s:`, text)
     }
+    add_effect_amount(
+        type:
+            | "transparency"
+            | "color"
+            | "brightness",
+        amount: number,
+        id: string,
+    ) {
+        if (type == "transparency")
+            this.objects[id].alpha += amount / 100
+        else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
+    }
+    change_effect_amount(
+        type:
+            | "transparency"
+            | "color"
+            | "brightness",
+        amount: number,
+        id: string,
+    ) {
+        if (type == "transparency")
+            this.objects[id].alpha = amount / 100
+        else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
+    }
 
     /* 판단 */
     is_press_some_key(keyCode: string) {
