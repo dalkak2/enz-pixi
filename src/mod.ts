@@ -40,6 +40,28 @@ export class EntrySprite extends Sprite {
     }
 }
 
+export class Timer {
+    checkpoint: number | false = false
+    acc = 0
+    get time() {
+        return this.checkpoint
+            ? this.acc + Date.now() - this.checkpoint
+            : this.acc
+    }
+    start() {
+        this.acc = this.time
+        this.checkpoint = Date.now()
+    }
+    stop() {
+        this.acc = this.time
+        this.checkpoint = false
+    }
+    reset() {
+        this.acc = 0
+        this.checkpoint = Date.now()
+    }
+}
+
 export class Entry {
     project
     renderer?: Renderer
@@ -50,6 +72,9 @@ export class Entry {
     objects: Record<string, EntrySprite> = {}
 
     pressedKeys: Record<number, boolean | undefined> = {}
+
+    timer = new Timer()
+
     constructor(project: Project) {
         this.project = project
         this.events = {
@@ -366,6 +391,16 @@ export class Entry {
             default: return Math[op](n)
         }
 
+    }
+    get_project_timer_value() {
+        return this.timer.time / 1000
+    }
+    choose_project_timer_action(
+        action: "START" | "STOP" | "RESET"
+    ) {
+        if (action == "START")  this.timer.start()
+        if (action == "STOP")   this.timer.stop()
+        if (action == "RESET")  this.timer.reset()
     }
 
     /* 자료 */
