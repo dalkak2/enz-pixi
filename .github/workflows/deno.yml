@@ -13,8 +13,7 @@ on:
     branches: ["main"]
 
 permissions:
-  id-token: write
-  contents: write
+  contents: read
 
 jobs:
   test:
@@ -32,17 +31,9 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: Transpile TypeScript and push
+      - name: Transpile TypeScript
         run: |
-          git config pull.ff only
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git switch dist
-          git pull origin main
           deno test -A build.ts
-          git add --force deps/local/src/mod.ts
-          git commit -m "Dist: ${{ github.event.commits[0].message }}" || true
-          git push origin dist
 
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
