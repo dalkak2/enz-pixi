@@ -41,6 +41,7 @@ jobs:
           deno test -A build.ts
           git add --force deps/local/src/mod.ts
           git commit -m "Dist: ${{ github.event.commits[0].message }}" || true
+          git config pull.ff only
           git push origin dist
 
       - name: Deploy to Deno Deploy
