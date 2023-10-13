@@ -23,9 +23,12 @@ const scriptHandler = async (c: Context) => {
     if (await exists("deps/local" + url.pathname)) {
         const source = await Deno.stat("." + url.pathname)
         const target = await Deno.stat("deps/local" + url.pathname)
+
         if (
-            source.mtime &&
-            target.mtime &&
+            // Deno Deploy인 경우 mtime 없으므로 무조건 캐시 사용
+            // TODO: Env 읽는걸로 바꾸기
+            !source.mtime ||
+            !target.mtime ||
             source.mtime < target.mtime
         ) {
             console.log("Load from cache")
