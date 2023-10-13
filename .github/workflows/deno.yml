@@ -34,6 +34,7 @@ jobs:
 
       - name: Transpile TypeScript and push
         run: |
+          git config pull.ff only
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git switch dist
@@ -41,7 +42,6 @@ jobs:
           deno test -A build.ts
           git add --force deps/local/src/mod.ts
           git commit -m "Dist: ${{ github.event.commits[0].message }}" || true
-          git config pull.ff only
           git push origin dist
 
       - name: Deploy to Deno Deploy
