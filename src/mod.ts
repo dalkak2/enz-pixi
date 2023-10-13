@@ -30,6 +30,14 @@ export class EntrySprite extends Sprite {
     constructor(...args: ConstructorParameters<typeof Sprite>) {
         super(...args)
     }
+    get size() {
+        return (this.width + this.height) / 2
+    }
+    set size(newSize: number) {
+        const scale = Math.max(1, newSize) / this.size
+        this.scale.x *= scale
+        this.scale.y *= scale
+    }
 }
 
 export class Entry {
@@ -275,12 +283,11 @@ export class Entry {
             this.objects[id].alpha = amount / 100
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
+    change_scale_size(d: number, id: string) {
+        this.objects[id].size += d
+    }
     set_scale_size(newSize: number, id: string) {
-        const obj = this.objects[id]
-        const prevSize = (obj.width + obj.height) / 2
-        const scale = Math.max(1, newSize) / prevSize
-        obj.scale.x *= scale
-        obj.scale.y *= scale
+        this.objects[id].size = newSize
     }
 
     /* 판단 */
