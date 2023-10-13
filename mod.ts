@@ -23,9 +23,11 @@ const scriptHandler = async (c: Context) => {
     if (await exists("deps/local" + url.pathname)) {
         const source = await Deno.stat("." + url.pathname)
         const target = await Deno.stat("deps/local" + url.pathname)
-        assert(source.mtime)
-        assert(target.mtime)
-        if (source.mtime < target.mtime) {
+        if (
+            source.mtime &&
+            target.mtime &&
+            source.mtime < target.mtime
+        ) {
             console.log("Load from cache")
             result = await Deno.readTextFile("deps/local" + url.pathname)
         }
