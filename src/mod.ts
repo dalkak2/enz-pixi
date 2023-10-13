@@ -277,8 +277,8 @@ export class Entry {
     }
     set_scale_size(newSize: number, id: string) {
         const obj = this.objects[id]
-        const prevSize = (obj.width * obj.scale.x + obj.height * obj.scale.y) / 2
-        const scale = newSize / prevSize
+        const prevSize = (obj.width + obj.height) / 2
+        const scale = Math.max(1, newSize) / prevSize
         obj.scale.x *= scale
         obj.scale.y *= scale
     }
