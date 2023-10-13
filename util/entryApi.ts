@@ -10,12 +10,15 @@ export async function getCSRFToken() {
     return token;
   }
 
-const csrfToken = await getCSRFToken()
-console.log(csrfToken)
+let csrfToken: string
 
 export const entryApi =
-    async (body: unknown) =>
-        await fetch(
+    async (body: unknown) => {
+        if (!csrfToken) {
+            csrfToken = await getCSRFToken()
+            console.log(csrfToken)
+        }
+        return await fetch(
             "https://playentry.org/graphql",
             {
                 method: "post",
@@ -28,3 +31,4 @@ export const entryApi =
                 }
             }
         )
+    }

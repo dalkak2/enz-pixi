@@ -38,6 +38,7 @@ const scriptHandler = async (c: Context) => {
         )).get(target.href)
         console.timeEnd(url.pathname)
         assert(result)
+        await ensureFile("deps/local" + url.pathname)
         Deno.writeTextFile("deps/local" + url.pathname, result)
     }
 
@@ -105,3 +106,5 @@ app.get("/p/:id", c => c.html(`
 `))
 
 Deno.serve(app.fetch)
+
+export { app }
