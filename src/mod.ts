@@ -19,6 +19,10 @@ const mod =
     (a: number, n: number) =>
         ((a % n) + n) % n
 
+const toRadian =
+    (deg: number) =>
+        deg * Math.PI / 180
+
 const toDegrees =
     (rad: number) =>
         rad * 180 / Math.PI
@@ -388,6 +392,10 @@ export class Entry {
             case "root": return Math.sqrt(n)
             case "log": return Math.log(n) / Math.LN10
             case "ln": return Math.log(n)
+            case "sin":
+            case "cos":
+            case "tan":
+                return Math[op](toRadian(n))
             case "asin":
             case "acos":
             case "atan":
