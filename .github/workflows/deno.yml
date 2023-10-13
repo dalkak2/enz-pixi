@@ -1,0 +1,50 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow will install Deno then run `deno lint` and `deno test`.
+# For more information see: https://github.com/denoland/setup-deno
+
+name: Deno
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Deno
+        # uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@61fe2df320078202e33d7d5ad347e7dcfa0e8f31  # v1.1.2
+        with:
+          deno-version: v1.x
+
+      - name: Transpile TypeScript and push
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git switch dist
+          git pull origin main
+          deno test -A build.ts
+          git add --force deps/local/src/mod.ts
+          git commit -m "Dist: ${{ github.event.commits[0].message }}" || true
+          git push origin dist
+
+      - name: Deploy to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: enz
+          entrypoint: mod.ts
+      
