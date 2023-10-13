@@ -256,9 +256,15 @@ export class Entry {
     move_y(n: number, id: string) {
         this.objects[id].y -= n
     }
-    locate_xy(x: number, y: number, id: string) {
+    locate_x(x: number, id: string) {
         this.objects[id].x = x + 240
+    }
+    locate_y(y: number, id: string) {
         this.objects[id].y = -y + 135
+    }
+    locate_xy(x: number, y: number, id: string) {
+        this.locate_x(x, id)
+        this.locate_y(y, id)
     }
 
     /* 생김새 */
