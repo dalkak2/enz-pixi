@@ -3,20 +3,40 @@ import {
     parseProject,
     Visitor,
     Object_,
+    cg,
+    Project,
  } from "../deps/enz.ts"
+ import JSON5 from "https://esm.sh/json5@2.2.3"
 
 class PixiVisitor extends Visitor {
     visitObject(object: Object_): string {
         const script = super.visitObject(object)
+        const {
+            selectedPictureId,
+            scene,
+            entity,
+            sprite,
+        } = object
         return ``
             + `class Obj_${object.id} extends EntrySprite { `
-                + `constructor() {\n    super()\n${
+                + `constructor(...args) {\n    super(...args)\n${
                     script
                         .split("\n")
                         .map(x => "    " + x)
                         .join("\n")
                 }\n}`
-            + `}; new Obj_${object.id}()`
+            + `}; Entry.objects["${object.id}"] = new Obj_${object.id}(${
+                JSON5.stringify({
+                    selectedPictureId,
+                    scene,
+                    entity,
+                    sprite,
+                })
+            }, Entry)`
+    }
+    objectToExpressions({script}: Object_) {
+        return this.scriptToExpressions(script)
+            .map(expr => expr.replaceAll(`"$obj$"`, "this") as cg.Expression)
     }
 }
 

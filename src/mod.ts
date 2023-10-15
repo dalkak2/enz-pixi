@@ -1,4 +1,4 @@
-import { Project } from "../deps/enz.ts"
+import { Project, Object_ } from "../deps/enz.ts"
 import {
     Ticker,
     autoDetectRenderer,
@@ -31,8 +31,35 @@ export class EntrySprite extends Sprite {
     textureIds: string[] = []
     currentTextureIndex = 0
 
-    constructor(...args: ConstructorParameters<typeof Sprite>) {
-        super(...args)
+    constructor(
+        {
+            selectedPictureId,
+            scene,
+            entity,
+            sprite: {
+                pictures,
+                sounds,
+            },
+        }: Object_,
+        project: Entry,
+    ) {
+        console.log(selectedPictureId)
+        super(
+            project.textures[selectedPictureId]
+        )
+        this.textureIds = pictures.map(
+            ({id}) => id
+        )
+        this.currentTextureIndex = this.textureIds.indexOf("selectedPictureId")
+        this.anchor.set(0.5)
+        this.x = entity.x + 240
+        this.y = -entity.y + 135
+        this.scale = {
+            x: entity.scaleX,
+            y: entity.scaleY,
+        }
+        console.log(project)
+        project.scenes[scene].addChild(this)
     }
     get size() {
         return (this.width + this.height) / 2
@@ -84,8 +111,7 @@ export class Entry {
         this.events = {
             start: []
         }
-    }
-    async init(parent: HTMLElement) {
+
         this.scenes = Object.fromEntries(
             this.project.scenes.map(
                 ({id}) => {
@@ -97,6 +123,8 @@ export class Entry {
                 }
             )
         )
+    }
+    async init(parent: HTMLElement) {
         this.variables = Object.fromEntries(
             this.project.variables.map(
                 ({id, value}) => {
@@ -128,41 +156,22 @@ export class Entry {
             .flat()
         ))
         console.log(this.textures)
+        /*
         this.objects = Object.fromEntries(
             this.project.objects.toReversed().map(
-                ({
-                    id,
-                    selectedPictureId,
-                    scene,
-                    entity,
-                    sprite: {
-                        pictures,
-                        sounds,
-                    },
-                }) => {
-                    console.log(selectedPictureId)
+                (object) => {
                     const sprite = new EntrySprite(
-                        this.textures[selectedPictureId]
+                        object,
+                        this,
                     )
-                    sprite.textureIds = pictures.map(
-                        ({id}) => id
-                    )
-                    sprite.currentTextureIndex = sprite.textureIds.indexOf("selectedPictureId")
-                    sprite.anchor.set(0.5)
-                    sprite.x = entity.x + 240
-                    sprite.y = -entity.y + 135
-                    sprite.scale = {
-                        x: entity.scaleX,
-                        y: entity.scaleY,
-                    }
-                    this.scenes[scene].addChild(sprite)
                     return [
-                        id,
+                        object.id,
                         sprite,
                     ]
                 }
             )
         )
+        */
 
         document.body.addEventListener("keydown", event => {
             this.pressedKeys[event.keyCode] = true
@@ -254,29 +263,28 @@ export class Entry {
     }
 
     /* 움직임 */
-    move_x(n: number, id: string) {
-        this.objects[id].x += n
+    move_x(n: number, obj: EntrySprite) {
+        obj.x += n
     }
-    move_y(n: number, id: string) {
-        this.objects[id].y -= n
+    move_y(n: number, obj: EntrySprite) {
+        obj.y -= n
     }
-    locate_x(x: number, id: string) {
-        this.objects[id].x = x + 240
+    locate_x(x: number, obj: EntrySprite) {
+        obj.x = x + 240
     }
-    locate_y(y: number, id: string) {
-        this.objects[id].y = -y + 135
+    locate_y(y: number, obj: EntrySprite) {
+        obj.y = -y + 135
     }
-    locate_xy(x: number, y: number, id: string) {
-        this.locate_x(x, id)
-        this.locate_y(y, id)
+    locate_xy(x: number, y: number, obj: EntrySprite) {
+        this.locate_x(x, obj)
+        this.locate_y(y, obj)
     }
 
     /* 생김새 */
-    dialog(text: string, type: "speak" | "think", objId: string) {
-        console.log(`Object_${objId} ${type}s:`, text)
+    dialog(text: string, type: "speak" | "think", obj: EntrySprite) {
+        console.log(`Object_${obj} ${type}s:`, text)
     }
-    change_to_next_shape(type: "next" | "prev", id: string) {
-        const obj = this.objects[id]
+    change_to_next_shape(type: "next" | "prev", obj: EntrySprite) {
         if (type == "next") {
             obj.currentTextureIndex += 1
         }
@@ -300,10 +308,10 @@ export class Entry {
             | "color"
             | "brightness",
         amount: number,
-        id: string,
+        obj: EntrySprite,
     ) {
         if (type == "transparency")
-            this.objects[id].alpha += amount / 100
+            obj.alpha += amount / 100
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
     change_effect_amount(
@@ -312,17 +320,17 @@ export class Entry {
             | "color"
             | "brightness",
         amount: number,
-        id: string,
+        obj: EntrySprite,
     ) {
         if (type == "transparency")
-            this.objects[id].alpha = amount / 100
+            obj.alpha = amount / 100
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
-    change_scale_size(d: number, id: string) {
-        this.objects[id].size += d
+    change_scale_size(d: number, obj: EntrySprite) {
+        obj.size += d
     }
-    set_scale_size(newSize: number, id: string) {
-        this.objects[id].size = newSize
+    set_scale_size(newSize: number, obj: EntrySprite) {
+        obj.size = newSize
     }
 
     /* 판단 */
