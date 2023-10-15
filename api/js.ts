@@ -1,11 +1,30 @@
 import { project } from "./project.ts"
-import { parseProject, projectToJs } from "../deps/enz.ts"
+import {
+    parseProject,
+    Visitor,
+    Object_,
+ } from "../deps/enz.ts"
+
+class PixiVisitor extends Visitor {
+    visitObject(object: Object_): string {
+        const script = super.visitObject(object)
+        return ``
+            + `class Obj_${object.id} extends EntrySprite { `
+                + `constructor() {\n    super()\n${
+                    script
+                        .split("\n")
+                        .map(x => "    " + x)
+                        .join("\n")
+                }\n}`
+            + `}; new Obj_${object.id}()`
+    }
+}
 
 export const js = async (id: string) =>
     await project(id)
         .then(JSON.stringify)
         .then(parseProject)
-        .then(projectToJs)
+        .then(x => (new PixiVisitor).visitProject(x))
         .then(x => x
             .replaceAll(
                 "= (",
@@ -36,4 +55,4 @@ export const js = async (id: string) =>
                 "await Entry.if_else",
             )
         )
-        .then(x => `import { init } from "/src/mod.ts"` + "\nexport const Entry =\n" + x)
+        .then(x => `import { init, EntrySprite } from "/src/mod.ts"` + "\nexport const Entry =\n" + x)
