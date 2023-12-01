@@ -5,8 +5,10 @@ import {
     Object_,
     cg,
     Project,
- } from "../deps/enz.ts"
- import JSON5 from "https://esm.sh/json5@2.2.3"
+} from "../deps/enz.ts"
+import JSON5 from "https://esm.sh/json5@2.2.3"
+
+import { format } from "./util/format.ts"
 
 class PixiVisitor extends Visitor {
     visitObject(object: Object_): string {
@@ -40,7 +42,7 @@ class PixiVisitor extends Visitor {
     }
 }
 
-export const js = async (id: string) =>
+export const jsUnformatted = async (id: string) =>
     await project(id)
         .then(JSON.stringify)
         .then(parseProject)
@@ -76,3 +78,8 @@ export const js = async (id: string) =>
             )
         )
         .then(x => `import { init, EntrySprite } from "/src/mod.ts"` + "\nexport const Entry =\n" + x)
+
+export const js = async (id: string) => {
+    const src = await jsUnformatted(id)
+    return format(src)
+}

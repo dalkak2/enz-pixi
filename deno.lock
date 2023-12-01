@@ -167,6 +167,7 @@
     "https://deno.land/x/deno_graph@0.26.0/lib/snippets/deno_graph-de651bc9c240ed8d/src/deno_apis.js": "41192baaa550a5c6a146280fae358cede917ae16ec4e4315be51bef6631ca892",
     "https://deno.land/x/deno_graph@0.26.0/mod.ts": "11131ae166580a1c7fa8506ff553751465a81c263d94443f18f353d0c320bc14",
     "https://deno.land/x/dir@1.5.1/data_local_dir/mod.ts": "91eb1c4bfadfbeda30171007bac6d85aadacd43224a5ed721bbe56bc64e9eb66",
+    "https://deno.land/x/dprint@0.2.0/mod.ts": "89ddd655e1b3a0b294f433c296fa01875037eed078b53aa60af755a25f128074",
     "https://deno.land/x/emit@0.25.0/_utils.ts": "98412edc7aa29e77d592b54fbad00bdec1b05d0c25eb772a5f8edc9813e08d88",
     "https://deno.land/x/emit@0.25.0/emit.generated.js": "0728e0cd293b930db2532f8cb5087fdb77aee1f30a059207533780f40250fd6a",
     "https://deno.land/x/emit@0.25.0/mod.ts": "66ef8ddaedcfca033eeee851379af59ed3f0e0aa6e025e7cdd24e4e158d874f3",
