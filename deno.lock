@@ -284,7 +284,6 @@
     "https://deno.land/x/jsx@v0.1.5/mod.ts": "24bb89837fda59c53c12a3c0e464378ca6de9b261dec1df57ba640b1cfed9611",
     "https://deno.land/x/wasmbuild@0.14.1/cache.ts": "89eea5f3ce6035a1164b3e655c95f21300498920575ade23161421f5b01967f4",
     "https://deno.land/x/wasmbuild@0.14.1/loader.ts": "d98d195a715f823151cbc8baa3f32127337628379a02d9eb2a3c5902dbccfc02",
-    "https://esm.sh/json5@2.2.3": "d0bbd842292646ef800b6521169769492e17666655ba1a537757d9dd0a386629",
     "https://esm.sh/v133/json5@2.2.3/denonext/json5.mjs": "2124ca68e182d9de859a72e9415bbc4702b8f0bb002a7a22ea06d6684a3e562b"
   }
 }
