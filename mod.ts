@@ -14,6 +14,8 @@ const app = new Hono()
 
 import { transpile } from "https://deno.land/x/emit@0.25.0/mod.ts"
 
+import { fromFileUrl } from "https://deno.land/std@0.208.0/path/windows/from_file_url.ts"
+
 const scriptHandler = async (c: Context) => {
     const url = new URL(c.req.url)
     const target = new URL("." + url.pathname, import.meta.url)
@@ -39,7 +41,23 @@ const scriptHandler = async (c: Context) => {
         console.time(url.pathname)
         result = (await transpile(
             target,
-            { cacheRoot: Deno.cwd() },
+            {
+                cacheRoot: Deno.cwd(),
+                load: async (specifier) => {
+                    if (target.href == specifier) {
+                        return {
+                            kind: "module",
+                            specifier,
+                            content: await Deno.readTextFile(fromFileUrl(specifier)),
+                        }
+                    } else {
+                        return {
+                            kind: "external",
+                            specifier,
+                        }
+                    }
+                },
+            },
         )).get(target.href)
         console.timeEnd(url.pathname)
         assert(result)

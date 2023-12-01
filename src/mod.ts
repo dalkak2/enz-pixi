@@ -1,4 +1,4 @@
-import { Project, Object_ } from "../deps/enz.ts"
+import type { Project, Object_ } from "../deps/enz.ts"
 import {
     Ticker,
     autoDetectRenderer,

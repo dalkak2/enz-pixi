@@ -145,6 +145,8 @@
     "https://deno.land/std@0.203.0/path/to_file_url.ts": "00e6322373dd51ad109956b775e4e72e5f9fa68ce2c6b04e4af2a6eed3825d31",
     "https://deno.land/std@0.203.0/path/to_namespaced_path.ts": "1b1db3055c343ab389901adfbda34e82b7386bcd1c744d54f9c1496ee0fd0c3d",
     "https://deno.land/std@0.203.0/path/win32.ts": "8b3f80ef7a462511d5e8020ff490edcaa0a0d118f1b1e9da50e2916bdd73f9dd",
+    "https://deno.land/std@0.208.0/path/_common/from_file_url.ts": "ef1bf3197d2efbf0297a2bdbf3a61d804b18f2bcce45548ae112313ec5be3c22",
+    "https://deno.land/std@0.208.0/path/windows/from_file_url.ts": "d53335c12b0725893d768be3ac6bf0112cc5b639d2deb0171b35988493b46199",
     "https://deno.land/x/another_cookiejar@v5.0.3/cookie.ts": "2be7548d01a3a9df97deb187761a843a77fd824057478919abf1e1e89ae1eb2e",
     "https://deno.land/x/another_cookiejar@v5.0.3/cookie_jar.ts": "e47d7b2c608bcd9600fd26825b600946f16ae167216cea71935049188d2fc6d1",
     "https://deno.land/x/another_cookiejar@v5.0.3/fetch_wrapper.ts": "9d82648195533c58490d462cc4566edc16b9ce06e695a8043160785df5e0d6a0",
