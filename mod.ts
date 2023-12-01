@@ -48,7 +48,7 @@ const scriptHandler = async (c: Context) => {
                         return {
                             kind: "module",
                             specifier,
-                            content: await Deno.readTextFile(fromFileUrl(specifier)),
+                            content: await Deno.readTextFile("." + url.pathname),
                         }
                     } else {
                         return {
