@@ -6,7 +6,7 @@ import {
     cg,
     Project,
 } from "../deps/enz.ts"
-import JSON5 from "https://esm.sh/v135/json5@2.2.3"
+import JSON5 from "https://esm.sh/json5@2.2.3?pin=v135"
 
 import { format } from "./util/format.ts"
 
