@@ -43,14 +43,11 @@ export class EntrySprite extends Sprite {
         }: Object_,
         project: Entry,
     ) {
-        console.log(selectedPictureId)
-        super(
-            project.textures[selectedPictureId]
-        )
+        super()
         this.textureIds = pictures.map(
             ({id}) => id
         )
-        this.currentTextureIndex = this.textureIds.indexOf("selectedPictureId")
+        this.currentTextureIndex = this.textureIds.indexOf(selectedPictureId)
         this.anchor.set(0.5)
         this.x = entity.x + 240
         this.y = -entity.y + 135
@@ -58,7 +55,6 @@ export class EntrySprite extends Sprite {
             x: entity.scaleX,
             y: entity.scaleY,
         }
-        console.log(project)
         project.scenes[scene].addChild(this)
     }
     get size() {
@@ -156,6 +152,9 @@ export class Entry {
             .flat()
         ))
         console.log(this.textures)
+        Object.entries(this.objects).forEach(([_id, obj]) => {
+            obj.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
+        })
         /*
         this.objects = Object.fromEntries(
             this.project.objects.toReversed().map(
