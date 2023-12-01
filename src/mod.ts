@@ -9,7 +9,7 @@ import {
     Texture,
     TextString,
     returnFilterEffect,
-} from "https://esm.sh/v132/pixi.js@8.0.0-beta.5"
+} from "https://esm.sh/v135/pixi.js@8.0.0-beta.11"
 
 export const init =
     (project: Project) =>
