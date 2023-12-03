@@ -31,7 +31,18 @@ export class EntrySprite extends Sprite {
     textureIds: string[] = []
     currentTextureIndex = 0
 
-    constructor(
+    constructor() {
+        super()
+    }
+    get size() {
+        return (this.width + this.height) / 2
+    }
+    set size(newSize: number) {
+        const scale = Math.max(1, newSize) / this.size
+        this.scale.x *= scale
+        this.scale.y *= scale
+    }
+    static fromEntryData(
         {
             selectedPictureId,
             scene,
@@ -43,27 +54,20 @@ export class EntrySprite extends Sprite {
         }: Object_,
         project: Entry,
     ) {
-        super()
-        this.textureIds = pictures.map(
+        const sprite = new this()
+        sprite.textureIds = pictures.map(
             ({id}) => id
         )
-        this.currentTextureIndex = this.textureIds.indexOf(selectedPictureId)
-        this.anchor.set(0.5)
-        this.x = entity.x + 240
-        this.y = -entity.y + 135
-        this.scale = {
+        sprite.currentTextureIndex = sprite.textureIds.indexOf(selectedPictureId)
+        sprite.anchor.set(0.5)
+        sprite.x = entity.x + 240
+        sprite.y = -entity.y + 135
+        sprite.scale = {
             x: entity.scaleX,
             y: entity.scaleY,
         }
-        project.scenes[scene].addChild(this)
-    }
-    get size() {
-        return (this.width + this.height) / 2
-    }
-    set size(newSize: number) {
-        const scale = Math.max(1, newSize) / this.size
-        this.scale.x *= scale
-        this.scale.y *= scale
+        project.scenes[scene].addChild(sprite)
+        return sprite
     }
 }
 
@@ -259,6 +263,11 @@ export class Entry {
     ) {
         if (state) await o()
         else await x()
+    }
+    create_clone(targetId: string, obj: EntrySprite) {
+        if (targetId == "self") {
+            console.log(obj)
+        }
     }
 
     /* 움직임 */

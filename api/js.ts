@@ -27,7 +27,7 @@ class PixiVisitor extends Visitor {
                         .map(x => "    " + x)
                         .join("\n")
                 }\n}`
-            + `}; Entry.objects["${object.id}"] = new Obj_${object.id}(${
+            + `}; Entry.objects["${object.id}"] = Obj_${object.id}.fromEntryData(${
                 JSON5.stringify({
                     selectedPictureId,
                     scene,
