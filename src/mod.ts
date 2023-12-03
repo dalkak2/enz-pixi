@@ -30,6 +30,7 @@ const toDegrees =
 export class EntrySprite extends Sprite {
     textureIds: string[] = []
     currentTextureIndex = 0
+    scene = ""
 
     constructor() {
         super()
@@ -66,7 +67,24 @@ export class EntrySprite extends Sprite {
             x: entity.scaleX,
             y: entity.scaleY,
         }
+        sprite.scene = scene
         project.scenes[scene].addChild(sprite)
+        return sprite
+    }
+    clone(project: Entry) {
+        const sprite = new this.constructor()
+        sprite.textureIds = this.textureIds
+        sprite.currentTextureIndex = this.currentTextureIndex
+        sprite.texture = this.texture
+        sprite.anchor.set(0.5)
+        sprite.x = this.x
+        sprite.y = this.y
+        sprite.scale = this.scale
+        sprite.scene = this.scene
+        project.scenes[sprite.scene].addChild(sprite)
+        
+        sprite.emit("clone")
+
         return sprite
     }
 }
@@ -205,7 +223,6 @@ export class Entry {
         this.emit("start")
     }
     render() {
-        Object.values(this.scenes)[0].x
         this.renderer!.render({
             container: Object.values(this.scenes)[0]
         })
@@ -266,8 +283,11 @@ export class Entry {
     }
     create_clone(targetId: string, obj: EntrySprite) {
         if (targetId == "self") {
-            console.log(obj)
+            const clone = obj.clone(this)
         }
+    }
+    when_clone_start(f: () => void, obj: EntrySprite) {
+        obj.on("clone", f)
     }
 
     /* 움직임 */
