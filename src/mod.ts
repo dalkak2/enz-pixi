@@ -31,6 +31,7 @@ export class EntrySprite extends Sprite {
     textureIds: string[] = []
     currentTextureIndex = 0
     scene = ""
+    isClone = false
 
     constructor() {
         super()
@@ -81,6 +82,9 @@ export class EntrySprite extends Sprite {
         sprite.y = this.y
         sprite.scale = this.scale
         sprite.scene = this.scene
+
+        sprite.isClone = true
+
         project.scenes[sprite.scene].addChild(sprite)
         
         sprite.emit("clone")
@@ -264,11 +268,16 @@ export class Entry {
     */
     create_clone(targetId: string, obj: EntrySprite) {
         if (targetId == "self") {
-            const clone = obj.clone(this)
+            obj.clone(this)
         }
     }
     when_clone_start(f: () => void, obj: EntrySprite) {
         obj.on("clone", f)
+    }
+    delete_clone(obj: EntrySprite) {
+        if (obj.isClone) {
+            obj.destroy()
+        }
     }
 
     /* 움직임 */
