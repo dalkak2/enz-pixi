@@ -256,7 +256,7 @@ export class Entry {
         obj: EntrySprite,
     ) {
         if (type == "transparency")
-            obj.alpha += amount / 100
+            obj.alpha -= amount / 100
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
     change_effect_amount(
@@ -268,7 +268,7 @@ export class Entry {
         obj: EntrySprite,
     ) {
         if (type == "transparency")
-            obj.alpha = amount / 100
+            obj.alpha = 1 - amount / 100
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
     change_scale_size(d: number, obj: EntrySprite) {
