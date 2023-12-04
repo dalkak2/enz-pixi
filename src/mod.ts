@@ -343,6 +343,14 @@ export class Entry {
     }
 
     /* 판단 */
+    /*
+        These blocks are transpiled from server.
+        Check ../api/js.ts
+        ```
+        True
+        False
+        ```
+    */
     is_press_some_key(keyCode: string) {
         return !!this.pressedKeys[Number(keyCode)]
     }

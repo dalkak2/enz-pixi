@@ -52,7 +52,7 @@ class PixiVisitor extends Visitor {
         )
 
         switch (block.type) {
-            case "repeat_basic":
+            case "repeat_basic": {
                 const i = "i_" + Math.random().toString(36).substring(2,6)
                 return `for (
                     let ${i} = 0;
@@ -62,6 +62,7 @@ class PixiVisitor extends Visitor {
                     ${statements[0]}
                     await Entry.wait_tick()
                 }` as cg.Expression
+            }
 
             case "repeat_inf":
                 return `while (true) {
@@ -70,7 +71,11 @@ class PixiVisitor extends Visitor {
                 }` as cg.Expression
 
             case "repeat_while_true":
-                return `while (${params[0]}) {
+                return `while (${
+                    params[1] == `"until"`
+                        ? "!" // "until"
+                        : ""  // "while"
+                }${params[0]}) {
                     ${statements[0]}
                     await Entry.wait_tick()
                 }` as cg.Expression
@@ -86,6 +91,12 @@ class PixiVisitor extends Visitor {
                 } else {
                     ${statements[1]}
                 }` as cg.Expression
+
+            case "True":
+                return "true" as cg.Expression
+
+            case "False":
+                return "false" as cg.Expression
 
             default:
                 return super.normalBlockToExpression(block)
