@@ -76,11 +76,13 @@ app.use("/*", etag({weak: true}))
 app.get("/src/*", scriptHandler)
 app.get("/deps/*", scriptHandler)
 
-app.get("/image/lib/entry-js/images/media/:name", async c => c.body(
-    await fetch(
-        `https://playentry.org/lib/entry-js/images/media/${c.req.param("name")}`
-    ).then(x => x.body)
-))
+app.get("/image/lib/entry-js/images/*", async c => {
+    const path = new URL(c.req.url).pathname
+        .replace(/^\/image\//, "https://playentry.org/")
+    return c.body(
+        await fetch(path).then(x => x.body)
+    )
+})
 app.get("/image/:id", async c => {
     const id = c.req.param("id")
     const [a,b,d,e] = id
