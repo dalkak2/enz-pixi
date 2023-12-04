@@ -300,6 +300,9 @@ export class Entry {
 
 
     /* 계산 */
+    angle(n: number) {
+        return n
+    }
     calc_basic(
         a: number,
         op: "PLUS" | "MINUS" | "MULTI" | "DIVIDE",
