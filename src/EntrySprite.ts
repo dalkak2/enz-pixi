@@ -46,6 +46,7 @@ export class EntrySprite extends Sprite {
         }
         sprite.angle = entity.rotation
         sprite.direction = entity.direction
+        sprite.visible = entity.visible
         sprite.scene = scene
         project.scenes[sprite.scene].addChildAt(sprite, 0)
         return sprite
@@ -61,6 +62,7 @@ export class EntrySprite extends Sprite {
         sprite.scale = this.scale
         sprite.angle = this.angle
         sprite.direction = this.direction
+        sprite.visible = this.visible
         sprite.scene = this.scene
 
         sprite.isClone = true
