@@ -1,6 +1,6 @@
 import type { Object_ } from "../deps/enz.ts"
 import { Sprite } from "../deps/pixi.ts"
-import type { Entry } from "./mod.ts"
+import type { Entry } from "./Entry.ts"
 
 export class EntrySprite extends Sprite {
     textureIds: string[] = []
