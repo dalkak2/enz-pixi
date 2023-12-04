@@ -6,7 +6,7 @@ console.log(
     await app.request("/src/mod.ts")
 )
 
-const build = (filename: string) => {
+const build = async (filename: string) => {
     const res = await app.request(filename)
     assertEquals(
         res.status,
@@ -15,9 +15,9 @@ const build = (filename: string) => {
 }
 
 Deno.test("build", async () => {
-    build("/src/Entry.ts")
-    build("/src/EntrySprite.ts")
-    build("/src/mod.ts")
-    build("/src/Timer.ts")
-    build("/src/util.ts")
+    await build("/src/Entry.ts")
+    await build("/src/EntrySprite.ts")
+    await build("/src/mod.ts")
+    await build("/src/Timer.ts")
+    await build("/src/util.ts")
 })
