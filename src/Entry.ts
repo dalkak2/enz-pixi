@@ -355,7 +355,7 @@ export class Entry {
             case "rotation":
                 return target.angle
             case "direction":
-                throw target.direction
+                return target.direction
             case "picture_index":
                 return target.currentTextureIndex
             case "size":
