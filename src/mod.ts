@@ -72,7 +72,7 @@ export class EntrySprite extends Sprite {
         return sprite
     }
     clone(project: Entry) {
-        const sprite = new this.constructor()
+        const sprite = new (this.constructor as new () => this)()
         sprite.textureIds = this.textureIds
         sprite.currentTextureIndex = this.currentTextureIndex
         sprite.texture = this.texture
@@ -210,6 +210,12 @@ export class Entry {
             resolution: 4
         })
         parent.appendChild(this.renderer.canvas)
+        
+        const loop = () => {
+            this.render()
+            requestAnimationFrame(loop)
+        }
+        requestAnimationFrame(loop)
     }
     emit(eventName: string) {
         this.events[eventName].forEach(
@@ -228,7 +234,6 @@ export class Entry {
         })
     }
     wait_tick() {
-        this.render()
         return new Promise(o => {
             requestAnimationFrame(o)
         })
@@ -241,7 +246,6 @@ export class Entry {
     
     /* 흐름 */
     wait_second(sec: number) {
-        this.render()
         return new Promise(o => {
             setTimeout(o, sec * 1000)
         })
