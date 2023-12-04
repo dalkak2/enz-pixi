@@ -156,7 +156,7 @@ export class Entry {
         this.textures = Object.fromEntries(await Promise.all(
             this.project.objects.map(({sprite}) =>
                 sprite.pictures.map(
-                    async ({id, fileurl, filename, imageType}) => {
+                    async ({id, fileurl, filename, imageType, name}) => {
                         const url = `/image/${
                             filename
                             ? (filename + `.${imageType}`)
@@ -164,6 +164,7 @@ export class Entry {
                         }`
                         await Assets.load(url)
                         const texture = Texture.from(url)
+                        texture.label = name
                         return [
                             id,
                             texture,
@@ -407,6 +408,39 @@ export class Entry {
     calc_rand(a: number, b: number) {
         return Math.random() * (b - a) + a
     }
+    coordinate_object(
+        targetId: string,
+        type:
+            | "x"
+            | "y"
+            | "rotation"
+            | "direction"
+            | "picture_index"
+            | "size"
+            | "picture_name",
+        obj: EntrySprite,
+    ) {
+        const target =
+            targetId == "self"
+                ? obj
+                : this.objects[targetId]
+        switch (type) {
+            case "x":
+                return target.x - 240
+            case "y":
+                return -target.y + 135
+            case "rotation":
+                return target.rotation
+            case "direction":
+                throw "Unimplemented: direction"
+            case "picture_index":
+                return target.currentTextureIndex
+            case "size":
+                return target.size
+            case "picture_name":
+                return target.texture.label
+        }
+    }
     calc_operation(
         n: number,
         op:
@@ -444,7 +478,6 @@ export class Entry {
             case "factorial": throw "Unimplemented: factorial"
             default: return Math[op](n)
         }
-
     }
     get_project_timer_value() {
         return this.timer.time / 1000
