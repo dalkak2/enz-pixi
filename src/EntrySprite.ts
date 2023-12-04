@@ -47,7 +47,7 @@ export class EntrySprite extends Sprite {
         sprite.angle = entity.rotation
         sprite.direction = entity.direction
         sprite.scene = scene
-        project.scenes[scene].addChild(sprite)
+        project.scenes[sprite.scene].addChildAt(sprite, 0)
         return sprite
     }
     clone(project: Entry) {
@@ -65,7 +65,9 @@ export class EntrySprite extends Sprite {
 
         sprite.isClone = true
 
-        project.scenes[sprite.scene].addChild(sprite)
+        const myPos = project.scenes[sprite.scene].children.findIndex(x => x == this)
+        
+        project.scenes[sprite.scene].addChildAt(sprite, myPos)
         
         sprite.emit("clone")
 
