@@ -20,4 +20,5 @@ Deno.test("build", async () => {
     await build("/src/mod.ts")
     await build("/src/Timer.ts")
     await build("/src/util.ts")
+    await build("/deps/pixi.ts")
 })
