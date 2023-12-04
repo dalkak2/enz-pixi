@@ -44,8 +44,8 @@ export class EntrySprite extends Sprite {
             x: entity.scaleX,
             y: entity.scaleY,
         }
-        //sprite.angle = entity.rotation
-        //sprite.direction = entity.direction
+        sprite.angle = entity.rotation
+        sprite.direction = entity.direction
         sprite.scene = scene
         project.scenes[scene].addChild(sprite)
         return sprite
@@ -59,6 +59,8 @@ export class EntrySprite extends Sprite {
         sprite.x = this.x
         sprite.y = this.y
         sprite.scale = this.scale
+        sprite.angle = this.angle
+        sprite.direction = this.direction
         sprite.scene = this.scene
 
         sprite.isClone = true
