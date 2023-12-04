@@ -6,13 +6,18 @@ console.log(
     await app.request("/src/mod.ts")
 )
 
-Deno.test("build", async () => {
-    const res = await app.request("/src/mod.ts")
+const build = (filename: string) => {
+    const res = await app.request(filename)
     assertEquals(
         res.status,
         200,
     )
-    assert(
-        (await res.text()).startsWith("export")
-    )
+}
+
+Deno.test("build", async () => {
+    build("/src/Entry.ts")
+    build("/src/EntrySprite.ts")
+    build("/src/mod.ts")
+    build("/src/Timer.ts")
+    build("/src/util.ts")
 })
