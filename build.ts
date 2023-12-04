@@ -13,6 +13,6 @@ Deno.test("build", async () => {
         200,
     )
     assert(
-        (await res.text()).startsWith("import")
+        (await res.text()).startsWith("export")
     )
 })
