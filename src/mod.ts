@@ -251,41 +251,17 @@ export class Entry {
             setTimeout(o, sec * 1000)
         })
     }
-    async repeat_basic(n: number, f: () => Promise<void>) {
-        let i = 0
-        await this.repeat_inf(async ctx => {
-            if (++i > n) {
-                ctx.destroy()
-                return
-            }
-            await f()
-        })
-    }
-    async repeat_inf(f: (ctx: {
-        destroy: () => void
-    }) => Promise<void>) {
-        let breaker = false
-        while (true) {
-            await f({
-                destroy: () => {
-                    breaker = true
-                }
-            })
-            if (breaker) break
-            await this.wait_tick()
-        }
-    }
-    async _if(state: boolean, f: () => Promise<void>) {
-        if (state) await f()
-    }
-    async if_else(
-        state: boolean,
-        o: () => Promise<void>,
-        x: () => Promise<void>,
-    ) {
-        if (state) await o()
-        else await x()
-    }
+    /*
+        These blocks are transpiled from server.
+        Check ../api/js.ts
+        ```
+        repeat_basic
+        repeat_inf
+        repeat_while_true
+        _if
+        if_else
+        ```
+    */
     create_clone(targetId: string, obj: EntrySprite) {
         if (targetId == "self") {
             const clone = obj.clone(this)

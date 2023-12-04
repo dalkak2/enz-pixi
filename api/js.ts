@@ -4,7 +4,7 @@ import {
     Visitor,
     Object_,
     cg,
-    Project,
+    Block,
 } from "../deps/enz.ts"
 import JSON5 from "https://esm.sh/json5@2.2.3?pin=v135"
 
@@ -40,6 +40,57 @@ class PixiVisitor extends Visitor {
         return this.scriptToExpressions(script)
             .map(expr => expr.replaceAll(`"$obj$"`, "this") as cg.Expression)
     }
+    blockGroupToExpressions(blockGroup: Block[]) {
+        return blockGroup.map(
+            this.blockToExpression.bind(this)
+        ).join("\n")
+    }
+    normalBlockToExpression(block: Block) {
+        const params = this.paramsToExpressions(block.params)
+        const statements = block.statements.map(
+            this.blockGroupToExpressions.bind(this)
+        )
+
+        switch (block.type) {
+            case "repeat_basic":
+                const i = "i_" + Math.random().toString(36).substring(2,6)
+                return `for (
+                    let ${i} = 0;
+                    ${i} < ${params[0]};
+                    ${i}++
+                ) {
+                    ${statements[0]}
+                    await Entry.wait_tick()
+                }` as cg.Expression
+
+            case "repeat_inf":
+                return `while (true) {
+                    ${statements[0]}
+                    await Entry.wait_tick()
+                }` as cg.Expression
+
+            case "repeat_while_true":
+                return `while (${params[0]}) {
+                    ${statements[0]}
+                    await Entry.wait_tick()
+                }` as cg.Expression
+
+            case "_if":
+                return `if (${params[0]}) {
+                    ${statements[0]}
+                }` as cg.Expression
+
+            case "if_else":
+                return `if (${params[0]}) {
+                    ${statements[0]}
+                } else {
+                    ${statements[1]}
+                }` as cg.Expression
+
+            default:
+                return super.normalBlockToExpression(block)
+        }
+    }
 }
 
 export const jsUnformatted = async (id: string) =>
@@ -57,24 +108,12 @@ export const jsUnformatted = async (id: string) =>
                 "async () =>",
             )
             .replaceAll(
-                "Entry.wait_",
-                "await Entry.wait_",
-            )
-            .replaceAll(
-                "Entry.repeat_",
-                "await Entry.repeat_",
+                "Entry.wait_second",
+                "await Entry.wait_second",
             )
             .replaceAll(
                 /(Entry\.func_.{4}\()/g,
                 "await $1",
-            )
-            .replaceAll(
-                "Entry._if",
-                "await Entry._if",
-            )
-            .replaceAll(
-                "Entry.if_else",
-                "await Entry.if_else",
             )
         )
         .then(x => `import { init, EntrySprite } from "/src/mod.ts"` + "\nexport const Entry =\n" + x)
