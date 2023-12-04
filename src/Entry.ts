@@ -206,6 +206,18 @@ export class Entry {
         this.locate_x(x, obj)
         this.locate_y(y, obj)
     }
+    rotate_relative(angle: number, obj: EntrySprite) {
+        obj.angle += angle
+    }
+    direction_relative(angle: number, obj: EntrySprite) {
+        obj.direction += angle
+    }
+    rotate_absolute(angle: number, obj: EntrySprite) {
+        obj.angle = angle
+    }
+    direction_absolute(angle: number, obj: EntrySprite) {
+        obj.direction = angle
+    }
 
     /* 생김새 */
     show(obj: EntrySprite) {
@@ -301,7 +313,7 @@ export class Entry {
 
     /* 계산 */
     angle(n: number) {
-        return n
+        return Number(n)
     }
     calc_basic(
         a: number,
@@ -341,9 +353,9 @@ export class Entry {
             case "y":
                 return -target.y + 135
             case "rotation":
-                return target.rotation
+                return target.angle
             case "direction":
-                throw "Unimplemented: direction"
+                throw target.direction
             case "picture_index":
                 return target.currentTextureIndex
             case "size":

@@ -5,6 +5,7 @@ import type { Entry } from "./Entry.ts"
 export class EntrySprite extends Sprite {
     textureIds: string[] = []
     currentTextureIndex = 0
+    direction = 0
     scene = ""
     isClone = false
 
@@ -43,6 +44,8 @@ export class EntrySprite extends Sprite {
             x: entity.scaleX,
             y: entity.scaleY,
         }
+        //sprite.angle = entity.rotation
+        //sprite.direction = entity.direction
         sprite.scene = scene
         project.scenes[scene].addChild(sprite)
         return sprite
