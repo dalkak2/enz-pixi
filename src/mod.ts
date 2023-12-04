@@ -301,6 +301,12 @@ export class Entry {
     }
 
     /* 생김새 */
+    show(obj: EntrySprite) {
+        obj.visible = true
+    }
+    hide(obj: EntrySprite) {
+        obj.visible = false
+    }
     dialog(text: string, type: "speak" | "think", obj: EntrySprite) {
         console.log(`Object_${obj} ${type}s:`, text)
     }
