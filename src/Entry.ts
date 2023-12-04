@@ -364,6 +364,17 @@ export class Entry {
                 return target.texture.label
         }
     }
+    quotient_and_mod(
+        a: number,
+        b: number,
+        op:
+            | "QUOTIENT"
+            | "MOD"
+    ) {
+        if (op == "QUOTIENT") return Math.floor(a / b)
+        if (op == "MOD") return a % b
+        throw new Error("nope")
+    }
     calc_operation(
         n: number,
         op:
