@@ -295,7 +295,7 @@
     "https://deno.land/x/wasmbuild@0.14.1/cache.ts": "89eea5f3ce6035a1164b3e655c95f21300498920575ade23161421f5b01967f4",
     "https://deno.land/x/wasmbuild@0.14.1/loader.ts": "d98d195a715f823151cbc8baa3f32127337628379a02d9eb2a3c5902dbccfc02",
     "https://esm.sh/json5@2.2.3": "56ad046eba99c091fcb546d9ec3ab3463e9a889f5d52b818c91c5f2e793dbefd",
-    "https://esm.sh/json5@2.2.3?pin=v135": "06e4d072e1839b9aae3acc3558476bd6c909130e4609079ce61c52412d712808",
+    "https://esm.sh/json5@2.2.3?pin=v135": "56ad046eba99c091fcb546d9ec3ab3463e9a889f5d52b818c91c5f2e793dbefd",
     "https://esm.sh/v135/@pixi/colord@2.9.6/es2022/colord.mjs": "d5142c65ea14e14ea85b15f5dfbae9e8880916c015e60f772a101bbf775bd5b1",
     "https://esm.sh/v135/@pixi/colord@2.9.6/es2022/plugins/names.js": "14f41c9c34a9edf1e6283d25853390074e3cc9d44f1d78f0fdeec70c6c4014a1",
     "https://esm.sh/v135/@xmldom/xmldom@0.8.10/es2022/xmldom.mjs": "970cc09bdf0b58b2bb4cee7337a0e360554ae22a7e806bf8fd7c1da58383d186",
