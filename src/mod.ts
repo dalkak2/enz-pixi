@@ -267,9 +267,11 @@ export class Entry {
         ```
     */
     create_clone(targetId: string, obj: EntrySprite) {
-        if (targetId == "self") {
-            obj.clone(this)
-        }
+        const target =
+            targetId == "self"
+                ? obj
+                : this.objects[targetId]
+        target.clone(this)
     }
     when_clone_start(f: () => void, obj: EntrySprite) {
         obj.on("clone", f)
