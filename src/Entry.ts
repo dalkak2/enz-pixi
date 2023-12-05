@@ -86,7 +86,6 @@ export class Entry {
             )
             .flat()
         ))
-        console.log(this.textures)
         Object.entries(this.objects).forEach(([_id, obj]) => {
             obj.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
         })
@@ -114,7 +113,6 @@ export class Entry {
             this.pressedKeys[event.keyCode] = false
         })
 
-        console.log("Init")
         // @ts-ignore: Unknown error???
         this.renderer = await autoDetectRenderer({
             width: 480,
@@ -163,7 +161,6 @@ export class Entry {
         this.on("start", f)
     }
     when_scene_start(f: () => void, obj: EntrySprite) {
-        console.log(obj.scene)
         this.on(`start_scene_${obj.scene}`, f)
     }
     start_scene(sceneId: string) {
