@@ -39,7 +39,8 @@ export class Entry {
     constructor(project: Project) {
         this.project = project
         this.events = {
-            start: []
+            start: [],
+            scene_start: [],
         }
 
         this.scenes = Object.fromEntries(
@@ -157,6 +158,9 @@ export class Entry {
     when_run_button_click(f: () => void) {
         this.on("start", f)
     }
+    when_scene_start(f: () => void) {
+        this.on("scene_start", f)
+    }
     start_neighbor_scene(type: "prev" | "next") {
         const currentSceneIndex = Object.values(this.scenes).findIndex(scene => scene == this.currentScene)
         if (type == "prev") {
@@ -165,6 +169,7 @@ export class Entry {
         if (type == "next") {
             this.currentScene = Object.values(this.scenes)[currentSceneIndex + 1]
         }
+        this.emit("scene_start")
     }
     
     /* 흐름 */
