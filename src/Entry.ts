@@ -166,6 +166,10 @@ export class Entry {
         console.log(obj.scene)
         this.on(`start_scene_${obj.scene}`, f)
     }
+    start_scene(sceneId: string) {
+        this.currentScene = this.scenes[sceneId]
+        this.emit(`start_scene_${sceneId}`)
+    }
     start_neighbor_scene(type: "prev" | "next") {
         const currentSceneIndex = Object.values(this.scenes).findIndex(scene => scene == this.currentScene)
         if (type == "prev") {
