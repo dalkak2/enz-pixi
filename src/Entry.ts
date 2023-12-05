@@ -32,6 +32,7 @@ export class Entry {
     objects: Record<string, EntrySprite> = {}
 
     pressedKeys: Record<number, boolean | undefined> = {}
+    currentScene: Container
 
     timer = new Timer()
 
@@ -52,6 +53,7 @@ export class Entry {
                 }
             )
         )
+        this.currentScene = Object.values(this.scenes)[0]
     }
     async init(parent: HTMLElement) {
         this.variables = Object.fromEntries(
@@ -142,7 +144,7 @@ export class Entry {
     }
     render() {
         this.renderer!.render({
-            container: Object.values(this.scenes)[0]
+            container: this.currentScene
         })
     }
     wait_tick() {
@@ -154,6 +156,15 @@ export class Entry {
     /* 시작 */
     when_run_button_click(f: () => void) {
         this.on("start", f)
+    }
+    start_neighbor_scene(type: "prev" | "next") {
+        const currentSceneIndex = Object.values(this.scenes).findIndex(scene => scene == this.currentScene)
+        if (type == "prev") {
+            this.currentScene = Object.values(this.scenes)[currentSceneIndex - 1]
+        }
+        if (type == "next") {
+            this.currentScene = Object.values(this.scenes)[currentSceneIndex + 1]
+        }
     }
     
     /* 흐름 */
