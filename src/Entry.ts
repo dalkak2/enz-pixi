@@ -38,10 +38,7 @@ export class Entry {
 
     constructor(project: Project) {
         this.project = project
-        this.events = {
-            start: [],
-            scene_start: [],
-        }
+        this.events = {}
 
         this.scenes = Object.fromEntries(
             this.project.scenes.map(
@@ -138,6 +135,9 @@ export class Entry {
         )
     }
     on(eventName: string, f: () => void) {
+        if (!this.events[eventName]) {
+            this.events[eventName] = []
+        }
         this.events[eventName].push(f)
     }
     start() {
