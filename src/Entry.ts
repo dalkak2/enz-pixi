@@ -190,6 +190,10 @@ export class Entry {
     }
 
     /* 움직임 */
+    move_direction(n: number, obj: EntrySprite) {
+        obj.x += n * Math.sin(toRadian(obj.direction))
+        obj.y -= n * Math.cos(toRadian(obj.direction))
+    }
     move_x(n: number, obj: EntrySprite) {
         obj.x += n
     }
