@@ -6,11 +6,12 @@ export class EntrySprite extends Sprite {
     textureIds: string[] = []
     currentTextureIndex = 0
     direction = 0
-    scene = ""
+    scene
     isClone = false
 
-    constructor() {
+    constructor(data: { scene: string }) {
         super()
+        this.scene = data.scene
     }
     get size() {
         return (this.width + this.height) / 2
@@ -32,7 +33,7 @@ export class EntrySprite extends Sprite {
         }: Object_,
         project: Entry,
     ) {
-        const sprite = new this()
+        const sprite = new this({ scene })
         sprite.textureIds = pictures.map(
             ({id}) => id
         )
@@ -47,12 +48,13 @@ export class EntrySprite extends Sprite {
         sprite.angle = entity.rotation
         sprite.direction = entity.direction
         sprite.visible = entity.visible
-        sprite.scene = scene
         project.scenes[sprite.scene].addChildAt(sprite, 0)
         return sprite
     }
     clone(project: Entry) {
-        const sprite = new (this.constructor as new () => this)()
+        const sprite = new (this.constructor as new (data: { scene: string }) => this)({
+            scene: this.scene
+        })
         sprite.textureIds = this.textureIds
         sprite.currentTextureIndex = this.currentTextureIndex
         sprite.texture = this.texture
@@ -63,7 +65,6 @@ export class EntrySprite extends Sprite {
         sprite.angle = this.angle
         sprite.direction = this.direction
         sprite.visible = this.visible
-        sprite.scene = this.scene
 
         sprite.isClone = true
 

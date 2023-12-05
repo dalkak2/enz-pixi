@@ -44,6 +44,7 @@ export class Entry {
             this.project.scenes.map(
                 ({id}) => {
                     const container = new Container()
+                    container.label = id
                     return [
                         id,
                         container,
@@ -130,6 +131,9 @@ export class Entry {
         requestAnimationFrame(loop)
     }
     emit(eventName: string) {
+        if (!this.events[eventName]) {
+            this.events[eventName] = []
+        }
         this.events[eventName].forEach(
             f => f()
         )
@@ -158,8 +162,9 @@ export class Entry {
     when_run_button_click(f: () => void) {
         this.on("start", f)
     }
-    when_scene_start(f: () => void) {
-        this.on("scene_start", f)
+    when_scene_start(f: () => void, obj: EntrySprite) {
+        console.log(obj.scene)
+        this.on(`start_scene_${obj.scene}`, f)
     }
     start_neighbor_scene(type: "prev" | "next") {
         const currentSceneIndex = Object.values(this.scenes).findIndex(scene => scene == this.currentScene)
@@ -169,7 +174,7 @@ export class Entry {
         if (type == "next") {
             this.currentScene = Object.values(this.scenes)[currentSceneIndex + 1]
         }
-        this.emit("scene_start")
+        this.emit(`start_scene_${this.currentScene.label}`)
     }
     
     /* 흐름 */
