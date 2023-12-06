@@ -247,6 +247,12 @@ export class Entry {
         this.locate_x(x, obj)
         this.locate_y(y, obj)
     }
+    locate(objId: string, obj: EntrySprite) {
+        if (objId == "mouse")
+            throw new Error("Unimplemented: locate to mouse")
+        obj.x = this.objects[objId].x
+        obj.y = this.objects[objId].y
+    }
     rotate_relative(angle: number, obj: EntrySprite) {
         obj.angle += angle
     }
