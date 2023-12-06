@@ -273,6 +273,10 @@ export class Entry {
         const dy = target.y - obj.y
         obj.angle = toDegrees(dy / dx) - obj.direction + (dx > 0 ? 90 : 270)
     }
+    move_to_angle(angle: number, n: number, obj: EntrySprite) {
+        obj.x += n * Math.sin(toRadian(angle))
+        obj.y -= n * Math.cos(toRadian(angle))
+    }
 
     /* 생김새 */
     show(obj: EntrySprite) {
