@@ -171,6 +171,13 @@ export class Entry {
     when_run_button_click(f: () => Promise<void>) {
         this.on("start", f)
     }
+    when_some_key_pressed(keyCode: string, f: () => Promise<void>) {
+        document.body.addEventListener("keydown", e => {
+            if (e.keyCode == Number(keyCode)) {
+                f()
+            }
+        })
+    }
     when_message_cast(messageId: string, f: () => Promise<void>) {
         this.on(`message_${messageId}`, f)
     }
