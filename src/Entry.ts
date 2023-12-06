@@ -204,6 +204,7 @@ export class Entry {
         repeat_basic
         repeat_inf
         repeat_while_true
+        stop_repeat
         _if
         if_else
         ```

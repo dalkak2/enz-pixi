@@ -80,6 +80,9 @@ class PixiVisitor extends Visitor {
                     await Entry.wait_tick()
                 }` as cg.Expression
 
+            case "stop_repeat":
+                return "break"
+
             case "_if":
                 return `if (${params[0]}) {
                     ${statements[0]}
