@@ -160,6 +160,12 @@ export class Entry {
     when_run_button_click(f: () => void) {
         this.on("start", f)
     }
+    when_message_cast(messageId: string, f: () => void) {
+        this.on(`message_${messageId}`, f)
+    }
+    message_cast(messageId: string) {
+        this.emit(`message_${messageId}`)
+    }
     when_scene_start(f: () => void, obj: EntrySprite) {
         this.on(`start_scene_${obj.scene}`, f)
     }
