@@ -81,7 +81,7 @@ class PixiVisitor extends Visitor {
                 }` as cg.Expression
 
             case "stop_repeat":
-                return "break"
+                return "break" as cg.Expression
 
             case "_if":
                 return `if (${params[0]}) {
