@@ -269,11 +269,11 @@ export class Entry {
         if (objId == "mouse")
             throw new Error("Unimplemented: locate to mouse")
         const target = this.objects[objId]
-        obj.rotation = Math.asin(
+        obj.angle = toDegrees(Math.asin(
             (target.y - obj.y)
             /
             (target.x - obj.x)
-        )
+        )) + 90 - obj.direction
     }
 
     /* 생김새 */
