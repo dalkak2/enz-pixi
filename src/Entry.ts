@@ -265,6 +265,16 @@ export class Entry {
     direction_absolute(angle: number, obj: EntrySprite) {
         obj.direction = angle
     }
+    see_angle_object(objId: string, obj: EntrySprite) {
+        if (objId == "mouse")
+            throw new Error("Unimplemented: locate to mouse")
+        const target = this.objects[objId]
+        obj.rotation = Math.asin(
+            (target.y - obj.y)
+            /
+            (target.x - obj.x)
+        )
+    }
 
     /* 생김새 */
     show(obj: EntrySprite) {
