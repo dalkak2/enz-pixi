@@ -25,7 +25,7 @@ const toDegrees =
 export class Entry {
     project
     renderer?: Renderer
-    events: Record<string, (() => void)[]>
+    events: Record<string, (() => Promise<void>)[]>
     scenes: Record<string, Container> = {}
     variables: Record<string, string | number | (string | number)[]> = {}
     textures: Record<string, Texture> = {}
@@ -128,18 +128,22 @@ export class Entry {
         }
         requestAnimationFrame(loop)
     }
-    emit(eventName: string) {
+    async emit(eventName: string) {
         if (!this.events[eventName]) {
             this.events[eventName] = []
         }
-        this.events[eventName].forEach(
-            f => f()
+        console.log("emit", eventName)
+        console.log(this.events[eventName])
+        await Promise.all(
+            this.events[eventName]
+                .map(f => f())
         )
     }
-    on(eventName: string, f: () => void) {
+    on(eventName: string, f: () => Promise<void>) {
         if (!this.events[eventName]) {
             this.events[eventName] = []
         }
+        console.log("on", eventName)
         this.events[eventName].push(f)
     }
     start() {
@@ -157,16 +161,19 @@ export class Entry {
     }
 
     /* 시작 */
-    when_run_button_click(f: () => void) {
+    when_run_button_click(f: () => Promise<void>) {
         this.on("start", f)
     }
-    when_message_cast(messageId: string, f: () => void) {
+    when_message_cast(messageId: string, f: () => Promise<void>) {
         this.on(`message_${messageId}`, f)
     }
     message_cast(messageId: string) {
         this.emit(`message_${messageId}`)
     }
-    when_scene_start(f: () => void, obj: EntrySprite) {
+    async message_cast_wait(messageId: string) {
+        await this.emit(`message_${messageId}`)
+    }
+    when_scene_start(f: () => Promise<void>, obj: EntrySprite) {
         this.on(`start_scene_${obj.scene}`, f)
     }
     start_scene(sceneId: string) {
@@ -208,7 +215,7 @@ export class Entry {
                 : this.objects[targetId]
         target.clone(this)
     }
-    when_clone_start(f: () => void, obj: EntrySprite) {
+    when_clone_start(f: () => Promise<void>, obj: EntrySprite) {
         obj.on("clone", f)
     }
     delete_clone(obj: EntrySprite) {

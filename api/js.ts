@@ -123,6 +123,10 @@ export const jsUnformatted = async (id: string) =>
                 "await Entry.wait_second",
             )
             .replaceAll(
+                "Entry.message_cast_wait",
+                "await Entry.message_cast_wait",
+            )
+            .replaceAll(
                 /(Entry\.func_.{4}\()/g,
                 "await $1",
             )
