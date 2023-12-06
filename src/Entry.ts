@@ -22,6 +22,13 @@ const toDegrees =
     (rad: number) =>
         rad * 180 / Math.PI
 
+const numberNormalize =
+    // TODO: convert in server
+    (numOrStr: number | string): number | string =>
+        Number.isNaN(Number(numOrStr))
+            ? numOrStr as string
+            : Number(numOrStr) as number
+
 export class Entry {
     project
     renderer?: Renderer
@@ -279,6 +286,9 @@ export class Entry {
     }
 
     /* 생김새 */
+    get_pictures(id: string) {
+        return id
+    }
     show(obj: EntrySprite) {
         obj.visible = true
     }
@@ -287,6 +297,21 @@ export class Entry {
     }
     dialog(text: string, type: "speak" | "think", obj: EntrySprite) {
         console.log(`Object_${obj} ${type}s:`, text)
+    }
+    change_to_some_shape(shapeIdOrIndex: string | number, obj: EntrySprite) {
+        // TODO: convert to number in server
+        shapeIdOrIndex = numberNormalize(shapeIdOrIndex)
+        if (typeof shapeIdOrIndex == "string") {
+            const shapeId = shapeIdOrIndex
+            // TODO: abstraction
+            obj.currentTextureIndex = obj.textureIds.indexOf(shapeId)
+            obj.texture = this.textures[shapeId]
+        } else {
+            // TODO: handle edge case: ex) 0.5
+            const index = shapeIdOrIndex - 1
+            obj.currentTextureIndex = index
+            obj.texture = this.textures[obj.textureIds[index]]
+        }
     }
     change_to_next_shape(type: "next" | "prev", obj: EntrySprite) {
         if (type == "next") {
