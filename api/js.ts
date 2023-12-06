@@ -95,6 +95,11 @@ class PixiVisitor extends Visitor {
                     ${statements[1]}
                 }` as cg.Expression
 
+            case "wait_until_true":
+                return `while (!${params[0]}) {
+                    await Entry.wait_tick()
+                }` as cg.Expression
+
             case "True":
                 return "true" as cg.Expression
 

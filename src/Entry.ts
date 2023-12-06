@@ -207,6 +207,7 @@ export class Entry {
         stop_repeat
         _if
         if_else
+        wait_until_true
         ```
     */
     create_clone(targetId: string, obj: EntrySprite) {
