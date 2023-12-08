@@ -105,6 +105,9 @@ app.get("/api/js/:id", async c => {
     return c.body(await api.js(c.req.param("id")))
 })
 
+app.get("/", async c => c.html(
+    await Deno.readTextFile("view/index.html")
+))
 app.get("/p/:id", c => c.html(`
     <!doctype html>
     <html>
