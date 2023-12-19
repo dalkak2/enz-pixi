@@ -541,6 +541,9 @@ export class Entry {
                 return new Date().getSeconds()
         }
     }
+    length_of_string(str: string) {
+        return str.length
+    }
 
     /* 자료 */
     get_variable(id: string) {
