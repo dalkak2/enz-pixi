@@ -562,6 +562,9 @@ export class Entry {
     index_of_string(where: string, what: string) {
         return where.indexOf(what) + 1
     }
+    replace_string(where: string, from: string, to: string) {
+        return where.replaceAll(from, to)
+    }
 
     /* 자료 */
     get_variable(id: string) {
