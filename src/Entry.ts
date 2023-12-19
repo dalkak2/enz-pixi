@@ -94,7 +94,7 @@ export class Entry {
             .flat()
         ))
         Object.entries(this.objects).forEach(([_id, obj]) => {
-            obj.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
+            obj.pixiSprite.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
         })
         /*
         this.objects = Object.fromEntries(
@@ -243,19 +243,19 @@ export class Entry {
     /* 움직임 */
     move_direction(n: number, obj: EntrySprite) {
         obj.x += n * Math.sin(toRadian(obj.direction))
-        obj.y -= n * Math.cos(toRadian(obj.direction))
+        obj.y += n * Math.cos(toRadian(obj.direction))
     }
     move_x(n: number, obj: EntrySprite) {
         obj.x += n
     }
     move_y(n: number, obj: EntrySprite) {
-        obj.y -= n
+        obj.y += n
     }
     locate_x(x: number, obj: EntrySprite) {
-        obj.x = x + 240
+        obj.x = x
     }
     locate_y(y: number, obj: EntrySprite) {
-        obj.y = -y + 135
+        obj.y = y
     }
     locate_xy(x: number, y: number, obj: EntrySprite) {
         this.locate_x(x, obj)
@@ -268,13 +268,13 @@ export class Entry {
         obj.y = this.objects[objId].y
     }
     rotate_relative(angle: number, obj: EntrySprite) {
-        obj.angle += angle
+        obj.rotation += angle
     }
     direction_relative(angle: number, obj: EntrySprite) {
         obj.direction += angle
     }
     rotate_absolute(angle: number, obj: EntrySprite) {
-        obj.angle = angle
+        obj.rotation = angle
     }
     direction_absolute(angle: number, obj: EntrySprite) {
         obj.direction = angle
@@ -285,11 +285,11 @@ export class Entry {
         const target = this.objects[objId]
         const dx = target.x - obj.x
         const dy = target.y - obj.y
-        obj.angle = toDegrees(dy / dx) - obj.direction + (dx > 0 ? 90 : 270)
+        obj.rotation = - toDegrees(dy / dx) - obj.direction + (dx > 0 ? 90 : 270)
     }
     move_to_angle(angle: number, n: number, obj: EntrySprite) {
         obj.x += n * Math.sin(toRadian(angle))
-        obj.y -= n * Math.cos(toRadian(angle))
+        obj.y += n * Math.cos(toRadian(angle))
     }
 
     /* 생김새 */
@@ -312,12 +312,12 @@ export class Entry {
             const shapeId = shapeIdOrIndex
             // TODO: abstraction
             obj.currentTextureIndex = obj.textureIds.indexOf(shapeId)
-            obj.texture = this.textures[shapeId]
+            obj.pixiSprite.texture = this.textures[shapeId]
         } else {
             // TODO: handle edge case: ex) 0.5
             const index = shapeIdOrIndex - 1
             obj.currentTextureIndex = index
-            obj.texture = this.textures[obj.textureIds[index]]
+            obj.pixiSprite.texture = this.textures[obj.textureIds[index]]
         }
     }
     change_to_next_shape(type: "next" | "prev", obj: EntrySprite) {
@@ -332,7 +332,7 @@ export class Entry {
                 obj.currentTextureIndex,
                 obj.textureIds.length,
             )
-        obj.texture = this.textures[
+        obj.pixiSprite.texture = this.textures[
             obj.textureIds[
                 obj.currentTextureIndex
             ]
@@ -347,7 +347,7 @@ export class Entry {
         obj: EntrySprite,
     ) {
         if (type == "transparency")
-            obj.alpha -= amount / 100
+            obj.transparency += amount
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
     change_effect_amount(
@@ -359,7 +359,7 @@ export class Entry {
         obj: EntrySprite,
     ) {
         if (type == "transparency")
-            obj.alpha = 1 - amount / 100
+            obj.transparency = amount
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
     change_scale_size(d: number, obj: EntrySprite) {
@@ -440,11 +440,11 @@ export class Entry {
                 : this.objects[targetId]
         switch (type) {
             case "x":
-                return target.x - 240
+                return target.x
             case "y":
-                return -target.y + 135
+                return target.y
             case "rotation":
-                return target.angle
+                return target.rotation
             case "direction":
                 return target.direction
             case "picture_index":
@@ -452,7 +452,7 @@ export class Entry {
             case "size":
                 return target.size
             case "picture_name":
-                return target.texture.label
+                return target.pixiSprite.texture.label
         }
     }
     quotient_and_mod(

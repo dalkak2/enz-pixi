@@ -1,26 +1,56 @@
 import type { Object_ } from "../deps/enz.ts"
-import { Sprite } from "../deps/pixi.ts"
+import { Sprite, EventEmitter } from "../deps/pixi.ts"
 import type { Entry } from "./Entry.ts"
 
-export class EntrySprite extends Sprite {
+export class EntrySprite extends EventEmitter {
     textureIds: string[] = []
     currentTextureIndex = 0
     direction = 0
     scene
     isClone = false
 
+    pixiSprite: Sprite
+
     constructor(data: { scene: string }) {
         super()
+        this.pixiSprite = new Sprite()
         this.scene = data.scene
     }
     get size() {
-        return (this.width + this.height) / 2
+        return (this.pixiSprite.width + this.pixiSprite.height) / 2
     }
     set size(newSize: number) {
         const scale = Math.max(1, newSize) / this.size
-        this.scale.x *= scale
-        this.scale.y *= scale
+        this.pixiSprite.scale.x *= scale
+        this.pixiSprite.scale.y *= scale
     }
+    get x() {
+        return this.pixiSprite.x - 240
+    }
+    set x(x: number) {
+        this.pixiSprite.x = x + 240
+    }
+    get y() {
+        return -this.pixiSprite.y + 135
+    }
+    set y(y: number) {
+        this.pixiSprite.y = -y + 135
+    }
+    get rotation() { return this.pixiSprite.angle }
+    set rotation(a: number) { this.pixiSprite.angle = a }
+    get visible() { return this.pixiSprite.visible }
+    set visible(b: boolean) { this.pixiSprite.visible = b }
+    get transparency() {
+        return (1 - this.pixiSprite.alpha) * 100
+    }
+    set transparency(n: number) {
+        this.pixiSprite.alpha = 1 - (n / 100)
+    }
+
+    destroy() {
+        this.pixiSprite.destroy()
+    }
+
     static fromEntryData(
         {
             selectedPictureId,
@@ -34,43 +64,47 @@ export class EntrySprite extends Sprite {
         project: Entry,
     ) {
         const sprite = new this({ scene })
+        const pixiSprite = sprite.pixiSprite
+
         sprite.textureIds = pictures.map(
             ({id}) => id
         )
         sprite.currentTextureIndex = sprite.textureIds.indexOf(selectedPictureId)
-        sprite.anchor.set(0.5)
-        sprite.x = entity.x + 240
-        sprite.y = -entity.y + 135
-        sprite.scale = {
+        pixiSprite.anchor.set(0.5)
+        sprite.x = entity.x
+        sprite.y = entity.y
+        pixiSprite.scale = {
             x: entity.scaleX,
             y: entity.scaleY,
         }
-        sprite.angle = entity.rotation
+        sprite.rotation = entity.rotation
         sprite.direction = entity.direction
         sprite.visible = entity.visible
-        project.scenes[sprite.scene].addChildAt(sprite, 0)
+        project.scenes[sprite.scene].addChildAt(pixiSprite, 0)
         return sprite
     }
     clone(project: Entry) {
         const sprite = new (this.constructor as new (data: { scene: string }) => this)({
             scene: this.scene
-        })
+        })        
+        const pixiSprite = sprite.pixiSprite
+
         sprite.textureIds = this.textureIds
         sprite.currentTextureIndex = this.currentTextureIndex
-        sprite.texture = this.texture
-        sprite.anchor.set(0.5)
+        pixiSprite.texture = this.pixiSprite.texture
+        pixiSprite.anchor.set(0.5)
         sprite.x = this.x
         sprite.y = this.y
-        sprite.scale = this.scale
-        sprite.angle = this.angle
+        sprite.size = this.size
+        sprite.rotation = this.rotation
         sprite.direction = this.direction
         sprite.visible = this.visible
 
         sprite.isClone = true
 
-        const myPos = project.scenes[sprite.scene].children.findIndex(x => x == this)
+        const myPos = project.scenes[sprite.scene].children.findIndex(x => x == this.pixiSprite)
         
-        project.scenes[sprite.scene].addChildAt(sprite, myPos)
+        project.scenes[sprite.scene].addChildAt(sprite.pixiSprite, myPos)
         
         sprite.emit("clone")
 
