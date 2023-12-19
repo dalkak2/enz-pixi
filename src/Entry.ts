@@ -547,6 +547,9 @@ export class Entry {
     count_match_string(where: string, what: string) {
         return where.match(new RegExp(`(?=${what})`, "g"))?.length || 0
     }
+    combine_something(a: string | number, b: string | number) {
+        return `${a}${b}`
+    }
 
     /* 자료 */
     get_variable(id: string) {
