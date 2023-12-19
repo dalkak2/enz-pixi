@@ -544,6 +544,9 @@ export class Entry {
     length_of_string(str: string) {
         return str.length
     }
+    count_match_string(where: string, what: string) {
+        return where.match(new RegExp(`(?=${what})`, "g"))?.length || 0
+    }
 
     /* 자료 */
     get_variable(id: string) {
