@@ -514,6 +514,33 @@ export class Entry {
         if (action == "STOP")   this.timer.stop()
         if (action == "RESET")  this.timer.reset()
     }
+    get_date(
+        type:
+            | "YEAR"
+            | "MONTH"
+            | "DAY"
+            | "DAY_OF_WEEK"
+            | "HOUR"
+            | "MINUTE"
+            | "SECOND"
+    ) {
+        switch (type) {
+            case "YEAR":
+                return new Date().getFullYear()
+            case "MONTH":
+                return new Date().getMonth() + 1
+            case "DAY":
+                return new Date().getDate()
+            case "HOUR":
+                return new Date().getHours()
+            case "MINUTE":
+                return new Date().getMinutes()
+            case "DAY_OF_WEEK":
+                return "일월화수목금토"[new Date().getDay()]
+            case "SECOND":
+                return new Date().getSeconds()
+        }
+    }
 
     /* 자료 */
     get_variable(id: string) {
