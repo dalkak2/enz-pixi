@@ -559,6 +559,9 @@ export class Entry {
             Math.max(from, to),
         )
     }
+    index_of_string(where: string, what: string) {
+        return where.indexOf(what) + 1
+    }
 
     /* 자료 */
     get_variable(id: string) {
