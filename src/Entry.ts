@@ -553,6 +553,12 @@ export class Entry {
     char_at(str: string, i: number) {
         return str[i - 1]
     }
+    substring(where: string, from: number, to: number) {
+        return where.substring(
+            Math.min(from, to) - 1,
+            Math.max(from, to),
+        )
+    }
 
     /* 자료 */
     get_variable(id: string) {
