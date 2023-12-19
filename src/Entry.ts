@@ -550,6 +550,9 @@ export class Entry {
     combine_something(a: string | number, b: string | number) {
         return `${a}${b}`
     }
+    char_at(str: string, i: number) {
+        return str[i - 1]
+    }
 
     /* 자료 */
     get_variable(id: string) {
