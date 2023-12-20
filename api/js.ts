@@ -5,12 +5,24 @@ import {
     Object_,
     cg,
     Block,
+    Project,
 } from "../deps/enz.ts"
 import JSON5 from "https://esm.sh/json5@2.2.3?pin=v135"
 
 import { format } from "./util/format.ts"
 
 class PixiVisitor extends Visitor {
+    getInitData(project: Project) {
+        return {
+            ...project,
+            objects: project.objects.map(
+                ({sprite}) => ({sprite})
+            ),
+            functions: project.functions.map(
+                ({content: _, ...rest}) => rest
+            ),
+        } as any
+    }
     visitObject(object: Object_): string {
         const script = super.visitObject(object)
         const {
