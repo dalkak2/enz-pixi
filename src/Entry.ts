@@ -568,6 +568,12 @@ export class Entry {
     reverse_of_string(str: string) {
         return str.split("").reverse().join("")
     }
+    change_string_case(
+        str: string,
+        type: "toUpperCase" | "toLowerCase",
+    ) {
+        return str[type]()
+    }
 
     /* 자료 */
     get_variable(id: string) {
