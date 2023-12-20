@@ -565,6 +565,9 @@ export class Entry {
     replace_string(where: string, from: string, to: string) {
         return where.replaceAll(from, to)
     }
+    reverse_of_string(str: string) {
+        return str.split("").reverse().join("")
+    }
 
     /* 자료 */
     get_variable(id: string) {
