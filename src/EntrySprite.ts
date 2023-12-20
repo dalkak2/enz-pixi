@@ -1,5 +1,10 @@
 import type { Object_ } from "../deps/enz.ts"
-import { Sprite, EventEmitter } from "../deps/pixi.ts"
+import {
+    Sprite,
+    EventEmitter,
+    Text,
+    Container,
+} from "../deps/pixi.ts"
 import type { Entry } from "./Entry.ts"
 
 export class EntrySprite extends EventEmitter {
@@ -9,11 +14,22 @@ export class EntrySprite extends EventEmitter {
     scene
     isClone = false
 
-    pixiSprite: Sprite
+    pixiSprite: Container
+    objectType: string
 
-    constructor(data: { scene: string }) {
+    constructor(data: {
+        scene: string,
+        objectType: string,
+    }) {
         super()
-        this.pixiSprite = new Sprite()
+        if (data.objectType == "sprite") {
+            this.pixiSprite = new Sprite()
+        } else if (data.objectType == "textBox") {
+            this.pixiSprite = new Text({ text: "Hello", renderMode: "html" })
+        } else {
+            throw new Error(`Unknown objectType: ${data.objectType}`)
+        }
+        this.objectType = data.objectType
         this.scene = data.scene
     }
     get size() {
@@ -60,17 +76,18 @@ export class EntrySprite extends EventEmitter {
                 pictures,
                 sounds,
             },
+            objectType,
         }: Object_,
         project: Entry,
     ) {
-        const sprite = new this({ scene })
+        const sprite = new this({ scene, objectType })
         const pixiSprite = sprite.pixiSprite
 
         sprite.textureIds = pictures.map(
             ({id}) => id
         )
         sprite.currentTextureIndex = sprite.textureIds.indexOf(selectedPictureId)
-        pixiSprite.anchor.set(0.5)
+        pixiSprite?.anchor?.set(0.5)
         sprite.x = entity.x
         sprite.y = entity.y
         pixiSprite.scale = {
@@ -84,15 +101,16 @@ export class EntrySprite extends EventEmitter {
         return sprite
     }
     clone(project: Entry) {
-        const sprite = new (this.constructor as new (data: { scene: string }) => this)({
-            scene: this.scene
+        const sprite = new (this.constructor as new (data: { scene: string, objectType: string }) => this)({
+            scene: this.scene,
+            objectType: this.objectType,
         })        
         const pixiSprite = sprite.pixiSprite
 
         sprite.textureIds = this.textureIds
         sprite.currentTextureIndex = this.currentTextureIndex
         pixiSprite.texture = this.pixiSprite.texture
-        pixiSprite.anchor.set(0.5)
+        pixiSprite?.anchor?.set(0.5)
         sprite.x = this.x
         sprite.y = this.y
         sprite.size = this.size

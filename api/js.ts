@@ -30,6 +30,7 @@ class PixiVisitor extends Visitor {
             scene,
             entity,
             sprite,
+            objectType,
         } = object
         return ``
             + `class Obj_${object.id} extends EntrySprite { `
@@ -45,6 +46,7 @@ class PixiVisitor extends Visitor {
                     scene,
                     entity,
                     sprite,
+                    objectType,
                 })
             }, Entry)`
     }
