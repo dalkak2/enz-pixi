@@ -1,3 +1,3 @@
-export { Entry } from "./Entry.ts"
-export { EntrySprite } from "./EntrySprite.ts"
-export { init } from "./util.ts"
+export * from "./Entry.ts"
+export * from "./EntrySprite.ts"
+export * from "./util.ts"

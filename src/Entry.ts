@@ -7,7 +7,11 @@ import {
     Texture,
 } from "../deps/pixi.ts"
 
-import type { EntrySprite } from "./EntrySprite.ts"
+import {
+    EntryContainer,
+    EntrySprite,
+    EntryText,
+} from "./EntrySprite.ts"
 import { Timer } from "./Timer.ts"
 
 const mod =
@@ -36,7 +40,7 @@ export class Entry {
     scenes: Record<string, Container> = {}
     variables: Record<string, string | number | (string | number)[]> = {}
     textures: Record<string, Texture> = {}
-    objects: Record<string, EntrySprite> = {}
+    objects: Record<string, EntryContainer> = {}
 
     pressedKeys: Record<number, boolean | undefined> = {}
     currentScene: Container
@@ -94,7 +98,7 @@ export class Entry {
             .flat()
         ))
         Object.entries(this.objects).forEach(([_id, obj]) => {
-            obj.pixiSprite.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
+            (obj as EntrySprite).pixiSprite.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
         })
         /*
         this.objects = Object.fromEntries(
@@ -187,7 +191,7 @@ export class Entry {
     async message_cast_wait(messageId: string) {
         await this.emit(`message_${messageId}`)
     }
-    when_scene_start(f: () => Promise<void>, obj: EntrySprite) {
+    when_scene_start(f: () => Promise<void>, obj: EntryContainer) {
         this.on(`start_scene_${obj.scene}`, f)
     }
     start_scene(sceneId: string) {
@@ -224,62 +228,62 @@ export class Entry {
         wait_until_true
         ```
     */
-    create_clone(targetId: string, obj: EntrySprite) {
+    create_clone(targetId: string, obj: EntryContainer) {
         const target =
             targetId == "self"
                 ? obj
                 : this.objects[targetId]
         target.clone(this)
     }
-    when_clone_start(f: () => Promise<void>, obj: EntrySprite) {
+    when_clone_start(f: () => Promise<void>, obj: EntryContainer) {
         obj.on("clone", f)
     }
-    delete_clone(obj: EntrySprite) {
+    delete_clone(obj: EntryContainer) {
         if (obj.isClone) {
             obj.destroy()
         }
     }
 
     /* 움직임 */
-    move_direction(n: number, obj: EntrySprite) {
+    move_direction(n: number, obj: EntryContainer) {
         obj.x += n * Math.sin(toRadian(obj.direction))
         obj.y += n * Math.cos(toRadian(obj.direction))
     }
-    move_x(n: number, obj: EntrySprite) {
+    move_x(n: number, obj: EntryContainer) {
         obj.x += n
     }
-    move_y(n: number, obj: EntrySprite) {
+    move_y(n: number, obj: EntryContainer) {
         obj.y += n
     }
-    locate_x(x: number, obj: EntrySprite) {
+    locate_x(x: number, obj: EntryContainer) {
         obj.x = x
     }
-    locate_y(y: number, obj: EntrySprite) {
+    locate_y(y: number, obj: EntryContainer) {
         obj.y = y
     }
-    locate_xy(x: number, y: number, obj: EntrySprite) {
+    locate_xy(x: number, y: number, obj: EntryContainer) {
         this.locate_x(x, obj)
         this.locate_y(y, obj)
     }
-    locate(objId: string, obj: EntrySprite) {
+    locate(objId: string, obj: EntryContainer) {
         if (objId == "mouse")
             throw new Error("Unimplemented: locate to mouse")
         obj.x = this.objects[objId].x
         obj.y = this.objects[objId].y
     }
-    rotate_relative(angle: number, obj: EntrySprite) {
+    rotate_relative(angle: number, obj: EntryContainer) {
         obj.rotation += angle
     }
-    direction_relative(angle: number, obj: EntrySprite) {
+    direction_relative(angle: number, obj: EntryContainer) {
         obj.direction += angle
     }
-    rotate_absolute(angle: number, obj: EntrySprite) {
+    rotate_absolute(angle: number, obj: EntryContainer) {
         obj.rotation = angle
     }
-    direction_absolute(angle: number, obj: EntrySprite) {
+    direction_absolute(angle: number, obj: EntryContainer) {
         obj.direction = angle
     }
-    see_angle_object(objId: string, obj: EntrySprite) {
+    see_angle_object(objId: string, obj: EntryContainer) {
         if (objId == "mouse")
             throw new Error("Unimplemented: locate to mouse")
         const target = this.objects[objId]
@@ -287,7 +291,7 @@ export class Entry {
         const dy = target.y - obj.y
         obj.rotation = - toDegrees(dy / dx) - obj.direction + (dx > 0 ? 90 : 270)
     }
-    move_to_angle(angle: number, n: number, obj: EntrySprite) {
+    move_to_angle(angle: number, n: number, obj: EntryContainer) {
         obj.x += n * Math.sin(toRadian(angle))
         obj.y += n * Math.cos(toRadian(angle))
     }
@@ -296,13 +300,13 @@ export class Entry {
     get_pictures(id: string) {
         return id
     }
-    show(obj: EntrySprite) {
+    show(obj: EntryContainer) {
         obj.visible = true
     }
-    hide(obj: EntrySprite) {
+    hide(obj: EntryContainer) {
         obj.visible = false
     }
-    dialog(text: string, type: "speak" | "think", obj: EntrySprite) {
+    dialog(text: string, type: "speak" | "think", obj: EntryContainer) {
         console.log(`Object_${obj} ${type}s:`, text)
     }
     change_to_some_shape(shapeIdOrIndex: string | number, obj: EntrySprite) {
@@ -344,7 +348,7 @@ export class Entry {
             | "color"
             | "brightness",
         amount: number,
-        obj: EntrySprite,
+        obj: EntryContainer,
     ) {
         if (type == "transparency")
             obj.transparency += amount
@@ -356,16 +360,16 @@ export class Entry {
             | "color"
             | "brightness",
         amount: number,
-        obj: EntrySprite,
+        obj: EntryContainer,
     ) {
         if (type == "transparency")
             obj.transparency = amount
         else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
     }
-    change_scale_size(d: number, obj: EntrySprite) {
+    change_scale_size(d: number, obj: EntryContainer) {
         obj.size += d
     }
-    set_scale_size(newSize: number, obj: EntrySprite) {
+    set_scale_size(newSize: number, obj: EntryContainer) {
         obj.size = newSize
     }
 
@@ -432,7 +436,7 @@ export class Entry {
             | "picture_index"
             | "size"
             | "picture_name",
-        obj: EntrySprite,
+        obj: EntryContainer,
     ) {
         const target =
             targetId == "self"
@@ -452,7 +456,11 @@ export class Entry {
             case "size":
                 return target.size
             case "picture_name":
-                return target.pixiSprite.texture.label
+                if (target instanceof EntrySprite) {
+                    return target.pixiSprite.texture.label
+                } else {
+                    throw new Error("TextBox doesn't have picture_name")
+                }
         }
     }
     quotient_and_mod(
