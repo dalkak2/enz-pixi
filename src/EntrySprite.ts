@@ -183,15 +183,31 @@ export class EntryText extends EntryContainer {
 
     font
     colour
-    textAlign
     lineBreak
     bgColor
     underLine
     strike
-    fontSize
 
     get text() { return this.pixiSprite.text }
     set text(text: string) { this.pixiSprite.text = text }
+
+    get textAlign() {
+        return {
+            center: 0,
+            left: 1,
+            right: 2,
+        }[this.pixiSprite.style.align as "center" | "left" | "right"]
+    }
+    set textAlign(i: number) {
+        this.pixiSprite.style.align = ([
+            "center",
+            "left",
+            "right",
+        ] as const)[i]
+    }
+    
+    get fontSize() { return this.pixiSprite.style.fontSize }
+    set fontSize(fontSize: number) { this.pixiSprite.style.fontSize = fontSize }
 
     constructor(data: EntryTextData) {
         super(data)
