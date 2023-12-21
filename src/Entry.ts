@@ -7,7 +7,11 @@ import {
     Texture,
 } from "../deps/pixi.ts"
 
-import type { EntryContainer } from "./EntrySprite.ts"
+import {
+    EntryContainer,
+    EntrySprite,
+    EntryText,
+} from "./EntrySprite.ts"
 import { Timer } from "./Timer.ts"
 
 const mod =
@@ -94,7 +98,7 @@ export class Entry {
             .flat()
         ))
         Object.entries(this.objects).forEach(([_id, obj]) => {
-            obj.pixiSprite.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
+            (obj as EntrySprite).pixiSprite.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
         })
         /*
         this.objects = Object.fromEntries(
@@ -305,7 +309,7 @@ export class Entry {
     dialog(text: string, type: "speak" | "think", obj: EntryContainer) {
         console.log(`Object_${obj} ${type}s:`, text)
     }
-    change_to_some_shape(shapeIdOrIndex: string | number, obj: EntryContainer) {
+    change_to_some_shape(shapeIdOrIndex: string | number, obj: EntrySprite) {
         // TODO: convert to number in server
         shapeIdOrIndex = numberNormalize(shapeIdOrIndex)
         if (typeof shapeIdOrIndex == "string") {
@@ -320,7 +324,7 @@ export class Entry {
             obj.pixiSprite.texture = this.textures[obj.textureIds[index]]
         }
     }
-    change_to_next_shape(type: "next" | "prev", obj: EntryContainer) {
+    change_to_next_shape(type: "next" | "prev", obj: EntrySprite) {
         if (type == "next") {
             obj.currentTextureIndex += 1
         }
@@ -452,7 +456,11 @@ export class Entry {
             case "size":
                 return target.size
             case "picture_name":
-                return target.pixiSprite.texture.label
+                if (target instanceof EntrySprite) {
+                    return target.pixiSprite.texture.label
+                } else {
+                    throw new Error("TextBox doesn't have picture_name")
+                }
         }
     }
     quotient_and_mod(
