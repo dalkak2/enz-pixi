@@ -7,7 +7,7 @@ import {
 } from "../deps/pixi.ts"
 import type { Entry } from "./Entry.ts"
 
-interface EntryObject {
+interface EntryContainerData {
     x: number
     y: number
     rotation: number
@@ -23,6 +23,18 @@ interface EntryObject {
     textureIds: string[]
 }
 
+interface EntryTextData extends EntryContainerData {
+    font: string
+    colour: string
+    text: string
+    textAlign: number
+    lineBreak: boolean
+    bgColor: string
+    underLine: boolean
+    strike: boolean
+    fontSize: number
+}
+
 export abstract class EntryContainer extends EventEmitter {
     direction: number
     currentTextureIndex: number
@@ -34,7 +46,7 @@ export abstract class EntryContainer extends EventEmitter {
 
     abstract pixiSprite: Container
 
-    constructor(data: EntryObject) {
+    constructor(data: EntryContainerData) {
         super()
         this.init()
         this.x = data.x
@@ -106,7 +118,7 @@ export abstract class EntryContainer extends EventEmitter {
         const textureIds = pictures.map(
             ({id}) => id
         )
-        const sprite = new (this as unknown as new (data: EntryObject) => EntryContainer)({
+        const sprite = new (this as unknown as new (data: EntryContainerData) => EntryContainer)({
             ...entity,
             size: (entity.width + entity.height) / 2,
             textureIds,
@@ -124,7 +136,7 @@ export abstract class EntryContainer extends EventEmitter {
         return sprite
     }
     clone(project: Entry) {
-        const sprite = new (this.constructor as new (data: EntryObject) => this)({
+        const sprite = new (this.constructor as new (data: EntryContainerData) => this)({
             ...this,
 
             // Object spread doesn't contain getters
@@ -165,14 +177,39 @@ export class EntrySprite extends EntryContainer {
     }
 }
 
-export class EntryText extends EntryContainer {
+export class EntryText extends EntryContainer implements EntryTextData {
     
     declare pixiSprite: Text
+    font
+    colour
+    text
+    textAlign
+    lineBreak
+    bgColor
+    underLine
+    strike
+    fontSize
+
+    constructor(data: EntryTextData) {
+        super(data)
+        this.font = data.font
+        this.colour = data.colour
+        this.text = data.text
+        this.textAlign = data.textAlign
+        this.lineBreak = data.lineBreak
+        this.bgColor = data.bgColor
+        this.underLine = data.underLine
+        this.strike = data.strike
+        this.fontSize = data.fontSize
+
+        this.pixiSprite.text = data.text
+    }
 
     init() {
         this.pixiSprite = new Text({
-            text: "Hello",
+            text: "hello",
             renderMode: "html",
         })
+        this.pixiSprite.anchor.set(0.5)
     }
 }
