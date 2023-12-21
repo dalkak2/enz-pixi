@@ -328,6 +328,8 @@
     "https://esm.sh/json5@2.2.3?pin=v135": "56ad046eba99c091fcb546d9ec3ab3463e9a889f5d52b818c91c5f2e793dbefd",
     "https://esm.sh/v135/@pixi/colord@2.9.6/es2022/colord.mjs": "d5142c65ea14e14ea85b15f5dfbae9e8880916c015e60f772a101bbf775bd5b1",
     "https://esm.sh/v135/@pixi/colord@2.9.6/es2022/plugins/names.js": "14f41c9c34a9edf1e6283d25853390074e3cc9d44f1d78f0fdeec70c6c4014a1",
+    "https://esm.sh/v135/@resvg/resvg-wasm@2.6.0": "8ec3b7267808f8a08f5c9f8b39f4c7665de429b0cc1ec7f9ade5ceafe0edf16f",
+    "https://esm.sh/v135/@resvg/resvg-wasm@2.6.0/denonext/resvg-wasm.mjs": "442485e85a7e9f1884cf06fb36db62087f189dadea8c0b56546094c23d742b1b",
     "https://esm.sh/v135/@xmldom/xmldom@0.8.10/es2022/xmldom.mjs": "970cc09bdf0b58b2bb4cee7337a0e360554ae22a7e806bf8fd7c1da58383d186",
     "https://esm.sh/v135/earcut@2.2.4/es2022/earcut.mjs": "f9239c6b7caa18296fee0e6398be44a5308351585697cb8b8f643e614960d16e",
     "https://esm.sh/v135/eventemitter3@5.0.1/es2022/eventemitter3.mjs": "e28f4368921eb95290c68f7b9027477fd77c5d6336891cea8ac4c2f43c5c2d30",

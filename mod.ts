@@ -80,20 +80,20 @@ app.get("/image/lib/entry-js/images/*", async c => {
     const path = new URL(c.req.url).pathname
         .replace(/^\/image\//, "https://playentry.org/")
     return c.body(
-        await fetch(path).then(x => x.body)
+        await api.image(path)
     )
 })
 app.get("/image/:id", async c => {
     const id = c.req.param("id")
     const [a,b,d,e] = id
     return c.body(
-        await fetch(
+        await api.image(
             `https://playentry.org/uploads/${
                 a + b
             }/${
                 d + e
             }/image/${id}`
-        ).then(x => x.body)
+        )
     )
 })
 

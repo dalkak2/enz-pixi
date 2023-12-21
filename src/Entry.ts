@@ -80,13 +80,20 @@ export class Entry {
             this.project.objects.map(({sprite}) =>
                 sprite.pictures.map(
                     async ({id, fileurl, filename, imageType, name}) => {
-                        const url = `/image/${
+                        let url = `/image/${
                             filename
                             ? (filename + `.${imageType}`)
                             : fileurl.substring(1)
                         }`
+
+                        // for server-side svg rasterize
+                        if (url.endsWith(".svg")) {
+                            url += ".png"
+                        }
+                        
                         await Assets.load(url)
                         const texture = Texture.from(url)
+                        console.log(texture)
                         texture.label = name
                         return [
                             id,
