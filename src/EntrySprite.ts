@@ -23,7 +23,7 @@ interface EntryObject {
     textureIds: string[]
 }
 
-export class EntrySprite extends EventEmitter {
+export class EntryContainer extends EventEmitter {
     direction: number
     currentTextureIndex: number
     isClone: boolean
@@ -119,8 +119,6 @@ export class EntrySprite extends EventEmitter {
             objectType,
         })
         const pixiSprite = sprite.pixiSprite
-        // TODO: Move this to constructor
-        pixiSprite?.anchor?.set(0.5)
         pixiSprite.scale.x = entity.scaleX
         pixiSprite.scale.y = entity.scaleY
         project.scenes[sprite.scene].addChildAt(pixiSprite, 0)
@@ -143,9 +141,7 @@ export class EntrySprite extends EventEmitter {
         })
         const pixiSprite = sprite.pixiSprite
 
-        pixiSprite.texture = this.pixiSprite.texture
         pixiSprite.scale = this.pixiSprite.scale
-        pixiSprite?.anchor?.set(0.5)
 
         const myPos = project.scenes[sprite.scene].children.findIndex(x => x == this.pixiSprite)
         project.scenes[sprite.scene].addChildAt(sprite.pixiSprite, myPos)
@@ -154,4 +150,24 @@ export class EntrySprite extends EventEmitter {
 
         return sprite
     }
+}
+
+export class EntrySprite extends EntryContainer {
+
+    declare pixiSprite: Sprite
+
+    constructor(data: EntryObject) {
+        super(data)
+        this.pixiSprite.anchor.set(0.5)
+    }
+
+    clone(project: Entry) {
+        const sprite = super.clone(project)
+        sprite.pixiSprite.texture = this.pixiSprite.texture
+        return sprite
+    }
+}
+
+export class EntryText extends EntryContainer {
+    
 }

@@ -33,7 +33,12 @@ class PixiVisitor extends Visitor {
             objectType,
         } = object
         return ``
-            + `class Obj_${object.id} extends EntrySprite { `
+            + `class Obj_${object.id} extends ${
+                {
+                    sprite: "EntrySprite",
+                    textBox: "EntryText",
+                }[object.objectType] || `(() => {throw new Error("Unknown objectType")})()`
+            } { `
                 + `constructor(...args) {\n    super(...args)\n${
                     script
                         .split("\n")
@@ -153,7 +158,7 @@ export const jsUnformatted = async (id: string) =>
                 "await $1",
             )
         )
-        .then(x => `import { init, EntrySprite } from "/src/mod.ts"` + "\nexport const Entry =\n" + x)
+        .then(x => `import { init, EntrySprite, EntryText } from "/src/mod.ts"` + "\nexport const Entry =\n" + x)
 
 export const js = async (id: string) => {
     const src = await jsUnformatted(id)
