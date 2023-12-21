@@ -23,7 +23,7 @@ interface EntryObject {
     textureIds: string[]
 }
 
-export class EntryContainer extends EventEmitter {
+export abstract class EntryContainer extends EventEmitter {
     direction: number
     currentTextureIndex: number
     isClone: boolean
@@ -32,17 +32,11 @@ export class EntryContainer extends EventEmitter {
     objectType: string
     textureIds: string[]
 
-    pixiSprite: Container
+    abstract pixiSprite: Container
 
     constructor(data: EntryObject) {
         super()
-        if (data.objectType == "sprite") {
-            this.pixiSprite = new Sprite()
-        } else if (data.objectType == "textBox") {
-            this.pixiSprite = new Text({ text: "Hello", renderMode: "html" })
-        } else {
-            throw new Error(`Unknown objectType: ${data.objectType}`)
-        }
+        this.init()
         this.x = data.x
         this.y = data.y
         this.rotation = data.rotation
@@ -57,6 +51,10 @@ export class EntryContainer extends EventEmitter {
         this.objectType = data.objectType
         this.textureIds = data.textureIds
     }
+
+    /** Initialize this.pixiSprite */
+    abstract init(): void
+
     get size() {
         return (this.pixiSprite.width + this.pixiSprite.height) / 2
     }
@@ -108,7 +106,7 @@ export class EntryContainer extends EventEmitter {
         const textureIds = pictures.map(
             ({id}) => id
         )
-        const sprite = new this({
+        const sprite = new (this as unknown as new (data: EntryObject) => EntryContainer)({
             ...entity,
             size: (entity.width + entity.height) / 2,
             textureIds,
@@ -156,11 +154,10 @@ export class EntrySprite extends EntryContainer {
 
     declare pixiSprite: Sprite
 
-    constructor(data: EntryObject) {
-        super(data)
+    init() {
+        this.pixiSprite = new Sprite()
         this.pixiSprite.anchor.set(0.5)
     }
-
     clone(project: Entry) {
         const sprite = super.clone(project)
         sprite.pixiSprite.texture = this.pixiSprite.texture
@@ -170,4 +167,12 @@ export class EntrySprite extends EntryContainer {
 
 export class EntryText extends EntryContainer {
     
+    declare pixiSprite: Text
+
+    init() {
+        this.pixiSprite = new Text({
+            text: "Hello",
+            renderMode: "html",
+        })
+    }
 }
