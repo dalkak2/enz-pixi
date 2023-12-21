@@ -373,6 +373,27 @@ export class Entry {
         obj.size = newSize
     }
 
+    /* 글상자 */
+    text_read(targetId: string, obj: EntryText) {
+        const target =
+            targetId == "self"
+                ? obj
+                : this.objects[targetId] as EntryText
+        return target.text
+    }
+    text_write(str: string, obj: EntryText) {
+        obj.text = str
+    }
+    text_append(str: string, obj: EntryText) {
+        obj.text += str
+    }
+    text_prepend(str: string, obj: EntryText) {
+        obj.text = str + obj.text
+    }
+    text_flush(obj: EntryText) {
+        obj.text = ""
+    }
+
     /* 판단 */
     /*
         These blocks are transpiled from server.
