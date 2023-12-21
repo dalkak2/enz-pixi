@@ -23,18 +23,6 @@ interface EntryContainerData {
     textureIds: string[]
 }
 
-interface EntryTextData extends EntryContainerData {
-    font: string
-    colour: string
-    text: string
-    textAlign: number
-    lineBreak: boolean
-    bgColor: string
-    underLine: boolean
-    strike: boolean
-    fontSize: number
-}
-
 export abstract class EntryContainer extends EventEmitter {
     direction: number
     currentTextureIndex: number
@@ -177,18 +165,33 @@ export class EntrySprite extends EntryContainer {
     }
 }
 
-export class EntryText extends EntryContainer implements EntryTextData {
+export interface EntryTextData extends EntryContainerData {
+    font: string
+    colour: string
+    text: string
+    textAlign: number
+    lineBreak: boolean
+    bgColor: string
+    underLine: boolean
+    strike: boolean
+    fontSize: number
+}
+
+export class EntryText extends EntryContainer {
     
     declare pixiSprite: Text
+
     font
     colour
-    text
     textAlign
     lineBreak
     bgColor
     underLine
     strike
     fontSize
+
+    get text() { return this.pixiSprite.text }
+    set text(text: string) { this.pixiSprite.text = text }
 
     constructor(data: EntryTextData) {
         super(data)
@@ -201,13 +204,10 @@ export class EntryText extends EntryContainer implements EntryTextData {
         this.underLine = data.underLine
         this.strike = data.strike
         this.fontSize = data.fontSize
-
-        this.pixiSprite.text = data.text
     }
 
     init() {
         this.pixiSprite = new Text({
-            text: "hello",
             renderMode: "html",
         })
         this.pixiSprite.anchor.set(0.5)
