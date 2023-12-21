@@ -169,7 +169,7 @@ export interface EntryTextData extends EntryContainerData {
     font: string
     colour: string
     text: string
-    textAlign: number
+    textAlign: 0 | 1 | 2
     lineBreak: boolean
     bgColor: string
     underLine: boolean
@@ -192,13 +192,13 @@ export class EntryText extends EntryContainer {
     set text(text: string) { this.pixiSprite.text = text }
 
     get textAlign() {
-        return {
+        return ({
             center: 0,
             left: 1,
             right: 2,
-        }[this.pixiSprite.style.align as "center" | "left" | "right"]
+        } as const)[this.pixiSprite.style.align as "center" | "left" | "right"]
     }
-    set textAlign(i: number) {
+    set textAlign(i: 0 | 1 | 2) {
         this.pixiSprite.style.align = ([
             "center",
             "left",
@@ -220,12 +220,21 @@ export class EntryText extends EntryContainer {
         this.underLine = data.underLine
         this.strike = data.strike
         this.fontSize = data.fontSize
+
+        if (data.lineBreak) {
+            this.pixiSprite.anchor.set(0.5)
+        } else {
+            this.pixiSprite.anchor.set([
+                0.5, // center
+                0,   // left
+                1,   // right
+            ][this.textAlign], 0.5)
+        }
     }
 
     init() {
         this.pixiSprite = new Text({
             renderMode: "html",
         })
-        this.pixiSprite.anchor.set(0.5)
     }
 }
