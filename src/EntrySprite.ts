@@ -18,6 +18,8 @@ interface EntryContainerData {
     currentTextureIndex: number
     isClone: boolean
 
+    id: string
+    name: string
     scene: string
     objectType: string
     textureIds: string[]
@@ -28,6 +30,8 @@ export abstract class EntryContainer extends EventEmitter {
     currentTextureIndex: number
     isClone: boolean
 
+    id: string
+    name: string
     scene: string
     objectType: string
     textureIds: string[]
@@ -47,6 +51,8 @@ export abstract class EntryContainer extends EventEmitter {
         this.currentTextureIndex = data.currentTextureIndex
         this.isClone = data.isClone
 
+        this.id = data.id
+        this.name = data.name
         this.scene = data.scene
         this.objectType = data.objectType
         this.textureIds = data.textureIds
@@ -92,6 +98,8 @@ export abstract class EntryContainer extends EventEmitter {
 
     static fromEntryData(
         {
+            id,
+            name,
             selectedPictureId,
             scene,
             entity,
@@ -108,6 +116,8 @@ export abstract class EntryContainer extends EventEmitter {
         )
         const sprite = new (this as unknown as new (data: EntryContainerData) => EntryContainer)({
             ...entity,
+            id,
+            name,
             size: (entity.width + entity.height) / 2,
             textureIds,
             currentTextureIndex: textureIds.indexOf(selectedPictureId),

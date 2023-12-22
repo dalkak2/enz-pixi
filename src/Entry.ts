@@ -310,7 +310,10 @@ export class Entry {
         obj.visible = false
     }
     dialog(text: string, type: "speak" | "think", obj: EntryContainer) {
-        console.log(`Object_${obj} ${type}s:`, text)
+        console.log(
+            `Object_${obj.id} ${obj.name} ${type}s:`,
+            text,
+        )
     }
     change_to_some_shape(shapeIdOrIndex: string | number, obj: EntrySprite) {
         // TODO: convert to number in server

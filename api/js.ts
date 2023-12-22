@@ -26,6 +26,8 @@ class PixiVisitor extends Visitor {
     visitObject(object: Object_): string {
         const script = super.visitObject(object)
         const {
+            id,
+            name,
             selectedPictureId,
             scene,
             entity,
@@ -47,6 +49,8 @@ class PixiVisitor extends Visitor {
                 }\n}`
             + `}; Entry.objects["${object.id}"] = Obj_${object.id}.fromEntryData(${
                 JSON5.stringify({
+                    id,
+                    name,
                     selectedPictureId,
                     scene,
                     entity,
