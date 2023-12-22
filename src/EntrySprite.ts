@@ -105,7 +105,7 @@ export abstract class EntryContainer extends EventEmitter {
             entity,
             sprite: {
                 pictures,
-                sounds,
+                // sounds,
             },
             objectType,
         }: Object_,

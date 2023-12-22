@@ -14,8 +14,6 @@ const app = new Hono()
 
 import { transpile } from "https://deno.land/x/emit@0.25.0/mod.ts"
 
-import { fromFileUrl } from "https://deno.land/std@0.208.0/path/windows/from_file_url.ts"
-
 const scriptHandler = async (c: Context) => {
     const url = new URL(c.req.url)
     const target = new URL("." + url.pathname, import.meta.url)
