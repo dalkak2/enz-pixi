@@ -106,30 +106,18 @@ app.get("/api/js/:id", async c => {
 app.get("/", async c => c.html(
     await Deno.readTextFile("view/index.html")
 ))
-app.get("/p/:id", c => c.html(`
-    <!doctype html>
-    <html>
-        <head>
-            <style>
-                app {
-                    display: inline-block;
-                }
-            </style>
-        </head>
-        <body class="p(5) bg(#dee)">
-            <app class="r(5) b(2) clip"/>
-
-            <script type="module">
-                import { Entry } from "/api/js/${c.req.param("id")}"
-                await Entry.init(
-                    document.querySelector("app")
-                )
-                Entry.start()
-            </script>
-            <script src="https://unpkg.com/adorable-css@1.4.3"></script>
-        </body>
-    </html>
-`))
+app.get("/p/:id", async c => c.html(
+    (await Deno.readTextFile("view/p.html"))
+    .replace("<!-- INSERT SCRIPT HERE -->", `
+        <script type="module">
+            import { Entry } from "/api/js/${c.req.param("id")}"
+            await Entry.init(
+                document.querySelector("app")
+            )
+            Entry.start()
+        </script>
+    `)
+))
 
 Deno.serve(app.fetch)
 
