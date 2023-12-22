@@ -93,7 +93,6 @@ export class Entry {
                         
                         await Assets.load(url)
                         const texture = Texture.from(url)
-                        console.log(texture)
                         texture.label = name
                         return [
                             id,
@@ -150,8 +149,6 @@ export class Entry {
         if (!this.events[eventName]) {
             this.events[eventName] = []
         }
-        console.log("emit", eventName)
-        console.log(this.events[eventName])
         await Promise.all(
             this.events[eventName]
                 .map(f => f())
@@ -161,7 +158,6 @@ export class Entry {
         if (!this.events[eventName]) {
             this.events[eventName] = []
         }
-        console.log("on", eventName)
         this.events[eventName].push(f)
     }
     start() {
