@@ -34,7 +34,7 @@ jobs:
 
       - name: Transpile TypeScript
         run: |
-          deno test -A build.ts ${{github.sha}}
+          deno test -A build.ts -- ${{github.sha}}
 
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
