@@ -14,6 +14,11 @@ const app = new Hono()
 
 import { transpile } from "https://deno.land/x/emit@0.25.0/mod.ts"
 
+import {
+    parseProject,
+    Project,
+} from "./deps/enz.ts"
+
 import "https://deno.land/std@0.210.0/dotenv/load.ts"
 
 const scriptHandler = async (c: Context) => {
@@ -112,7 +117,19 @@ app.get("/api/project/:id", async c => c.json(
 ))
 app.get("/api/js/:id", async c => {
     c.header("content-type", "application/javascript; charset=utf-8")
-    return c.body(await api.js(c.req.param("id")))
+
+    const project = await api.project(c.req.param("id"))
+        .then(JSON.stringify)
+        .then(parseProject) as Project & {
+            updated: string
+        }
+
+    c.header(
+        "last-modified",
+        new Date(project.updated).toUTCString(),
+    )
+
+    return c.body(api.js(project))
 })
 
 app.get("/", async c => c.html(

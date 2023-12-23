@@ -1,6 +1,4 @@
-import { project } from "./project.ts"
 import {
-    parseProject,
     Visitor,
     Object_,
     cg,
@@ -135,36 +133,34 @@ class PixiVisitor extends Visitor {
     }
 }
 
-export const jsUnformatted = async (id: string) =>
-    await project(id)
-        .then(JSON.stringify)
-        .then(parseProject)
-        .then(x => (new PixiVisitor).visitProject(x))
-        .then(x => x
-            .replaceAll(
-                "= (",
-                "= async (",
-            )
-            .replaceAll(
-                "() =>",
-                "async () =>",
-            )
-            .replaceAll(
-                "Entry.wait_second",
-                "await Entry.wait_second",
-            )
-            .replaceAll(
-                "Entry.message_cast_wait",
-                "await Entry.message_cast_wait",
-            )
-            .replaceAll(
-                /(Entry\.func_.{4}\()/g,
-                "await $1",
-            )
+export const jsUnformatted = (project: Project) => {
+    let js = (new PixiVisitor).visitProject(project)
+    js = js
+        .replaceAll(
+            "= (",
+            "= async (",
         )
-        .then(x => `import { init, EntrySprite, EntryText } from "/src/mod.ts"` + "\nexport const Entry =\n" + x)
+        .replaceAll(
+            "() =>",
+            "async () =>",
+        )
+        .replaceAll(
+            "Entry.wait_second",
+            "await Entry.wait_second",
+        )
+        .replaceAll(
+            "Entry.message_cast_wait",
+            "await Entry.message_cast_wait",
+        )
+        .replaceAll(
+            /(Entry\.func_.{4}\()/g,
+            "await $1",
+        )
+    js = `import { init, EntrySprite, EntryText } from "/src/mod.ts"` + "\nexport const Entry =\n" + js
+    return js
+}
 
-export const js = async (id: string) => {
-    const src = await jsUnformatted(id)
+export const js = (project: Project) => {
+    const src = jsUnformatted(project)
     return format(src)
 }

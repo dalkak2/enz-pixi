@@ -4,6 +4,7 @@ const query = `
     query SELECT_PROJECT($id: ID! $groupId: ID) {
         project(id: $id, groupId: $groupId) {
             id
+            updated
             name
             thumb
             objects
