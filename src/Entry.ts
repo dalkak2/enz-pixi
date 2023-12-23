@@ -1,6 +1,6 @@
 import type { Project } from "../deps/enz.ts"
 import {
-    autoDetectRenderer,
+    WebGLRenderer,
     Renderer,
     Container,
     Assets,
@@ -130,8 +130,8 @@ export class Entry {
             this.pressedKeys[event.keyCode] = false
         })
 
-        // @ts-ignore: Unknown error???
-        this.renderer = await autoDetectRenderer({
+        this.renderer = new WebGLRenderer()
+        await this.renderer.init({
             width: 480,
             height: 270,
             backgroundColor: "#fff",
