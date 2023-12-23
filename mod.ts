@@ -80,7 +80,12 @@ app.get("/image/lib/entry-js/images/*", async c => {
     const path = new URL(c.req.url).pathname
         .replace(/^\/image\//, "https://playentry.org/")
     return c.body(
-        await api.image(path)
+        await api.image(path),
+        {
+            headers: {
+                "cache-control": "max-age=31536000, public"
+            }
+        },
     )
 })
 app.get("/image/:id", async c => {
@@ -93,7 +98,12 @@ app.get("/image/:id", async c => {
             }/${
                 d + e
             }/image/${id}`
-        )
+        ),
+        {
+            headers: {
+                "cache-control": "max-age=31536000, public"
+            }
+        },
     )
 })
 
