@@ -14,7 +14,13 @@ const build = async (filename: string) => {
     )
 }
 
+const [ VERSION_LABEL ] = Deno.args
+
 Deno.test("build", async () => {
+    Deno.env.set(
+        "VERSION_LABEL",
+        VERSION_LABEL.slice(0, 7)
+    )
     await build("/src/Entry.ts")
     await build("/src/EntrySprite.ts")
     await build("/src/mod.ts")

@@ -108,6 +108,13 @@ app.get("/", async c => c.html(
 ))
 app.get("/p/:id", async c => c.html(
     (await Deno.readTextFile("view/p.html"))
+    .replace(
+        "<!-- VERSION_LABEL -->",
+        `@${
+            Deno.env.get("VERSION_LABEL")
+            || "dev"
+        }`
+    )
     .replace("<!-- INSERT SCRIPT HERE -->", `
         <script type="module">
             import { Entry } from "/api/js/${c.req.param("id")}"
