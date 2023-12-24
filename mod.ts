@@ -77,8 +77,10 @@ const scriptHandler = async (c: Context) => {
     )
 }
 
-app.use("/*", etag({weak: true}))
+app.use("/src/*", etag({weak: true}))
 app.get("/src/*", scriptHandler)
+
+app.use("/deps/*", etag({weak: true}))
 app.get("/deps/*", scriptHandler)
 
 app.get("/image/lib/entry-js/images/*", async c => {
@@ -128,8 +130,26 @@ app.get("/api/js/:id", async c => {
         "last-modified",
         new Date(project.updated).toUTCString(),
     )
+    c.header(
+        "cache-control",
+        "no-cache",
+    )
 
-    return c.body(api.js(project))
+    const a = new Date(c.req.header("if-modified-since") || 0)
+    const b = new Date(new Date(project.updated).toUTCString())
+
+    if (a < b) {
+        const label = `Generate ${c.req.param("id")}.js`
+        console.time(label)
+
+        const result = c.body(api.js(project))
+        
+        console.timeEnd(label)
+        return result
+    } else {
+        c.status(304)
+        return c.body(null)
+    }
 })
 
 app.get("/", async c => c.html(
