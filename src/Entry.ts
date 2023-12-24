@@ -112,7 +112,7 @@ export class Entry {
                     async ({id, fileurl, filename, ext, name}) => {
                         let url = `/sound/${
                             filename
-                            ? (filename + ext)
+                            ? (filename + (ext || ".mp3"))
                             : fileurl.substring(1)
                         }`
 
