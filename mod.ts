@@ -113,6 +113,36 @@ app.get("/image/:id", async c => {
         },
     )
 })
+app.get("/sound/lib/entry-js/images/*", async c => {
+    const path = new URL(c.req.url).pathname
+        .replace(/^\/sound\//, "https://playentry.org/")
+    return c.body(
+        await api.image(path),
+        {
+            headers: {
+                "cache-control": "max-age=31536000, public"
+            }
+        },
+    )
+})
+app.get("/sound/:id", async c => {
+    const id = c.req.param("id")
+    const [a,b,d,e] = id
+    return c.body(
+        await api.image(
+            `https://playentry.org/uploads/${
+                a + b
+            }/${
+                d + e
+            }/${id}`
+        ),
+        {
+            headers: {
+                "cache-control": "max-age=31536000, public"
+            }
+        },
+    )
+})
 
 app.get("/api/project/:id", async c => c.json(
     await api.project(c.req.param("id"))

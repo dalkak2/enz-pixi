@@ -36,10 +36,13 @@ const numberNormalize =
 export class Entry {
     project
     renderer?: Renderer
+    audioContext = new AudioContext()
+
     events: Record<string, (() => Promise<void>)[]>
     scenes: Record<string, Container> = {}
     variables: Record<string, string | number | (string | number)[]> = {}
     textures: Record<string, Texture> = {}
+    sounds: Record<string, AudioBuffer> = {}
     objects: Record<string, EntryContainer> = {}
 
     pressedKeys: Record<number, boolean | undefined> = {}
@@ -97,6 +100,29 @@ export class Entry {
                         return [
                             id,
                             texture,
+                        ]
+                    }
+                )
+            )
+            .flat()
+        ))
+        this.sounds = Object.fromEntries(await Promise.all(
+            this.project.objects.map(({sprite}) =>
+                sprite.sounds.map(
+                    async ({id, fileurl, filename, ext, name}) => {
+                        let url = `/sound/${
+                            filename
+                            ? (filename + ext)
+                            : fileurl.substring(1)
+                        }`
+
+                        const audioBuffer = await fetch(url)
+                            .then(res => res.arrayBuffer())
+                            .then(buffer => this.audioContext.decodeAudioData(buffer))
+
+                        return [
+                            id,
+                            audioBuffer,
                         ]
                     }
                 )
@@ -171,6 +197,19 @@ export class Entry {
     wait_tick() {
         return new Promise(o => {
             requestAnimationFrame(o)
+        })
+    }
+    soundStart(soundId: string, offset?: number, duration?: number) {
+        return new Promise(o => {
+            const source = this.audioContext.createBufferSource()
+            source.buffer = this.sounds[soundId]
+            source.connect(this.audioContext.destination)
+            source.addEventListener("ended", o)
+            source.start(
+                this.audioContext.currentTime,
+                offset,
+                duration,
+            )
         })
     }
 
@@ -398,6 +437,51 @@ export class Entry {
     }
     text_flush(obj: EntryText) {
         obj.text = ""
+    }
+
+    /* 소리 */
+    get_sounds(id: string) {
+        return id
+    }
+    sound_something_with_block(soundId: string) {
+        this.sound_something_wait_with_block(soundId)
+    }
+    sound_something_second_with_block(
+        soundId: string,
+        duration: number,
+    ) {
+        this.sound_something_second_wait_with_block(soundId, duration)
+    }
+    sound_from_to(
+        soundId: string,
+        from: number,
+        to: number,
+    ) {
+        this.sound_from_to_and_wait(soundId, from, to)
+    }
+    async sound_something_wait_with_block(soundId: string) {
+        await this.soundStart(soundId)
+    }
+    async sound_something_second_wait_with_block(
+        soundId: string,
+        duration: number,
+    ) {
+        await this.soundStart(
+            soundId,
+            0,
+            duration,
+        )
+    }
+    async sound_from_to_and_wait(
+        soundId: string,
+        from: number,
+        to: number,
+    ) {
+        await this.soundStart(
+            soundId,
+            from,
+            to - from,
+        )
     }
 
     /* 판단 */

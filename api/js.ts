@@ -153,6 +153,18 @@ export const jsUnformatted = (project: Project) => {
             "await Entry.message_cast_wait",
         )
         .replaceAll(
+            "Entry.sound_something_wait_with_block",
+            "await Entry.sound_something_wait_with_block",
+        )
+        .replaceAll(
+            "Entry.sound_something_second_wait_with_block",
+            "await Entry.sound_something_second_wait_with_block",
+        )
+        .replaceAll(
+            "Entry.sound_from_to_and_wait",
+            "await Entry.sound_from_to_and_wait",
+        )
+        .replaceAll(
             /(Entry\.func_.{4}\()/g,
             "await $1",
         )
