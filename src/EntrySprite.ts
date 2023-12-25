@@ -4,6 +4,8 @@ import {
     EventEmitter,
     Text,
     Container,
+    Graphics,
+    Color,
 } from "../deps/pixi.ts"
 import type { Entry } from "./Entry.ts"
 
@@ -35,6 +37,54 @@ export abstract class EntryContainer extends EventEmitter {
     scene: string
     objectType: string
     textureIds: string[]
+
+    _brushGraphics?: Graphics
+    _lineListener?: () => void
+    getBrush(onGraphicsInit?: (graphics: Graphics) => void) {
+        if (!this._brushGraphics) {
+            this._brushGraphics = new Graphics()
+            this.strokeColor = this.strokeColor
+            this.strokeThickness = this.strokeThickness
+
+            this._lineListener = () => {
+                this._brushGraphics!.lineTo(
+                    this.pixiSprite.x,
+                    this.pixiSprite.y,
+                )
+                this._brushGraphics!.stroke()
+            }
+            onGraphicsInit?.(this._brushGraphics)
+        }
+        return {
+            graphics: this._brushGraphics!,
+            lineListener: this._lineListener!,
+        }
+    }
+
+    _strokeColor?: string
+    get strokeColor() {
+        return this._strokeColor || "red"
+    }
+    set strokeColor(color: string) {
+        this._strokeColor = color
+        /*
+            https://github.com/pixijs/pixijs/blob/v8.0.0-beta.11/src/scene/graphics/shared/utils/convertFillInputToFillStyle.ts#L92
+        */
+        if (this._brushGraphics) {
+            this._brushGraphics.strokeStyle.color = Color.shared.setValue(color).toNumber()
+        }
+    }
+
+    _strokeThickness?: number
+    get strokeThickness() {
+        return this._strokeThickness || 1
+    }
+    set strokeThickness(n: number) {
+        this._strokeThickness = n
+        if (this._brushGraphics) {
+            this._brushGraphics.strokeStyle.width = n
+        }
+    }
 
     abstract pixiSprite: Container
 
@@ -152,6 +202,9 @@ export abstract class EntryContainer extends EventEmitter {
         pixiSprite.scale = this.pixiSprite.scale
 
         this.addSibling(project, sprite.pixiSprite, 0)
+
+        sprite._strokeColor = this._strokeColor
+        sprite._strokeThickness = this._strokeThickness
         
         sprite.emit("clone")
 

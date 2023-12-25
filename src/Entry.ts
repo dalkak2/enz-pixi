@@ -435,74 +435,36 @@ export class Entry {
     }
 
     /* 붓 */
-    brushes: Record<string, {
-        graphics?: Graphics
-        listener?: () => void
-        color?: string
-        width?: number
-    }> = {}
-    getBrush(obj: EntryContainer) {
-        if (!this.brushes[obj.id]) {
-            this.brushes[obj.id] = {
-                color: "red",
-                width: 10,
-            }
-        }
-        if (!this.brushes[obj.id].graphics) {
-            const graphics = new Graphics()
-            this.brushes[obj.id].graphics = graphics
-            this.brushes[obj.id].listener = () => {
-                graphics.lineTo(
-                    obj.pixiSprite.x,
-                    obj.pixiSprite.y,
-                )
-                graphics.stroke()
-            }
-            /*
-                https://github.com/pixijs/pixijs/blob/v8.0.0-beta.11/src/scene/graphics/shared/utils/convertFillInputToFillStyle.ts#L92
-            */
-            graphics.strokeStyle.color = Color.shared.setValue(this.brushes[obj.id].color!).toNumber()
-            graphics.strokeStyle.width = this.brushes[obj.id].width
-            obj.addSibling(this, graphics, 0)
-        }
-        return this.brushes[obj.id] as {
-            graphics: Graphics
-            listener: () => void
-            color: string
-            width: number
-        }
-    }
-
     color(str: string) {
         return str
     }
     start_drawing(obj: EntryContainer) {
-        this.getBrush(obj).graphics.moveTo(
+        const { graphics, lineListener } = obj.getBrush(graphics => {
+            obj.addSibling(this, graphics, 0)
+        })
+        graphics.moveTo(
             obj.pixiSprite.x,
             obj.pixiSprite.y,
         )
-        obj.on("move", this.getBrush(obj).listener)
+        obj.on("move", lineListener)
     }
     stop_drawing(obj: EntryContainer) {
-        obj.off("move", this.getBrush(obj).listener)
+        if (obj._lineListener) {
+            obj.off("move", obj._lineListener)
+        }
     }
     set_color(color: string, obj: EntryContainer) {
-        this.getBrush(obj).color = color
-        this.getBrush(obj).graphics.strokeStyle.color = Color.shared.setValue(this.brushes[obj.id].color!).toNumber()
+        obj.strokeColor = color
     }
     change_thickness(n: number, obj: EntryContainer) {
-        this.getBrush(obj).width += n
-        this.getBrush(obj).graphics.strokeStyle.width = this.brushes[obj.id].width
+        obj.strokeThickness += n
     }
     set_thickness(n: number, obj: EntryContainer) {
-        this.getBrush(obj).width = n
-        this.getBrush(obj).graphics.strokeStyle.width = this.brushes[obj.id].width
+        obj.strokeThickness = n
     }
     brush_erase_all(obj: EntryContainer) {
-        if (this.brushes[obj.id]?.graphics) {
-            this.brushes[obj.id].graphics!.destroy()
-            delete this.brushes[obj.id].graphics
-        }
+        obj._brushGraphics?.destroy()
+        delete obj._brushGraphics
     }
 
     /* 글상자 */
