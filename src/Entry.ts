@@ -5,6 +5,7 @@ import {
     Container,
     Assets,
     Texture,
+    Graphics,
 } from "../deps/pixi.ts"
 
 import {
@@ -290,28 +291,35 @@ export class Entry {
     move_direction(n: number, obj: EntryContainer) {
         obj.x += n * Math.sin(toRadian(obj.direction))
         obj.y += n * Math.cos(toRadian(obj.direction))
+        obj.emit("move")
     }
     move_x(n: number, obj: EntryContainer) {
         obj.x += n
+        obj.emit("move")
     }
     move_y(n: number, obj: EntryContainer) {
         obj.y += n
+        obj.emit("move")
     }
     locate_x(x: number, obj: EntryContainer) {
         obj.x = x
+        obj.emit("move")
     }
     locate_y(y: number, obj: EntryContainer) {
         obj.y = y
+        obj.emit("move")
     }
     locate_xy(x: number, y: number, obj: EntryContainer) {
-        this.locate_x(x, obj)
-        this.locate_y(y, obj)
+        obj.x = x
+        obj.y = y
+        obj.emit("move")
     }
     locate(objId: string, obj: EntryContainer) {
         if (objId == "mouse")
             throw new Error("Unimplemented: locate to mouse")
         obj.x = this.objects[objId].x
         obj.y = this.objects[objId].y
+        obj.emit("move", obj)
     }
     rotate_relative(angle: number, obj: EntryContainer) {
         obj.rotation += angle
@@ -336,6 +344,7 @@ export class Entry {
     move_to_angle(angle: number, n: number, obj: EntryContainer) {
         obj.x += n * Math.sin(toRadian(angle))
         obj.y += n * Math.cos(toRadian(angle))
+        obj.emit("move")
     }
 
     /* 생김새 */
@@ -422,6 +431,52 @@ export class Entry {
     }
     flip_y(obj: EntryContainer) {
         obj.pixiSprite.scale.x *= -1
+    }
+
+    /* 붓 */
+    brushes: Record<string, {
+        graphics: Graphics
+        listener: () => void
+    }> = {}
+    getBrush(obj: EntryContainer) {
+        if (!this.brushes[obj.id]) {
+            const graphics = new Graphics()
+            this.brushes[obj.id] = {
+                graphics,
+                listener: () => {
+                    graphics.lineTo(
+                        obj.pixiSprite.x,
+                        obj.pixiSprite.y,
+                    )
+                    this.getBrush(obj).graphics.stroke()
+                },
+            }
+            obj.addSibling(this, graphics, 0)
+        }
+        return this.brushes[obj.id]
+    }
+
+    color(str: string) {
+        return str
+    }
+    start_drawing(obj: EntryContainer) {
+        this.getBrush(obj).graphics.moveTo(
+            obj.pixiSprite.x,
+            obj.pixiSprite.y,
+        )
+        obj.on("move", this.getBrush(obj).listener)
+    }
+    stop_drawing(obj: EntryContainer) {
+        obj.off("move", this.getBrush(obj).listener)
+    }
+    set_color(color: string, obj: EntryContainer) {
+        // TODO
+    }
+    change_thickness(n: number, obj: EntryContainer) {
+        this.getBrush(obj).graphics.strokeStyle.width! += n
+    }
+    set_thickness(n: number, obj: EntryContainer) {
+        this.getBrush(obj).graphics.strokeStyle.width = n
     }
 
     /* 글상자 */

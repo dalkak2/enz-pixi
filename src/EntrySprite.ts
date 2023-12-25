@@ -151,12 +151,25 @@ export abstract class EntryContainer extends EventEmitter {
 
         pixiSprite.scale = this.pixiSprite.scale
 
-        const myPos = project.scenes[sprite.scene].children.findIndex(x => x == this.pixiSprite)
-        project.scenes[sprite.scene].addChildAt(sprite.pixiSprite, myPos)
+        this.addSibling(project, sprite.pixiSprite, 0)
         
         sprite.emit("clone")
 
         return sprite
+    }
+    /**
+     * @param project 
+     * @param target 
+     * @param relativePos 0: Back
+     */
+    addSibling(
+        project: Entry,
+        target: Container,
+        relativePos: number
+    ) {
+        const scene = project.scenes[this.scene]
+        const myPos = scene.children.findIndex(x => x == this.pixiSprite)
+        scene.addChildAt(target, myPos + relativePos)
     }
 }
 
