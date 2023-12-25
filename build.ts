@@ -27,7 +27,10 @@ Deno.test("build", async () => {
         VERSION_LABEL: VERSION_LABEL.slice(0, 7),
     })
     await build("/src/Entry.ts")
-    await build("/src/EntrySprite.ts")
+    await build("/src/obj/mod.ts")
+    await build("/src/obj/EntryContainer.ts")
+    await build("/src/obj/EntrySprite.ts")
+    await build("/src/obj/EntryText.ts")
     await build("/src/mod.ts")
     await build("/src/Timer.ts")
     await build("/src/util.ts")
