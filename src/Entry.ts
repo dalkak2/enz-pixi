@@ -449,7 +449,7 @@ export class Entry {
                         obj.pixiSprite.x,
                         obj.pixiSprite.y,
                     )
-                    this.getBrush(obj).graphics.stroke()
+                    graphics.stroke()
                 },
             }
             obj.addSibling(this, graphics, 0)
