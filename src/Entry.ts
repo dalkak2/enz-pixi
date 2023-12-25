@@ -417,6 +417,12 @@ export class Entry {
     set_scale_size(newSize: number, obj: EntryContainer) {
         obj.size = newSize
     }
+    flip_x(obj: EntryContainer) {
+        obj.pixiSprite.scale.y *= -1
+    }
+    flip_y(obj: EntryContainer) {
+        obj.pixiSprite.scale.x *= -1
+    }
 
     /* 글상자 */
     text_read(targetId: string, obj: EntryText) {
