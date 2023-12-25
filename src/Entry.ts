@@ -86,7 +86,7 @@ export class Entry {
                         let url = `/image/${
                             filename
                             ? (filename + `.${imageType}`)
-                            : fileurl.substring(1)
+                            : fileurl!.substring(1)
                         }`
 
                         // for server-side svg rasterize
