@@ -110,10 +110,10 @@ export class Entry {
             this.project.objects.map(({sprite}) =>
                 sprite.sounds.map(
                     async ({id, fileurl, filename, ext, name}) => {
-                        let url = `/sound/${
+                        const url = `/sound/${
                             filename
                             ? (filename + (ext || ".mp3"))
-                            : fileurl.substring(1)
+                            : fileurl!.substring(1)
                         }`
 
                         const audioBuffer = await fetch(url)
