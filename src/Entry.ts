@@ -754,6 +754,18 @@ export class Entry {
     ) {
         return str[type]()
     }
+    change_rgb_to_hex(
+        r: number,
+        g: number,
+        b: number,
+    ) {
+        return "#" +
+            [r, g, b].map(
+                n => Math.floor(n)
+                    .toString(16)
+                    .padStart(2, "0")
+            ).join("")
+    }
 
     /* 자료 */
     get_variable(id: string) {
