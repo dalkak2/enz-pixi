@@ -5,15 +5,14 @@ import {
     Container,
     Assets,
     Texture,
-    Graphics,
-    Color,
 } from "../deps/pixi.ts"
 
 import {
     EntryContainer,
     EntrySprite,
     EntryText,
-} from "./EntrySprite.ts"
+} from "./obj/mod.ts"
+
 import { Timer } from "./Timer.ts"
 
 const mod =

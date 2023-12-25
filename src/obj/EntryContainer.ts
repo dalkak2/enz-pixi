@@ -1,15 +1,13 @@
-import type { Object_ } from "../deps/enz.ts"
+import type { Object_ } from "../../deps/enz.ts"
 import {
-    Sprite,
     EventEmitter,
-    Text,
     Container,
     Graphics,
     Color,
-} from "../deps/pixi.ts"
-import type { Entry } from "./Entry.ts"
+} from "../../deps/pixi.ts"
+import type { Entry } from "../Entry.ts"
 
-interface EntryContainerData {
+export interface EntryContainerData {
     x: number
     y: number
     rotation: number
@@ -223,94 +221,5 @@ export abstract class EntryContainer extends EventEmitter {
         const scene = project.scenes[this.scene]
         const myPos = scene.children.findIndex(x => x == this.pixiSprite)
         scene.addChildAt(target, myPos + relativePos)
-    }
-}
-
-export class EntrySprite extends EntryContainer {
-
-    declare pixiSprite: Sprite
-
-    init() {
-        this.pixiSprite = new Sprite()
-        this.pixiSprite.anchor.set(0.5)
-    }
-    clone(project: Entry) {
-        const sprite = super.clone(project)
-        sprite.pixiSprite.texture = this.pixiSprite.texture
-        return sprite
-    }
-}
-
-export interface EntryTextData extends EntryContainerData {
-    font: string
-    colour: string
-    text: string
-    textAlign: 0 | 1 | 2
-    lineBreak: boolean
-    bgColor: string
-    underLine: boolean
-    strike: boolean
-    fontSize: number
-}
-
-export class EntryText extends EntryContainer {
-    
-    declare pixiSprite: Text
-
-    font
-    colour
-    lineBreak
-    bgColor
-    underLine
-    strike
-
-    get text() { return this.pixiSprite.text }
-    set text(text: string) { this.pixiSprite.text = text }
-
-    get textAlign() {
-        return ({
-            center: 0,
-            left: 1,
-            right: 2,
-        } as const)[this.pixiSprite.style.align as "center" | "left" | "right"]
-    }
-    set textAlign(i: 0 | 1 | 2) {
-        this.pixiSprite.style.align = ([
-            "center",
-            "left",
-            "right",
-        ] as const)[i]
-    }
-    
-    get fontSize() { return this.pixiSprite.style.fontSize }
-    set fontSize(fontSize: number) { this.pixiSprite.style.fontSize = fontSize }
-
-    constructor(data: EntryTextData) {
-        super(data)
-        this.font = data.font
-        this.colour = data.colour
-        this.text = data.text
-        this.textAlign = data.textAlign
-        this.lineBreak = data.lineBreak
-        this.bgColor = data.bgColor
-        this.underLine = data.underLine
-        this.strike = data.strike
-        this.fontSize = data.fontSize
-
-        if (data.lineBreak) {
-            this.pixiSprite.anchor.set(0.5)
-        } else {
-            this.pixiSprite.anchor.set([
-                0.5, // center
-                0,   // left
-                1,   // right
-            ][this.textAlign], 0.5)
-        }
-    }
-
-    init() {
-        this.pixiSprite = new Text({
-            renderMode: "html",
-        })
     }
 }
