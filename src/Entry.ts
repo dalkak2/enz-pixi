@@ -436,25 +436,41 @@ export class Entry {
 
     /* 붓 */
     brushes: Record<string, {
-        graphics: Graphics
-        listener: () => void
+        graphics?: Graphics
+        listener?: () => void
+        color?: string
+        width?: number
     }> = {}
     getBrush(obj: EntryContainer) {
         if (!this.brushes[obj.id]) {
-            const graphics = new Graphics()
             this.brushes[obj.id] = {
-                graphics,
-                listener: () => {
-                    graphics.lineTo(
-                        obj.pixiSprite.x,
-                        obj.pixiSprite.y,
-                    )
-                    graphics.stroke()
-                },
+                color: "red",
+                width: 10,
             }
+        }
+        if (!this.brushes[obj.id].graphics) {
+            const graphics = new Graphics()
+            this.brushes[obj.id].graphics = graphics
+            this.brushes[obj.id].listener = () => {
+                graphics.lineTo(
+                    obj.pixiSprite.x,
+                    obj.pixiSprite.y,
+                )
+                graphics.stroke()
+            }
+            /*
+                https://github.com/pixijs/pixijs/blob/v8.0.0-beta.11/src/scene/graphics/shared/utils/convertFillInputToFillStyle.ts#L92
+            */
+            graphics.strokeStyle.color = Color.shared.setValue(this.brushes[obj.id].color!).toNumber()
+            graphics.strokeStyle.width = this.brushes[obj.id].width
             obj.addSibling(this, graphics, 0)
         }
-        return this.brushes[obj.id]
+        return this.brushes[obj.id] as {
+            graphics: Graphics
+            listener: () => void
+            color: string
+            width: number
+        }
     }
 
     color(str: string) {
@@ -471,21 +487,21 @@ export class Entry {
         obj.off("move", this.getBrush(obj).listener)
     }
     set_color(color: string, obj: EntryContainer) {
-        /*
-            https://github.com/pixijs/pixijs/blob/v8.0.0-beta.11/src/scene/graphics/shared/utils/convertFillInputToFillStyle.ts#L92
-        */
-        this.getBrush(obj).graphics.strokeStyle.color = Color.shared.setValue(color).toNumber()
+        this.getBrush(obj).color = color
+        this.getBrush(obj).graphics.strokeStyle.color = Color.shared.setValue(this.brushes[obj.id].color!).toNumber()
     }
     change_thickness(n: number, obj: EntryContainer) {
-        this.getBrush(obj).graphics.strokeStyle.width! += n
+        this.getBrush(obj).width += n
+        this.getBrush(obj).graphics.strokeStyle.width = this.brushes[obj.id].width
     }
     set_thickness(n: number, obj: EntryContainer) {
-        this.getBrush(obj).graphics.strokeStyle.width = n
+        this.getBrush(obj).width = n
+        this.getBrush(obj).graphics.strokeStyle.width = this.brushes[obj.id].width
     }
     brush_erase_all(obj: EntryContainer) {
-        if (this.brushes[obj.id]) {
-            this.brushes[obj.id].graphics.destroy()
-            delete this.brushes[obj.id]
+        if (this.brushes[obj.id]?.graphics) {
+            this.brushes[obj.id].graphics!.destroy()
+            delete this.brushes[obj.id].graphics
         }
     }
 
