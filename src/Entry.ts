@@ -482,6 +482,12 @@ export class Entry {
     set_thickness(n: number, obj: EntryContainer) {
         this.getBrush(obj).graphics.strokeStyle.width = n
     }
+    brush_erase_all(obj: EntryContainer) {
+        if (this.brushes[obj.id]) {
+            this.brushes[obj.id].graphics.destroy()
+            delete this.brushes[obj.id]
+        }
+    }
 
     /* 글상자 */
     text_read(targetId: string, obj: EntryText) {
