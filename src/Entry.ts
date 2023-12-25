@@ -483,6 +483,9 @@ export class Entry {
             to - from,
         )
     }
+    play_bgm(soundId: string) {
+        this.sound_something_with_block(soundId)
+    }
 
     /* 판단 */
     /*
