@@ -518,7 +518,17 @@ export class Entry {
         if (op == "GREATER_OR_EQUAL")   return a >= b
         if (op == "LESS_OR_EQUAL")      return a <= b
     }
-
+    boolean_and_or(
+        a: boolean,
+        op: "AND" | "OR",
+        b: boolean,
+    ) {
+        if (op == "AND") return a && b
+        if (op == "OR")  return a || b
+    }
+    boolean_not(b: boolean) {
+        return !b
+    }
 
     /* 계산 */
     angle(n: number) {
