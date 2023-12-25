@@ -6,6 +6,7 @@ import {
     Assets,
     Texture,
     Graphics,
+    Color,
 } from "../deps/pixi.ts"
 
 import {
@@ -470,7 +471,10 @@ export class Entry {
         obj.off("move", this.getBrush(obj).listener)
     }
     set_color(color: string, obj: EntryContainer) {
-        // TODO
+        /*
+            https://github.com/pixijs/pixijs/blob/v8.0.0-beta.11/src/scene/graphics/shared/utils/convertFillInputToFillStyle.ts#L92
+        */
+        this.getBrush(obj).graphics.strokeStyle.color = Color.shared.setValue(color).toNumber()
     }
     change_thickness(n: number, obj: EntryContainer) {
         this.getBrush(obj).graphics.strokeStyle.width! += n
