@@ -10,6 +10,7 @@ export abstract class EntryBrush extends EntryContainer {
     protected dataUpdate(sprite: this): void {
         sprite._strokeColor = this._strokeColor
         sprite._strokeThickness = this._strokeThickness
+        sprite._brushTransparency = this._brushTransparency
     }
 
     hasBrush = false
