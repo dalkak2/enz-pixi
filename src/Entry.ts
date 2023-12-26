@@ -465,6 +465,7 @@ export class Entry {
     brush_erase_all(obj: EntryContainer) {
         obj._brushGraphics?.destroy()
         delete obj._brushGraphics
+        obj.hasBrush = false
         this.stop_drawing(obj)
     }
 
