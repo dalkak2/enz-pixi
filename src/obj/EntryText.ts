@@ -1,8 +1,6 @@
 import { Text } from "../../deps/pixi.ts"
-import {
-    EntryContainer,
-    type EntryContainerData,
-} from "./EntryContainer.ts"
+import type { EntryContainerData } from "./EntryContainer.ts"
+import { EntryBrush } from "./EntryBrush.ts"
 
 export interface EntryTextData extends EntryContainerData {
     font: string
@@ -16,7 +14,7 @@ export interface EntryTextData extends EntryContainerData {
     fontSize: number
 }
 
-export class EntryText extends EntryContainer {
+export class EntryText extends EntryBrush {
     
     declare pixiSprite: Text
 

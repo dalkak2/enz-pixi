@@ -1,8 +1,8 @@
 import { Sprite } from "../../deps/pixi.ts"
-import { EntryContainer } from "./EntryContainer.ts"
+import { EntryBrush } from "./EntryBrush.ts"
 import type { Entry } from "../Entry.ts"
 
-export class EntrySprite extends EntryContainer {
+export class EntrySprite extends EntryBrush {
 
     declare pixiSprite: Sprite
 
