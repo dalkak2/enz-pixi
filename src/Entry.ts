@@ -440,6 +440,7 @@ export class Entry {
     start_drawing(obj: EntryContainer) {
         const { graphics, lineListener } = obj.getBrush(graphics => {
             obj.addSibling(this, graphics, 0)
+            obj.hasBrush = true
         })
         graphics.moveTo(
             obj.pixiSprite.x,

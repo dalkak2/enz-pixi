@@ -36,6 +36,7 @@ export abstract class EntryContainer extends EventEmitter {
     objectType: string
     textureIds: string[]
 
+    hasBrush = false
     _brushGraphics?: Graphics
     _lineListener?: () => void
     getBrush(onGraphicsInit?: (graphics: Graphics) => void) {
@@ -199,10 +200,10 @@ export abstract class EntryContainer extends EventEmitter {
 
         pixiSprite.scale = this.pixiSprite.scale
 
-        this.addSibling(project, sprite.pixiSprite, 0)
-
         sprite._strokeColor = this._strokeColor
         sprite._strokeThickness = this._strokeThickness
+
+        this.addSibling(project, sprite.pixiSprite, 0)
         
         sprite.emit("clone")
 
@@ -220,6 +221,11 @@ export abstract class EntryContainer extends EventEmitter {
     ) {
         const scene = project.scenes[this.scene]
         const myPos = scene.children.findIndex(x => x == this.pixiSprite)
-        scene.addChildAt(target, myPos + relativePos)
+        scene.addChildAt(
+            target,
+            myPos
+                + relativePos
+                + (this.hasBrush ? -1 : 0)
+        )
     }
 }
