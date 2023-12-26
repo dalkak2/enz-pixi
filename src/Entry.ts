@@ -9,6 +9,7 @@ import {
 
 import {
     EntryContainer,
+    EntryBrush,
     EntrySprite,
     EntryText,
 } from "./obj/mod.ts"
@@ -437,7 +438,7 @@ export class Entry {
     color(str: string) {
         return str
     }
-    start_drawing(obj: EntryContainer) {
+    start_drawing(obj: EntryBrush) {
         const { graphics, lineListener } = obj.getBrush(graphics => {
             obj.addSibling(this, graphics, 0)
             obj.hasBrush = true
@@ -448,30 +449,30 @@ export class Entry {
         )
         obj.on("move", lineListener)
     }
-    stop_drawing(obj: EntryContainer) {
+    stop_drawing(obj: EntryBrush) {
         if (obj._lineListener) {
             obj.off("move", obj._lineListener)
         }
     }
-    set_color(color: string, obj: EntryContainer) {
+    set_color(color: string, obj: EntryBrush) {
         obj.strokeColor = color
     }
-    change_thickness(n: number, obj: EntryContainer) {
+    change_thickness(n: number, obj: EntryBrush) {
         obj.strokeThickness += n
     }
-    set_thickness(n: number, obj: EntryContainer) {
+    set_thickness(n: number, obj: EntryBrush) {
         obj.strokeThickness = n
     }
-    change_brush_transparency(n: number, obj: EntryContainer) {
+    change_brush_transparency(n: number, obj: EntryBrush) {
         obj.brushTransparency += n
     }
     /**
      * "TRAN-PARENCY!"
      */
-    set_brush_tranparency(n: number, obj: EntryContainer) {
+    set_brush_tranparency(n: number, obj: EntryBrush) {
         obj.brushTransparency = n
     }
-    brush_erase_all(obj: EntryContainer) {
+    brush_erase_all(obj: EntryBrush) {
         obj._brushGraphics?.destroy()
         delete obj._brushGraphics
         obj.hasBrush = false
