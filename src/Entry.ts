@@ -462,6 +462,15 @@ export class Entry {
     set_thickness(n: number, obj: EntryContainer) {
         obj.strokeThickness = n
     }
+    change_brush_transparency(n: number, obj: EntryContainer) {
+        obj.brushTransparency += n
+    }
+    /**
+     * "TRAN-PARENCY!"
+     */
+    set_brush_tranparency(n: number, obj: EntryContainer) {
+        obj.brushTransparency = n
+    }
     brush_erase_all(obj: EntryContainer) {
         obj._brushGraphics?.destroy()
         delete obj._brushGraphics

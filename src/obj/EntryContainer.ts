@@ -44,6 +44,7 @@ export abstract class EntryContainer extends EventEmitter {
             this._brushGraphics = new Graphics()
             this.strokeColor = this.strokeColor
             this.strokeThickness = this.strokeThickness
+            this.brushTransparency = this.brushTransparency
 
             this._lineListener = () => {
                 this._brushGraphics!.lineTo(
@@ -82,6 +83,17 @@ export abstract class EntryContainer extends EventEmitter {
         this._strokeThickness = n
         if (this._brushGraphics) {
             this._brushGraphics.strokeStyle.width = n
+        }
+    }
+    
+    _brushTransparency?: number
+    get brushTransparency() {
+        return this._brushTransparency || 0
+    }
+    set brushTransparency(n: number) {
+        this._brushTransparency = n
+        if (this._brushGraphics) {
+            this._brushGraphics.alpha = 1 - n / 100
         }
     }
 
