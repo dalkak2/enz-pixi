@@ -433,6 +433,39 @@ export class Entry {
     flip_y(obj: EntryContainer) {
         obj.pixiSprite.scale.x *= -1
     }
+    change_object_index(
+        type:
+            | "FRONT"
+            | "FORWARD"
+            | "BACKWARD"
+            | "BACK",
+        obj: EntryContainer,
+    ) {
+        const scene = this.scenes[obj.scene]
+        let newIndex: number
+        switch (type) {
+            case "FRONT":
+                newIndex = scene.children.length - 1
+                break
+            case "FORWARD":
+                newIndex = Math.min(
+                    scene.children.indexOf(obj.pixiSprite) + 1,
+                    scene.children.length - 1,
+                )
+                break
+            case "BACKWARD":
+                newIndex = Math.max(
+                    scene.children.indexOf(obj.pixiSprite) - 1,
+                    0,
+                )
+                break
+            case "BACK":
+                newIndex = 0
+                break
+        }
+        
+        scene.setChildIndex(obj.pixiSprite, newIndex)
+    }
 
     /* 붓 */
     color(str: string) {
