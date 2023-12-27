@@ -85,9 +85,10 @@ export class Entry {
             this.project.objects.map(({sprite}) =>
                 sprite.pictures.map(
                     async ({id, fileurl, filename, imageType, name}) => {
+                        // 엔트리 svg 지원 이전에는 imageType 정보가 없었던 것으로 보임
                         let url = `/image/${
                             filename
-                            ? (filename + `.${imageType}`)
+                            ? (filename + `.${imageType || "png"}`)
                             : fileurl!.substring(1)
                         }`
 

@@ -61,16 +61,16 @@ class PixiVisitor extends Visitor {
         return this.scriptToExpressions(script)
             .map(expr => expr.replaceAll(`"$obj$"`, "this") as cg.Expression)
     }
-    blockGroupToExpressions(blockGroup: Block[]) {
+    blockGroupToExpressions(blockGroup: Block[] = []) {
         return blockGroup.map(
             this.blockToExpression.bind(this)
         ).join("\n")
     }
     normalBlockToExpression(block: Block) {
         const params = this.paramsToExpressions(block.params)
-        const statements = block.statements.map(
+        const statements = block.statements?.map(
             this.blockGroupToExpressions.bind(this)
-        )
+        ) || []
 
         switch (block.type) {
             case "repeat_basic": {
