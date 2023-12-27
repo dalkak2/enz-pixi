@@ -38,7 +38,15 @@ const numberNormalize =
 export class Entry {
     project
     renderer?: Renderer
+
     audioContext = new AudioContext()
+    gainNode = this.audioContext.createGain()
+    get volume() {
+        return this.gainNode.gain.value * 100
+    }
+    set volume(n: number) {
+        this.gainNode.gain.value = n / 100
+    }
 
     events: Record<string, (() => Promise<void>)[]>
     scenes: Record<string, Container> = {}
@@ -53,6 +61,8 @@ export class Entry {
     timer = new Timer()
 
     constructor(project: Project) {
+        this.gainNode.connect(this.audioContext.destination)
+
         this.project = project
         this.events = {}
 
@@ -206,7 +216,7 @@ export class Entry {
         return new Promise(o => {
             const source = this.audioContext.createBufferSource()
             source.buffer = this.sounds[soundId]
-            source.connect(this.audioContext.destination)
+            source.connect(this.gainNode)
             source.addEventListener("ended", o)
             source.start(
                 this.audioContext.currentTime,
@@ -595,6 +605,15 @@ export class Entry {
     }
     get_sound_duration(soundId: string) {
         return this.sounds[soundId].duration
+    }
+    get_sound_volume() {
+        return this.volume
+    }
+    sound_volume_change(n: number) {
+        this.volume += n
+    }
+    sound_volume_set(n: number) {
+        this.volume = n
     }
     play_bgm(soundId: string) {
         this.sound_something_with_block(soundId)
