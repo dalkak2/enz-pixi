@@ -28,6 +28,7 @@ Deno.test("build", async () => {
     })
     await build("/src/Entry.ts")
     await build("/src/obj/mod.ts")
+    await build("/src/obj/EntryBrush.ts")
     await build("/src/obj/EntryContainer.ts")
     await build("/src/obj/EntrySprite.ts")
     await build("/src/obj/EntryText.ts")
