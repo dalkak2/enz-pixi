@@ -610,10 +610,10 @@ export class Entry {
         return this.volume
     }
     sound_volume_change(n: number) {
-        this.volume += n
+        this.sound_volume_set(this.volume + n)
     }
     sound_volume_set(n: number) {
-        this.volume = n
+        this.volume = Math.min(Math.max(0, n), 100)
     }
     play_bgm(soundId: string) {
         this.sound_something_with_block(soundId)
