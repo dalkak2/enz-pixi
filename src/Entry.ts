@@ -358,11 +358,26 @@ export class Entry {
     hide(obj: EntryContainer) {
         obj.visible = false
     }
+    async dialog_time(
+        text: string,
+        sec: number,
+        type: "speak" | "think",
+        obj: EntryContainer,
+    ) {
+        console.log(
+            `Object_${obj.id} ${obj.name} ${type}s:`,
+            text,
+        )
+        await this.wait_second(sec)
+    }
     dialog(text: string, type: "speak" | "think", obj: EntryContainer) {
         console.log(
             `Object_${obj.id} ${obj.name} ${type}s:`,
             text,
         )
+    }
+    remove_dialog() {
+        console.log("skip:", "remove_dialog")
     }
     change_to_some_shape(shapeIdOrIndex: string | number, obj: EntrySprite) {
         // TODO: convert to number in server
@@ -740,6 +755,9 @@ export class Entry {
         if (action == "STOP")   this.timer.stop()
         if (action == "RESET")  this.timer.reset()
     }
+    set_visible_project_timer() {
+        console.log("skip:", "set_visible_project_timer")
+    }
     get_date(
         type:
             | "YEAR"
@@ -824,6 +842,12 @@ export class Entry {
     set_variable(id: string, value: string | number) {
         this.variables[id] = value
     }
+    show_variable() {
+        console.log("skip:", "show_variable")
+    }
+    hide_variable() {
+        console.log("skip:", "hide_variable")
+    }
     value_of_index_from_list(id: string, i: number) {
         if (!Array.isArray(this.variables[id])) {
             throw new Error(`${id} is not array`)
@@ -873,5 +897,11 @@ export class Entry {
             throw new Error(`${id} is not array`)
         }
         return (this.variables[id] as (string | number)[]).includes(value)
+    }
+    show_list() {
+        console.log("skip:", "show_list")
+    }
+    hide_list() {
+        console.log("skip:", "hide_list")
     }
 }
