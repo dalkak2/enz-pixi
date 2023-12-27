@@ -593,6 +593,9 @@ export class Entry {
             to - from,
         )
     }
+    get_sound_duration(soundId: string) {
+        return this.sounds[soundId].duration
+    }
     play_bgm(soundId: string) {
         this.sound_something_with_block(soundId)
     }
