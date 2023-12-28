@@ -539,6 +539,9 @@ export class Entry {
     }
 
     /* 글상자 */
+    text_color(str: string) {
+        return str
+    }
     text_read(targetId: string, obj: EntryText) {
         const target =
             targetId == "self"
