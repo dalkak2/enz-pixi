@@ -19,7 +19,6 @@ export class EntryText extends EntryBrush {
     declare pixiSprite: Text
 
     font
-    colour
     lineBreak
     bgColor
     underLine
@@ -27,6 +26,14 @@ export class EntryText extends EntryBrush {
 
     get text() { return this.pixiSprite.text }
     set text(text: string) { this.pixiSprite.text = text }
+
+    _colour: string = "black"
+    get colour() {
+        return this._colour
+    }
+    set colour(colour: string) {
+        this.pixiSprite.style.fill = colour
+    }
 
     get textAlign() {
         return ({
