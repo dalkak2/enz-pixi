@@ -177,6 +177,13 @@ export class Entry {
             resolution: 4
         })
         parent.appendChild(this.renderer.canvas)
+
+        parent.addEventListener("pointerdown", () => {
+            this.emit("pointerdown")
+        })
+        parent.addEventListener("pointerup", () => {
+            this.emit("pointerup")
+        })
         
         const loop = () => {
             this.render()
@@ -236,6 +243,12 @@ export class Entry {
                 f()
             }
         })
+    }
+    mouse_clicked(f: () => Promise<void>) {
+        this.on("pointerdown", f)
+    }
+    mouse_click_cancled(f: () => Promise<void>) {
+        this.on("pointerup", f)
     }
     when_object_click(f: () => Promise<void>, obj: EntryContainer) {
         obj.setEventMode("static")
