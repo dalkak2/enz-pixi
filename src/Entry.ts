@@ -397,7 +397,7 @@ export class Entry {
         }
         const dx = target.x - obj.x
         const dy = target.y - obj.y
-        obj.rotation = - toDegrees(dy / dx) - obj.direction + (dx > 0 ? 90 : 270)
+        obj.rotation = - toDegrees(Math.atan(dy / dx)) - obj.direction + (dx > 0 ? 90 : 270)
     }
     move_to_angle(angle: number, n: number, obj: EntryContainer) {
         obj.x += n * Math.sin(toRadian(angle))
