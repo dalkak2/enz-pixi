@@ -4,6 +4,7 @@ import {
     cg,
     Block,
     Project,
+    idCheck,
 } from "../deps/enz.ts"
 import JSON5 from "https://esm.sh/json5@2.2.3?pin=v135"
 
@@ -32,6 +33,7 @@ class PixiVisitor extends Visitor {
             sprite,
             objectType,
         } = object
+        idCheck(object.id)
         return ``
             + `class Obj_${object.id} extends ${
                 {
