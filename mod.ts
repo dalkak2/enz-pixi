@@ -83,7 +83,10 @@ app.get("/src/*", scriptHandler)
 app.use("/deps/*", etag({weak: true}))
 app.get("/deps/*", scriptHandler)
 
-app.get("/image/lib/entry-js/images/*", async c => {
+
+// /image/lib/entryjs/images/
+// /image/lib/entry-js/images/
+app.get("/image/lib/*/images/*", async c => {
     const path = new URL(c.req.url).pathname
         .replace(/^\/image\//, "https://playentry.org/")
     return c.body(
