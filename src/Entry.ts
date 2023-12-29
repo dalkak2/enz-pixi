@@ -870,6 +870,19 @@ export class Entry {
                 return new Date().getSeconds()
         }
     }
+    distance_something(targetId: string, obj: EntryContainer) {
+        let target: { x: number, y: number }
+        if (targetId == "mouse") {
+            target = this.mouse
+        } else {
+            target = this.objects[targetId]
+        }
+        const dx = target.x - obj.x
+        const dy = target.y - obj.y
+        return Math.sqrt(
+            dx**2 + dy**2
+        )
+    }
     length_of_string(str: string) {
         return str.length
     }
