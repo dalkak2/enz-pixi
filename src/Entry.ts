@@ -389,9 +389,12 @@ export class Entry {
         obj.direction = angle
     }
     see_angle_object(objId: string, obj: EntryContainer) {
-        if (objId == "mouse")
-            throw new Error("Unimplemented: locate to mouse")
-        const target = this.objects[objId]
+        let target: { x: number, y: number }
+        if (objId == "mouse") {
+            target = this.mouse
+        } else {
+            target = this.objects[objId]
+        }
         const dx = target.x - obj.x
         const dy = target.y - obj.y
         obj.rotation = - toDegrees(dy / dx) - obj.direction + (dx > 0 ? 90 : 270)
