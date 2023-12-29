@@ -365,10 +365,13 @@ export class Entry {
         obj.emit("move")
     }
     locate(objId: string, obj: EntryContainer) {
-        if (objId == "mouse")
-            throw new Error("Unimplemented: locate to mouse")
-        obj.x = this.objects[objId].x
-        obj.y = this.objects[objId].y
+        if (objId == "mouse") {
+            obj.x = this.mouseX
+            obj.y = this.mouseY
+        } else {
+            obj.x = this.objects[objId].x
+            obj.y = this.objects[objId].y
+        }
         obj.emit("move", obj)
     }
     rotate_relative(angle: number, obj: EntryContainer) {
