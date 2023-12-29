@@ -177,4 +177,10 @@ export abstract class EntryContainer extends EventEmitter {
         const myPos = scene.children.findIndex(x => x == this.pixiSprite)
         scene.addChildAt(target, myPos + relativePos)
     }
+    setEventMode(eventMode: "static" | "dynamic") {
+        if (this.pixiSprite.eventMode == "dynamic") {
+            return
+        }
+        this.pixiSprite.eventMode = eventMode
+    }
 }

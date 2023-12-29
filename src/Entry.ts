@@ -237,6 +237,14 @@ export class Entry {
             }
         })
     }
+    when_object_click(f: () => Promise<void>, obj: EntryContainer) {
+        obj.setEventMode("static")
+        obj.pixiSprite.on("pointerdown", f)
+    }
+    when_object_click_canceled(f: () => Promise<void>, obj: EntryContainer) {
+        obj.setEventMode("static")
+        obj.pixiSprite.on("pointerup", f)
+    }
     when_message_cast(messageId: string, f: () => Promise<void>) {
         this.on(`message_${messageId}`, f)
     }
