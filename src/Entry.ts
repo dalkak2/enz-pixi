@@ -61,6 +61,8 @@ export class Entry {
     timer = new Timer()
 
     isClicked = false
+    mouseX = 0
+    mouseY = 0
 
     constructor(project: Project) {
         this.gainNode.connect(this.audioContext.destination)
@@ -178,15 +180,26 @@ export class Entry {
             backgroundColor: "#fff",
             resolution: 4
         })
-        parent.appendChild(this.renderer.canvas)
 
-        parent.addEventListener("pointerdown", () => {
+        const canvas = this.renderer.canvas
+        console.log(this.renderer.events.features)
+
+        parent.appendChild(canvas)
+
+        canvas.addEventListener("pointerdown", () => {
             this.isClicked = true
             this.emit("pointerdown")
         })
-        parent.addEventListener("pointerup", () => {
+        canvas.addEventListener("pointerup", () => {
             this.isClicked = false
             this.emit("pointerup")
+        })
+        Object.values(this.scenes).map(scene => {
+            scene.eventMode = "static"
+            scene.addEventListener("globalpointermove", e => {
+                this.mouseX = e.globalX - 240
+                this.mouseY = 135 - e.globalY
+            })
         })
         
         const loop = () => {
@@ -718,6 +731,10 @@ export class Entry {
     }
     calc_rand(a: number, b: number) {
         return Math.random() * (b - a) + a
+    }
+    coordinate_mouse(type: "x" | "y") {
+        if (type == "x") return this.mouseX
+        if (type == "y") return this.mouseY
     }
     coordinate_object(
         targetId: string,
