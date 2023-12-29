@@ -662,6 +662,9 @@ export class Entry {
     is_clicked() {
         return this.isClicked
     }
+    is_object_clicked(obj: EntryContainer) {
+        return obj.isClicked
+    }
     is_press_some_key(keyCode: string) {
         return !!this.pressedKeys[Number(keyCode)]
     }

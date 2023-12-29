@@ -90,6 +90,21 @@ export abstract class EntryContainer extends EventEmitter {
         this.pixiSprite.alpha = 1 - (n / 100)
     }
 
+    _isClicked?: boolean
+    get isClicked() {
+        if (typeof this._isClicked == "undefined") {
+            this.setEventMode("static")
+            this.pixiSprite.on("pointerdown", () => {
+                this._isClicked = true
+            })
+            this.pixiSprite.on("pointerup", () => {
+                this._isClicked = false
+            })
+            this._isClicked = false
+        }
+        return this._isClicked
+    }
+
     destroy() {
         this.pixiSprite.destroy()
     }
