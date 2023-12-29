@@ -60,6 +60,8 @@ export class Entry {
 
     timer = new Timer()
 
+    isClicked = false
+
     constructor(project: Project) {
         this.gainNode.connect(this.audioContext.destination)
 
@@ -179,9 +181,11 @@ export class Entry {
         parent.appendChild(this.renderer.canvas)
 
         parent.addEventListener("pointerdown", () => {
+            this.isClicked = true
             this.emit("pointerdown")
         })
         parent.addEventListener("pointerup", () => {
+            this.isClicked = false
             this.emit("pointerup")
         })
         
@@ -655,6 +659,9 @@ export class Entry {
         False
         ```
     */
+    is_clicked() {
+        return this.isClicked
+    }
     is_press_some_key(keyCode: string) {
         return !!this.pressedKeys[Number(keyCode)]
     }
