@@ -184,7 +184,6 @@ export class Entry {
         })
 
         const canvas = this.renderer.canvas
-        console.log(this.renderer.events.features)
 
         parent.appendChild(canvas)
 
