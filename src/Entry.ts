@@ -61,8 +61,10 @@ export class Entry {
     timer = new Timer()
 
     isClicked = false
-    mouseX = 0
-    mouseY = 0
+    mouse = {
+        x: 0,
+        y: 0,
+    }
 
     constructor(project: Project) {
         this.gainNode.connect(this.audioContext.destination)
@@ -197,8 +199,8 @@ export class Entry {
         Object.values(this.scenes).map(scene => {
             scene.eventMode = "static"
             scene.addEventListener("globalpointermove", e => {
-                this.mouseX = e.globalX - 240
-                this.mouseY = 135 - e.globalY
+                this.mouse.x = e.globalX - 240
+                this.mouse.y = 135 - e.globalY
             })
         })
         
@@ -366,8 +368,8 @@ export class Entry {
     }
     locate(objId: string, obj: EntryContainer) {
         if (objId == "mouse") {
-            obj.x = this.mouseX
-            obj.y = this.mouseY
+            obj.x = this.mouse.x
+            obj.y = this.mouse.y
         } else {
             obj.x = this.objects[objId].x
             obj.y = this.objects[objId].y
@@ -736,8 +738,8 @@ export class Entry {
         return Math.random() * (b - a) + a
     }
     coordinate_mouse(type: "x" | "y") {
-        if (type == "x") return this.mouseX
-        if (type == "y") return this.mouseY
+        if (type == "x") return this.mouse.x
+        if (type == "y") return this.mouse.y
     }
     coordinate_object(
         targetId: string,
