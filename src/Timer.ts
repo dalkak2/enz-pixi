@@ -16,6 +16,8 @@ export class Timer {
     }
     reset() {
         this.acc = 0
-        this.checkpoint = Date.now()
+        if (this.checkpoint) {
+            this.checkpoint = Date.now()
+        }
     }
 }
