@@ -688,6 +688,12 @@ export class Entry {
     is_press_some_key(keyCode: string) {
         return !!this.pressedKeys[Number(keyCode)]
     }
+    reach_something(targetId: string, obj: EntryContainer) {
+        if (targetId == "mouse") {
+            return obj.isTouched
+        }
+        throw new Error("reach_something - mouse 제외 미구현")
+    }
     boolean_basic_operator(
         a: number | string,
         op:

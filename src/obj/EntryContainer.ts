@@ -104,6 +104,21 @@ export abstract class EntryContainer extends EventEmitter {
         }
         return this._isClicked
     }
+    
+    _isTouched?: boolean
+    get isTouched() {
+        if (typeof this._isTouched == "undefined") {
+            this.setEventMode("static")
+            this.pixiSprite.on("pointerenter", () => {
+                this._isTouched = true
+            })
+            this.pixiSprite.on("pointerleave", () => {
+                this._isTouched = false
+            })
+            this._isTouched = false
+        }
+        return this._isTouched
+    }
 
     destroy() {
         this.pixiSprite.destroy()
