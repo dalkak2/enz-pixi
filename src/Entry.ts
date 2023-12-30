@@ -893,6 +893,12 @@ export class Entry {
             dx**2 + dy**2
         )
     }
+    get_user_name() {
+        return " "
+    }
+    get_nickname() {
+        return " "
+    }
     length_of_string(str: string) {
         return str.length
     }
