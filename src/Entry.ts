@@ -89,10 +89,10 @@ export class Entry {
     async init(parent: HTMLElement) {
         this.variables = Object.fromEntries(
             this.project.variables.map(
-                ({id, value, array}) => {
+                ({id, value, array, variableType}) => {
                     return [
                         id,
-                        array?.length
+                        variableType == "list"
                             ? array?.map(({data}) => data)
                             : value,
                     ]
