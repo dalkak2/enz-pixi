@@ -608,8 +608,17 @@ export class Entry {
     text_prepend(str: string, obj: EntryText) {
         obj.text = str + obj.text
     }
+    text_change_effect() {
+        console.log("skip (todo):", "text_change_effect")
+    }
+    text_change_font() {
+        console.log("skip (todo):", "text_change_font")
+    }
     text_change_font_color(color: string, obj: EntryText) {
         obj.colour = color
+    }
+    text_change_bg_color() {
+        console.log("skip (todo):", "text_change_bg_color")
     }
     text_flush(obj: EntryText) {
         obj.text = ""
