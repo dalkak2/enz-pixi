@@ -93,7 +93,7 @@ app.get("/image/lib/*/images/*", async c => {
         await api.image(path),
         {
             headers: {
-                "cache-control": "max-age=31536000, public"
+                "cache-control": "max-age=31536000, public, immutable"
             }
         },
     )
@@ -111,7 +111,7 @@ app.get("/image/:id", async c => {
         ),
         {
             headers: {
-                "cache-control": "max-age=31536000, public"
+                "cache-control": "max-age=31536000, public, immutable"
             }
         },
     )
@@ -123,7 +123,7 @@ app.get("/sound/lib/entry-js/images/*", async c => {
         await api.image(path),
         {
             headers: {
-                "cache-control": "max-age=31536000, public"
+                "cache-control": "max-age=31536000, public, immutable"
             }
         },
     )
@@ -141,7 +141,7 @@ app.get("/sound/:id", async c => {
         ),
         {
             headers: {
-                "cache-control": "max-age=31536000, public"
+                "cache-control": "max-age=31536000, public, immutable"
             }
         },
     )
