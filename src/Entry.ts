@@ -899,20 +899,20 @@ export class Entry {
     get_nickname() {
         return " "
     }
-    length_of_string(str: string) {
-        return str.length
+    length_of_string(str: string | number) {
+        return String(str).length
     }
-    count_match_string(where: string, what: string) {
-        return where.match(new RegExp(`(?=${what})`, "g"))?.length || 0
+    count_match_string(where: string | number, what: string) {
+        return String(where).match(new RegExp(`(?=${what})`, "g"))?.length || 0
     }
     combine_something(a: string | number, b: string | number) {
         return `${a}${b}`
     }
-    char_at(str: string, i: number) {
-        return str[i - 1]
+    char_at(str: string | number, i: number) {
+        return String(str)[i - 1]
     }
-    substring(where: string, from: number, to: number) {
-        return where.substring(
+    substring(where: string | number, from: number, to: number) {
+        return String(where).substring(
             Math.min(from, to) - 1,
             Math.max(from, to),
         )
@@ -920,17 +920,17 @@ export class Entry {
     index_of_string(where: string | number, what: string) {
         return String(where).indexOf(what) + 1
     }
-    replace_string(where: string, from: string, to: string) {
-        return where.replaceAll(from, to)
+    replace_string(where: string | number, from: string, to: string) {
+        return String(where).replaceAll(from, to)
     }
-    reverse_of_string(str: string) {
-        return str.split("").reverse().join("")
+    reverse_of_string(str: string | number) {
+        return String(str).split("").reverse().join("")
     }
     change_string_case(
-        str: string,
+        str: string | number,
         type: "toUpperCase" | "toLowerCase",
     ) {
-        return str[type]()
+        return String(str)[type]()
     }
     change_rgb_to_hex(
         r: number,
