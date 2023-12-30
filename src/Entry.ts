@@ -92,7 +92,9 @@ export class Entry {
                 ({id, value, array}) => {
                     return [
                         id,
-                        array?.map(({data}) => data) || value,
+                        array?.length
+                            ? array?.map(({data}) => data)
+                            : value,
                     ]
                 }
             )
