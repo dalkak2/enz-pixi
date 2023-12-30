@@ -917,8 +917,8 @@ export class Entry {
             Math.max(from, to),
         )
     }
-    index_of_string(where: string, what: string) {
-        return where.indexOf(what) + 1
+    index_of_string(where: string | number, what: string) {
+        return String(where).indexOf(what) + 1
     }
     replace_string(where: string, from: string, to: string) {
         return where.replaceAll(from, to)
