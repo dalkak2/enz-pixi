@@ -225,7 +225,7 @@ export class Entry {
         this.events[eventName].push(f)
     }
     start() {
-        this.emit("start")
+        this.emit(`run_scene_${this.currentScene.label}`)
     }
     render() {
         this.renderer!.render({
@@ -252,8 +252,11 @@ export class Entry {
     }
 
     /* 시작 */
-    when_run_button_click(f: () => Promise<void>) {
-        this.on("start", f)
+    when_run_button_click(
+        f: () => Promise<void>,
+        obj: EntryContainer,
+    ) {
+        this.on(`run_scene_${obj.scene}`, f)
     }
     when_some_key_pressed(keyCode: string, f: () => Promise<void>) {
         document.body.addEventListener("keydown", e => {
