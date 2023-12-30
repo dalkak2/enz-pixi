@@ -76,6 +76,16 @@ export class EntryText extends EntryBrush {
         }
     }
 
+    cloneGetters() {
+        return {
+            ...super.cloneGetters(),
+            text: this.text,
+            colour: this.colour,
+            textAlign: this.textAlign,
+            fontSize: this.fontSize,
+        }
+    }
+
     init() {
         this.pixiSprite = new Text({
             renderMode: "html",

@@ -167,17 +167,21 @@ export abstract class EntryContainer extends EventEmitter {
      */
     protected dataUpdate(_sprite: this) {}
 
-    clone(project: Entry) {
-        const sprite = new (this.constructor as new (data: EntryContainerData) => this)({
-            ...this,
-
-            // Object spread doesn't contain getters
+    cloneGetters() {
+        return {
             size: this.size,
             x: this.x,
             y: this.y,
             rotation: this.rotation,
             visible: this.visible,
             transparency: this.transparency,
+        }
+    }
+
+    clone(project: Entry) {
+        const sprite = new (this.constructor as new (data: EntryContainerData) => this)({
+            ...this,
+            ...this.cloneGetters(),
 
             isClone: true,
         })
