@@ -194,7 +194,7 @@ export abstract class EntryContainer extends EventEmitter {
 
         this.dataUpdate(sprite)
 
-        ;(this.parent || this).children.push(sprite)
+        ;(sprite.parent = this.parent || this).children.push(sprite)
 
         this.addSibling(project, sprite.pixiSprite, 0)
         
