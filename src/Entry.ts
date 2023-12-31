@@ -548,9 +548,9 @@ export class Entry {
         return str
     }
     start_drawing(obj: EntryBrush) {
-        const { graphics, lineListener } = obj.getBrush(graphics => {
+        const { graphics, lineListener } = obj.getStrokeBrush(graphics => {
             obj.addSibling(this, graphics, 0)
-            obj.hasBrush = true
+            obj.hasStrokeBrush = true
         })
         graphics.moveTo(
             obj.pixiSprite.x,
@@ -582,9 +582,9 @@ export class Entry {
         obj.brushTransparency = n
     }
     brush_erase_all(obj: EntryBrush) {
-        obj._brushGraphics?.destroy()
-        delete obj._brushGraphics
-        obj.hasBrush = false
+        obj._strokeBrush?.destroy()
+        delete obj._strokeBrush
+        obj.hasStrokeBrush = false
         this.stop_drawing(obj)
     }
 

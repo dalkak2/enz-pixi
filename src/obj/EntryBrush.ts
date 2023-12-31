@@ -13,27 +13,27 @@ export abstract class EntryBrush extends EntryContainer {
         sprite._brushTransparency = this._brushTransparency
     }
 
-    hasBrush = false
-    _brushGraphics?: Graphics
+    hasStrokeBrush = false
+    _strokeBrush?: Graphics
     _lineListener?: () => void
-    getBrush(onGraphicsInit?: (graphics: Graphics) => void) {
-        if (!this._brushGraphics) {
-            this._brushGraphics = new Graphics()
+    getStrokeBrush(onGraphicsInit?: (graphics: Graphics) => void) {
+        if (!this._strokeBrush) {
+            this._strokeBrush = new Graphics()
             this.strokeColor = this.strokeColor
             this.strokeThickness = this.strokeThickness
             this.brushTransparency = this.brushTransparency
 
             this._lineListener = () => {
-                this._brushGraphics!.lineTo(
+                this._strokeBrush!.lineTo(
                     this.pixiSprite.x,
                     this.pixiSprite.y,
                 )
-                this._brushGraphics!.stroke()
+                this._strokeBrush!.stroke()
             }
-            onGraphicsInit?.(this._brushGraphics)
+            onGraphicsInit?.(this._strokeBrush)
         }
         return {
-            graphics: this._brushGraphics!,
+            graphics: this._strokeBrush!,
             lineListener: this._lineListener!,
         }
     }
@@ -47,8 +47,8 @@ export abstract class EntryBrush extends EntryContainer {
         /*
             https://github.com/pixijs/pixijs/blob/v8.0.0-beta.11/src/scene/graphics/shared/utils/convertFillInputToFillStyle.ts#L92
         */
-        if (this._brushGraphics) {
-            this._brushGraphics.strokeStyle.color = Color.shared.setValue(color).toNumber()
+        if (this._strokeBrush) {
+            this._strokeBrush.strokeStyle.color = Color.shared.setValue(color).toNumber()
         }
     }
 
@@ -58,8 +58,8 @@ export abstract class EntryBrush extends EntryContainer {
     }
     set strokeThickness(n: number) {
         this._strokeThickness = n
-        if (this._brushGraphics) {
-            this._brushGraphics.strokeStyle.width = n
+        if (this._strokeBrush) {
+            this._strokeBrush.strokeStyle.width = n
         }
     }
     
@@ -69,8 +69,8 @@ export abstract class EntryBrush extends EntryContainer {
     }
     set brushTransparency(n: number) {
         this._brushTransparency = n
-        if (this._brushGraphics) {
-            this._brushGraphics.alpha = 1 - n / 100
+        if (this._strokeBrush) {
+            this._strokeBrush.alpha = 1 - n / 100
         }
     }
     addSibling(
@@ -84,7 +84,7 @@ export abstract class EntryBrush extends EntryContainer {
             target,
             myPos
                 + relativePos
-                + (this.hasBrush ? -1 : 0)
+                + (this.hasStrokeBrush ? -1 : 0)
         )
     }
 }
