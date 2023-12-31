@@ -34,6 +34,9 @@ export abstract class EntryContainer extends EventEmitter {
     objectType: string
     textureIds: string[]
 
+    parent?: EntryContainer
+    children: EntryContainer[] = []
+
     abstract pixiSprite: Container
 
     constructor(data: EntryContainerData) {
@@ -190,6 +193,8 @@ export abstract class EntryContainer extends EventEmitter {
         pixiSprite.scale = this.pixiSprite.scale
 
         this.dataUpdate(sprite)
+
+        ;(this.parent || this).children.push(sprite)
 
         this.addSibling(project, sprite.pixiSprite, 0)
         

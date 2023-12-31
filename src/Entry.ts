@@ -342,6 +342,12 @@ export class Entry {
             obj.destroy()
         }
     }
+    remove_all_clones(obj: EntryContainer) {
+        obj.children.forEach(child => {
+            child.destroy()
+        })
+        obj.children = []
+    }
 
     /* 움직임 */
     move_direction(n: number, obj: EntryContainer) {
