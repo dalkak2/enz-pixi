@@ -125,6 +125,7 @@ export abstract class EntryContainer extends EventEmitter {
 
     destroy() {
         this.pixiSprite.destroy()
+        this.removeAllListeners()
     }
 
     static fromEntryData(

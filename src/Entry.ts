@@ -335,7 +335,11 @@ export class Entry {
         target.clone(this)
     }
     when_clone_start(f: () => Promise<void>, obj: EntryContainer) {
-        obj.on("clone", f)
+        obj.on("clone", () => f().catch((e: Error) => {
+            if (!obj.pixiSprite.destroyed) {
+                throw e
+            }
+        }))
     }
     delete_clone(obj: EntryContainer) {
         if (obj.isClone) {
