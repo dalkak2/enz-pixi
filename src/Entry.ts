@@ -35,6 +35,31 @@ const numberNormalize =
             ? numOrStr as string
             : Number(numOrStr) as number
 
+
+const onAndTrackDestroy = (
+    eventEmitter: {
+        on: (eventName: string, f: () => Promise<void>) => void,
+        off: (eventName: string, f: () => Promise<void>) => void,
+    },
+    eventName: string,
+    f: () => Promise<void>,
+    obj: EntryContainer,
+) => {
+    const ef = async () => {
+        if (obj.pixiSprite.destroyed) {
+            eventEmitter.off(eventName, ef)
+            return
+        }
+        await f().catch((e: Error) => {
+            if (!obj.pixiSprite.destroyed) {
+                throw e
+            }
+            eventEmitter.off(eventName, ef)
+        })
+    }
+    eventEmitter.on(eventName, ef)
+}
+
 export class Entry {
     project
     renderer?: Renderer
@@ -226,6 +251,13 @@ export class Entry {
         }
         this.events[eventName].push(f)
     }
+    off(eventName: string, f: () => Promise<void>) {
+        if (!this.events[eventName]) {
+            return
+        }
+        const i = this.events[eventName].indexOf(f)
+        this.events[eventName].splice(i, 1)
+    }
     start() {
         this.emit(`run_scene_${this.currentScene.label}`)
     }
@@ -267,22 +299,26 @@ export class Entry {
             }
         })
     }
-    mouse_clicked(f: () => Promise<void>) {
-        this.on("pointerdown", f)
+    mouse_clicked(f: () => Promise<void>, obj: EntryContainer) {
+        onAndTrackDestroy(this, "pointerdown", f, obj)
     }
-    mouse_click_cancled(f: () => Promise<void>) {
-        this.on("pointerup", f)
+    mouse_click_cancled(f: () => Promise<void>, obj: EntryContainer) {
+        onAndTrackDestroy(this, "pointerup", f, obj)
     }
     when_object_click(f: () => Promise<void>, obj: EntryContainer) {
         obj.setEventMode("static")
-        obj.pixiSprite.on("pointerdown", f)
+        onAndTrackDestroy(obj.pixiSprite, "pointerdown", f, obj)
     }
     when_object_click_canceled(f: () => Promise<void>, obj: EntryContainer) {
         obj.setEventMode("static")
-        obj.pixiSprite.on("pointerup", f)
+        onAndTrackDestroy(obj.pixiSprite, "pointerup", f, obj)
     }
-    when_message_cast(messageId: string, f: () => Promise<void>) {
-        this.on(`message_${messageId}`, f)
+    when_message_cast(
+        messageId: string,
+        f: () => Promise<void>,
+        obj: EntryContainer,
+    ) {
+        onAndTrackDestroy(this, `message_${messageId}`, f, obj)
     }
     message_cast(messageId: string) {
         this.emit(`message_${messageId}`)
