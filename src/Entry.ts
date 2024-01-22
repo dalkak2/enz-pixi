@@ -127,11 +127,10 @@ export class Entry {
         this.textures = Object.fromEntries(await Promise.all(
             this.project.objects.map(({sprite}) =>
                 sprite.pictures.map(
-                    async ({id, fileurl, filename, imageType, name}) => {
-                        // 엔트리 svg 지원 이전에는 imageType 정보가 없었던 것으로 보임
+                    async ({id, fileurl, filename, name}) => {
                         let url = `/image/${
                             filename
-                            ? (filename + `.${imageType || "png"}`)
+                            ? (filename + `.png`)
                             : fileurl!.substring(1)
                         }`
 
