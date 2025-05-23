@@ -1,7 +1,8 @@
 import { Hono, Context } from "https://deno.land/x/hono@v3.8.0-rc.2/mod.ts"
-import { etag } from "https://deno.land/x/hono@v3.8.0-rc.2/middleware.ts"
+import { etag, serveStatic } from "https://deno.land/x/hono@v3.8.0-rc.2/middleware.ts"
 
-import { assert } from "https://deno.land/std@0.203.0/assert/mod.ts"
+import { esbuildTranspiler } from "https://esm.sh/@hono/esbuild-transpiler@0.1.3"
+import * as esbuild from "https://deno.land/x/esbuild@v0.19.5/wasm.js"
 
 import {
     ensureFile,
@@ -11,8 +12,6 @@ import {
 import * as api from "./api/mod.ts"
 
 const app = new Hono()
-
-import { transpile } from "https://deno.land/x/emit@0.25.0/mod.ts"
 
 import {
     parseProject,
@@ -25,63 +24,19 @@ const scriptHandler = async (c: Context) => {
     const url = new URL(c.req.url)
     const target = new URL("." + url.pathname, import.meta.url)
     
-    console.log("Transpile", url.pathname)
-    let result
-    if (await exists("deps/local" + url.pathname)) {
-        const source = await Deno.stat("." + url.pathname)
-        const target = await Deno.stat("deps/local" + url.pathname)
-
-        if (
-            // Deno Deploy인 경우 mtime 없으므로 무조건 캐시 사용
-            // TODO: Env 읽는걸로 바꾸기
-            !source.mtime ||
-            !target.mtime ||
-            source.mtime < target.mtime
-        ) {
-            console.log("Load from cache")
-            result = await Deno.readTextFile("deps/local" + url.pathname)
-        }
-    }
-    if (!result) {
-        console.time(url.pathname)
-        result = (await transpile(
-            target,
-            {
-                cacheRoot: Deno.cwd(),
-                load: async (specifier) => {
-                    if (target.href == specifier) {
-                        return {
-                            kind: "module",
-                            specifier,
-                            content: await Deno.readTextFile("." + url.pathname),
-                        }
-                    } else {
-                        return {
-                            kind: "external",
-                            specifier,
-                        }
-                    }
-                },
-            },
-        )).get(target.href)
-        console.timeEnd(url.pathname)
-        assert(result)
-        await ensureFile("deps/local" + url.pathname)
-        Deno.writeTextFile("deps/local" + url.pathname, result)
-    }
+    const code = await Deno.readTextFile("")
 
     c.header("content-type", "application/javascript; charset=utf-8")
-    return c.body(
-        result
-        || `throw new Error("Transpile failed")`
-    )
+    return c.body("hi")
 }
 
 app.use("/src/*", etag({weak: true}))
-app.get("/src/*", scriptHandler)
+app.get("/src/*", esbuildTranspiler({ esbuild }))
+app.get("/src/*", serveStatic())
 
 app.use("/deps/*", etag({weak: true}))
-app.get("/deps/*", scriptHandler)
+app.get("/deps/*", esbuildTranspiler({ esbuild }))
+app.get("/deps/*", serveStatic())
 
 
 // /image/lib/entryjs/images/
