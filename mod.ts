@@ -1,18 +1,13 @@
-import { Hono, Context } from "https://deno.land/x/hono@v3.8.0-rc.2/mod.ts"
-import { etag } from "https://deno.land/x/hono@v3.8.0-rc.2/middleware.ts"
+import { Hono } from "https://esm.sh/hono@4.7.10"
+import { etag } from "https://esm.sh/hono@4.7.10/etag"
+import { serveStatic } from "https://esm.sh/hono@4.7.10/deno"
 
-import { assert } from "https://deno.land/std@0.203.0/assert/mod.ts"
-
-import {
-    ensureFile,
-    exists,
-} from "https://deno.land/std@0.203.0/fs/mod.ts"
+import { esbuildTranspiler } from "https://esm.sh/@hono/esbuild-transpiler@0.1.3"
+import * as esbuild from "https://deno.land/x/esbuild@v0.19.5/wasm.js"
 
 import * as api from "./api/mod.ts"
 
 const app = new Hono()
-
-import { transpile } from "https://deno.land/x/emit@0.25.0/mod.ts"
 
 import {
     parseProject,
@@ -21,68 +16,13 @@ import {
 
 import "https://deno.land/std@0.210.0/dotenv/load.ts"
 
-const scriptHandler = async (c: Context) => {
-    const url = new URL(c.req.url)
-    const target = new URL("." + url.pathname, import.meta.url)
-    
-    console.log("Transpile", url.pathname)
-    let result
-    if (await exists("deps/local" + url.pathname)) {
-        const source = await Deno.stat("." + url.pathname)
-        const target = await Deno.stat("deps/local" + url.pathname)
-
-        if (
-            // Deno Deploy인 경우 mtime 없으므로 무조건 캐시 사용
-            // TODO: Env 읽는걸로 바꾸기
-            !source.mtime ||
-            !target.mtime ||
-            source.mtime < target.mtime
-        ) {
-            console.log("Load from cache")
-            result = await Deno.readTextFile("deps/local" + url.pathname)
-        }
-    }
-    if (!result) {
-        console.time(url.pathname)
-        result = (await transpile(
-            target,
-            {
-                cacheRoot: Deno.cwd(),
-                load: async (specifier) => {
-                    if (target.href == specifier) {
-                        return {
-                            kind: "module",
-                            specifier,
-                            content: await Deno.readTextFile("." + url.pathname),
-                        }
-                    } else {
-                        return {
-                            kind: "external",
-                            specifier,
-                        }
-                    }
-                },
-            },
-        )).get(target.href)
-        console.timeEnd(url.pathname)
-        assert(result)
-        await ensureFile("deps/local" + url.pathname)
-        Deno.writeTextFile("deps/local" + url.pathname, result)
-    }
-
-    c.header("content-type", "application/javascript; charset=utf-8")
-    return c.body(
-        result
-        || `throw new Error("Transpile failed")`
-    )
-}
-
 app.use("/src/*", etag({weak: true}))
-app.get("/src/*", scriptHandler)
+app.get("/src/*", esbuildTranspiler({ esbuild }))
+app.get("/src/*", serveStatic({ root: "./" }))
 
 app.use("/deps/*", etag({weak: true}))
-app.get("/deps/*", scriptHandler)
-
+app.get("/deps/*", esbuildTranspiler({ esbuild }))
+app.get("/deps/*", serveStatic({ root: "./" }))
 
 // /image/lib/entryjs/images/
 // /image/lib/entry-js/images/
@@ -90,7 +30,7 @@ app.get("/image/lib/*/images/*", async c => {
     const path = new URL(c.req.url).pathname
         .replace(/^\/image\//, "https://playentry.org/")
     return c.body(
-        await api.image(path),
+        (await api.image(path))!,
         {
             headers: {
                 "cache-control": "max-age=31536000, public, immutable"
@@ -102,13 +42,13 @@ app.get("/image/:id", async c => {
     const id = c.req.param("id")
     const [a,b,d,e] = id
     return c.body(
-        await api.image(
+        (await api.image(
             `https://playentry.org/uploads/${
                 a + b
             }/${
                 d + e
             }/image/${id}`
-        ),
+        ))!,
         {
             headers: {
                 "cache-control": "max-age=31536000, public, immutable"
@@ -120,7 +60,7 @@ app.get("/sound/lib/entry-js/images/*", async c => {
     const path = new URL(c.req.url).pathname
         .replace(/^\/sound\//, "https://playentry.org/")
     return c.body(
-        await api.image(path),
+        (await api.image(path))!,
         {
             headers: {
                 "cache-control": "max-age=31536000, public, immutable"
@@ -132,13 +72,13 @@ app.get("/sound/:id", async c => {
     const id = c.req.param("id")
     const [a,b,d,e] = id
     return c.body(
-        await api.image(
+        (await api.image(
             `https://playentry.org/uploads/${
                 a + b
             }/${
                 d + e
             }/${id}`
-        ),
+        ))!,
         {
             headers: {
                 "cache-control": "max-age=31536000, public, immutable"
