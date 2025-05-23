@@ -1,13 +1,9 @@
-import { Hono, Context } from "https://deno.land/x/hono@v3.8.0-rc.2/mod.ts"
-import { etag, serveStatic } from "https://deno.land/x/hono@v3.8.0-rc.2/middleware.ts"
+import { Hono } from "https://esm.sh/hono@4.7.10"
+import { etag } from "https://esm.sh/hono@4.7.10/etag"
+import { serveStatic } from "https://esm.sh/hono@4.7.10/deno"
 
 import { esbuildTranspiler } from "https://esm.sh/@hono/esbuild-transpiler@0.1.3"
 import * as esbuild from "https://deno.land/x/esbuild@v0.19.5/wasm.js"
-
-import {
-    ensureFile,
-    exists,
-} from "https://deno.land/std@0.203.0/fs/mod.ts"
 
 import * as api from "./api/mod.ts"
 
@@ -20,24 +16,13 @@ import {
 
 import "https://deno.land/std@0.210.0/dotenv/load.ts"
 
-const scriptHandler = async (c: Context) => {
-    const url = new URL(c.req.url)
-    const target = new URL("." + url.pathname, import.meta.url)
-    
-    const code = await Deno.readTextFile("")
-
-    c.header("content-type", "application/javascript; charset=utf-8")
-    return c.body("hi")
-}
-
 app.use("/src/*", etag({weak: true}))
 app.get("/src/*", esbuildTranspiler({ esbuild }))
-app.get("/src/*", serveStatic())
+app.get("/src/*", serveStatic({ root: "./" }))
 
 app.use("/deps/*", etag({weak: true}))
 app.get("/deps/*", esbuildTranspiler({ esbuild }))
-app.get("/deps/*", serveStatic())
-
+app.get("/deps/*", serveStatic({ root: "./" }))
 
 // /image/lib/entryjs/images/
 // /image/lib/entry-js/images/
@@ -45,7 +30,7 @@ app.get("/image/lib/*/images/*", async c => {
     const path = new URL(c.req.url).pathname
         .replace(/^\/image\//, "https://playentry.org/")
     return c.body(
-        await api.image(path),
+        (await api.image(path))!,
         {
             headers: {
                 "cache-control": "max-age=31536000, public, immutable"
@@ -57,13 +42,13 @@ app.get("/image/:id", async c => {
     const id = c.req.param("id")
     const [a,b,d,e] = id
     return c.body(
-        await api.image(
+        (await api.image(
             `https://playentry.org/uploads/${
                 a + b
             }/${
                 d + e
             }/image/${id}`
-        ),
+        ))!,
         {
             headers: {
                 "cache-control": "max-age=31536000, public, immutable"
@@ -75,7 +60,7 @@ app.get("/sound/lib/entry-js/images/*", async c => {
     const path = new URL(c.req.url).pathname
         .replace(/^\/sound\//, "https://playentry.org/")
     return c.body(
-        await api.image(path),
+        (await api.image(path))!,
         {
             headers: {
                 "cache-control": "max-age=31536000, public, immutable"
@@ -87,13 +72,13 @@ app.get("/sound/:id", async c => {
     const id = c.req.param("id")
     const [a,b,d,e] = id
     return c.body(
-        await api.image(
+        (await api.image(
             `https://playentry.org/uploads/${
                 a + b
             }/${
                 d + e
             }/${id}`
-        ),
+        ))!,
         {
             headers: {
                 "cache-control": "max-age=31536000, public, immutable"
