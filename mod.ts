@@ -155,7 +155,7 @@ app.get("/p/:id", async c => c.html(
         `@${
             tag ? tag :
             hash ? `${hash.slice(0, 7)} (${branch})` :
-            "dev"
+            "local"
         }`
     )
     .replace("<!-- INSERT SCRIPT HERE -->", `
