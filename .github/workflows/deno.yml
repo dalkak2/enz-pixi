@@ -11,9 +11,6 @@ name: Deno
 on:
   push:
 
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-
 permissions:
   id-token: write
   contents: read
@@ -48,4 +45,3 @@ jobs:
         with:
           project: enz
           entrypoint: mod.ts
-          production: ${{ env.BRANCH_NAME == 'main' }}
