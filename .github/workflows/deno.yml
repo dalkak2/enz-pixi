@@ -19,6 +19,11 @@ permissions:
 jobs:
   main:
     runs-on: ubuntu-latest
+    env:
+      hash: ${{ github.sha }}
+      tag: ${{ github.event.release.tag_name }}
+      branch: ${{ github.ref_name }}
+      trigger: ${{ github.event_name }}
 
     steps:
       - name: Setup repo
@@ -35,20 +40,24 @@ jobs:
       - name: Build
         run: bash deploy/build.sh
 
-      - name: Write Version Label into Env
-        run: deno run -A deploy/writeEnv.ts ${{github.sha}}
+      - name: Write Env
+        run: deno run -A deploy/writeEnv.ts
 
       - name: Test Request
         run: deno test -A mod.test.ts
 
       - name: temp
         run: bash deploy/temp.sh
-        env:
-          hash: ${{ github.sha }}
-          tag: ${{ github.event.release.tag_name }}
-          branch: ${{ github.ref_name }}
       
-      - name: Deploy to Deno Deploy
+      - name: Deploy Prod
+        if: ${{ env.branch == 'main' && env.trigger == 'release' }}
+        uses: denoland/deployctl@v1
+        with:
+          project: enz
+          entrypoint: mod.ts
+
+      - name: Deploy Preview
+        if: ${{ env.branch != 'main' }}
         uses: denoland/deployctl@v1
         with:
           project: enz
