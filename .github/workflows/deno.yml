@@ -25,10 +25,7 @@ jobs:
       branch: ${{ github.ref_name }}
       trigger: ${{ github.event_name }}
 
-    steps:
-      - name: Write Env
-        run: deno run -A deploy/writeEnv.ts
-      
+    steps:      
       - name: Setup repo
         uses: actions/checkout@v3
         with:
@@ -39,6 +36,9 @@ jobs:
         uses: denoland/setup-deno@61fe2df320078202e33d7d5ad347e7dcfa0e8f31  # v1.1.2
         with:
           deno-version: v1.x
+          
+      - name: Write Env
+        run: deno run -A deploy/writeEnv.ts
 
       - name: Build
         run: bash deploy/build.sh
