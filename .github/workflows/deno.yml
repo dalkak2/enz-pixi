@@ -42,7 +42,14 @@ jobs:
         run: deno test -A mod.test.ts
 
       - name: temp
-        run: bash deploy/temp.sh ${{ github.sha }} ${{ github.event.release.tag_name }} ${{ github.ref_name }}
+        run: bash deploy/temp.sh
+        env:
+          hash: ${{ github.sha }}
+          tag: ${{ github.event.release.tag_name }}
+          branch: ${{ github.ref_name }}
       
       - name: Deploy to Deno Deploy
-        run: bash deploy/deploy.sh
+        uses: denoland/deployctl@v1
+        with:
+          project: enz
+          entrypoint: mod.ts
