@@ -10,6 +10,7 @@ name: Deno
 
 on:
   push:
+  release:
 
 permissions:
   id-token: write
@@ -40,8 +41,8 @@ jobs:
       - name: Test Request
         run: deno test -A mod.test.ts
 
+      - name: temp
+        run: bash temp.sh ${{ github.sha }} ${{ github.event.release.tag_name }}
+      
       - name: Deploy to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          project: enz
-          entrypoint: mod.ts
+        run: bash deploy.sh
