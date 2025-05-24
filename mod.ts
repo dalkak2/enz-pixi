@@ -25,7 +25,7 @@ if (env == "dev") {
     app.get("/src/*", esbuildTranspiler({ esbuild }))
     app.get("/src/*", serveStatic({ root: "./" }))
 } else {
-    app.get("/src/*", serveStatic({ root: "./dist/" }))
+    app.get("/src/*", serveStatic({ root: "./dist/src/" }))
 }
 
 app.use("/deps/*", etag({weak: true}))
@@ -33,7 +33,7 @@ if (env == "dev") {
     app.get("/deps/*", esbuildTranspiler({ esbuild }))
     app.get("/deps/*", serveStatic({ root: "./" }))
 } else {
-    app.get("/deps/*", serveStatic({ root: "./dist/" }))
+    app.get("/deps/*", serveStatic({ root: "./dist/deps/" }))
 }
 
 // /image/lib/entryjs/images/
