@@ -26,6 +26,9 @@ jobs:
       trigger: ${{ github.event_name }}
 
     steps:
+      - name: Write Env
+        run: deno run -A deploy/writeEnv.ts
+      
       - name: Setup repo
         uses: actions/checkout@v3
         with:
@@ -40,14 +43,8 @@ jobs:
       - name: Build
         run: bash deploy/build.sh
 
-      - name: Write Env
-        run: deno run -A deploy/writeEnv.ts
-
       - name: Test Request
         run: deno test -A mod.test.ts
-
-      - name: temp
-        run: bash deploy/temp.sh
       
       - name: Deploy Prod
         if: ${{ env.branch == 'main' && env.trigger == 'release' }}
