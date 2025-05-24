@@ -42,7 +42,7 @@ jobs:
         run: deno test -A mod.test.ts
 
       - name: temp
-        run: bash deploy/temp.sh ${{ github.sha }} ${{ github.event.release.tag_name }}
+        run: bash deploy/temp.sh ${{ github.sha }} ${{ github.event.release.tag_name }} ${{ github.ref_name }}
       
       - name: Deploy to Deno Deploy
         run: bash deploy/deploy.sh
