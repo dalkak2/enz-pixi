@@ -22,6 +22,12 @@ import {
 
 import "https://deno.land/std@0.210.0/dotenv/load.ts"
 
+const {
+    hash,
+    tag,
+    branch,
+} = Deno.env.toObject()
+
 app.use("/src/*", etag({weak: true}))
 if (env == "dev") {
     app.get("/src/*", esbuildTranspiler({ esbuild }))
@@ -141,13 +147,15 @@ app.get("/api/js/:id", async c => {
 app.get("/", async c => c.html(
     await Deno.readTextFile("view/index.html")
 ))
+
 app.get("/p/:id", async c => c.html(
     (await Deno.readTextFile("view/p.html"))
     .replace(
         "<!-- VERSION_LABEL -->",
         `@${
-            Deno.env.get("VERSION_LABEL")
-            || "dev"
+            tag ? tag :
+            hash ? `${hash.slice(0, 7)} (${branch})` :
+            "dev"
         }`
     )
     .replace("<!-- INSERT SCRIPT HERE -->", `

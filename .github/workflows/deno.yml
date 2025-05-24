@@ -11,6 +11,7 @@ name: Deno
 on:
   push:
   release:
+  pull_request:
 
 permissions:
   id-token: write
@@ -22,7 +23,7 @@ jobs:
     env:
       hash: ${{ github.sha }}
       tag: ${{ github.event.release.tag_name }}
-      branch: ${{ github.ref_name }}
+      branch: ${{ github.head_ref || github.ref_name }}
       trigger: ${{ github.event_name }}
 
     steps:      
@@ -36,7 +37,7 @@ jobs:
         uses: denoland/setup-deno@61fe2df320078202e33d7d5ad347e7dcfa0e8f31  # v1.1.2
         with:
           deno-version: v1.x
-          
+
       - name: Write Env
         run: deno run -A deploy/writeEnv.ts
 
