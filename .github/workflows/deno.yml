@@ -10,7 +10,6 @@ name: Deno
 
 on:
   push:
-    branches: ["main"]
 
 permissions:
   id-token: write
@@ -32,13 +31,17 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: Transpile TypeScript
-        run: |
-          deno test -A build.ts -- ${{github.sha}}
+      - name: Build
+        run: bash deploy/build.sh
+
+      - name: Write Version Label into Env
+        run: deno run -A deploy/writeEnv.ts ${{github.sha}}
+
+      - name: Test Request
+        run: deno test -A mod.test.ts
 
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: enz
           entrypoint: mod.ts
-      

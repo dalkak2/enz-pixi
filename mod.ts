@@ -7,6 +7,12 @@ import * as esbuild from "https://deno.land/x/esbuild@v0.19.5/wasm.js"
 
 import * as api from "./api/mod.ts"
 
+const env = Deno.env.get("DENO_DEPLOYMENT_ID")
+    ? "deploy"
+    : "dev"
+
+console.log(`env: ${env}`)
+
 const app = new Hono()
 
 import {
@@ -17,8 +23,15 @@ import {
 import "https://deno.land/std@0.210.0/dotenv/load.ts"
 
 app.use("/src/*", etag({weak: true}))
-app.get("/src/*", esbuildTranspiler({ esbuild }))
-app.get("/src/*", serveStatic({ root: "./" }))
+if (env == "dev") {
+    app.get("/src/*", esbuildTranspiler({ esbuild }))
+    app.get("/src/*", serveStatic({ root: "./" }))
+} else {
+    app.get("/src/*", serveStatic({
+        root: "./dist/",
+        mimes: { ts: "application/javascript" },
+    }))
+}
 
 app.use("/deps/*", etag({weak: true}))
 app.get("/deps/*", esbuildTranspiler({ esbuild }))
