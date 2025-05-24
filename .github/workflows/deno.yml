@@ -48,7 +48,7 @@ jobs:
         run: deno test -A mod.test.ts
       
       - name: Deploy Prod
-        if: ${{ env.branch == 'main' && env.tag }}
+        if: ${{ env.tag }}
         uses: denoland/deployctl@v1
         with:
           project: enz
