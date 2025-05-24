@@ -10,7 +10,6 @@ name: Deno
 
 on:
   push:
-  release:
   pull_request:
 
 permissions:
@@ -22,8 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       hash: ${{ github.sha }}
-      tag: ${{ github.event.release.tag_name }}
-      branch: ${{ github.head_ref || github.ref_name }}
+      tag: ${{ github.ref_type == 'tag' && github.ref_name }}
+      branch: ${{ github.ref_type == 'branch' && (github.head_ref || github.ref_name) }}
       trigger: ${{ github.event_name }}
 
     steps:      
@@ -48,7 +47,7 @@ jobs:
         run: deno test -A mod.test.ts
       
       - name: Deploy Prod
-        if: ${{ env.branch == 'main' && env.trigger == 'release' }}
+        if: ${{ env.branch == 'main' && env.tag }}
         uses: denoland/deployctl@v1
         with:
           project: enz
