@@ -11,6 +11,8 @@ const env = Deno.env.get("DENO_DEPLOYMENT_ID")
     ? "deploy"
     : "dev"
 
+console.log(`env: ${env}`)
+
 const app = new Hono()
 
 import {
