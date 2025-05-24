@@ -25,16 +25,15 @@ if (env == "dev") {
     app.get("/src/*", esbuildTranspiler({ esbuild }))
     app.get("/src/*", serveStatic({ root: "./" }))
 } else {
-    app.get("/src/*", serveStatic({ root: "./dist/src/" }))
+    app.get("/src/*", serveStatic({
+        root: "./dist/",
+        mimes: { ts: "application/javascript" },
+    }))
 }
 
 app.use("/deps/*", etag({weak: true}))
-if (env == "dev") {
-    app.get("/deps/*", esbuildTranspiler({ esbuild }))
-    app.get("/deps/*", serveStatic({ root: "./" }))
-} else {
-    app.get("/deps/*", serveStatic({ root: "./dist/deps/" }))
-}
+app.get("/deps/*", esbuildTranspiler({ esbuild }))
+app.get("/deps/*", serveStatic({ root: "./" }))
 
 // /image/lib/entryjs/images/
 // /image/lib/entry-js/images/
