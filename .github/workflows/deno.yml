@@ -10,16 +10,23 @@ name: Deno
 
 on:
   push:
+  release:
+  pull_request:
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  test:
+  main:
     runs-on: ubuntu-latest
+    env:
+      hash: ${{ github.sha }}
+      tag: ${{ github.event.release.tag_name }}
+      branch: ${{ github.head_ref || github.ref_name }}
+      trigger: ${{ github.event_name }}
 
-    steps:
+    steps:      
       - name: Setup repo
         uses: actions/checkout@v3
         with:
@@ -31,16 +38,24 @@ jobs:
         with:
           deno-version: v1.x
 
+      - name: Write Env
+        run: deno run -A deploy/writeEnv.ts
+
       - name: Build
         run: bash deploy/build.sh
 
-      - name: Write Version Label into Env
-        run: deno run -A deploy/writeEnv.ts ${{github.sha}}
-
       - name: Test Request
         run: deno test -A mod.test.ts
+      
+      - name: Deploy Prod
+        if: ${{ env.branch == 'main' && env.trigger == 'release' }}
+        uses: denoland/deployctl@v1
+        with:
+          project: enz
+          entrypoint: mod.ts
 
-      - name: Deploy to Deno Deploy
+      - name: Deploy Preview
+        if: ${{ env.branch != 'main' }}
         uses: denoland/deployctl@v1
         with:
           project: enz
