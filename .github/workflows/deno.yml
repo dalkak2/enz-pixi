@@ -23,8 +23,9 @@ jobs:
       hash: ${{ github.sha }}
       tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
       branch: ${{ github.ref_type == 'branch' && (github.head_ref || github.ref_name) || '' }}
-
-      trigger: ${{ github.event_name }}
+      
+      token: ${{ secrets.DENO_DEPLOY_TOKEN }}
+      project: ${{ secrets.DENO_DEPLOY_PROJECT }}
 
     steps:      
       - name: Setup repo
@@ -33,13 +34,9 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Deno
-        # uses: denoland/setup-deno@v1
-        uses: denoland/setup-deno@61fe2df320078202e33d7d5ad347e7dcfa0e8f31  # v1.1.2
+        uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
-
-      - name: Write Env
-        run: deno run -A deploy/writeEnv.ts
+          deno-version: v2.x
 
       - name: Build
         run: bash deploy/build.sh
@@ -49,14 +46,8 @@ jobs:
       
       - name: Deploy Prod
         if: ${{ env.tag }}
-        uses: denoland/deployctl@v1
-        with:
-          project: enz
-          entrypoint: mod.ts
+        run: deno run -A jsr:@deno/deployctl@1.13.1 deploy --token=$token --project=$project --entrypoint=mod.ts --prod
 
       - name: Deploy Preview
         if: ${{ env.branch != 'main' }}
-        uses: denoland/deployctl@v1
-        with:
-          project: enz
-          entrypoint: mod.ts
+        run: deno run -A jsr:@deno/deployctl@1.13.1 deploy --token=$token --project=$project --entrypoint=mod.ts
