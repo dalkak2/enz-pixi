@@ -7,7 +7,7 @@ import {
 import type { Entry } from "../Entry.ts"
 
 export abstract class EntryBrush extends EntryContainer {
-    protected dataUpdate(sprite: this): void {
+    protected override dataUpdate(sprite: this): void {
         sprite._strokeColor = this._strokeColor
         sprite._strokeThickness = this._strokeThickness
         sprite._brushTransparency = this._brushTransparency
@@ -73,7 +73,7 @@ export abstract class EntryBrush extends EntryContainer {
             this._strokeBrush.alpha = 1 - n / 100
         }
     }
-    addSibling(
+    override addSibling(
         project: Entry,
         target: Container,
         relativePos: number

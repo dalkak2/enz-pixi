@@ -202,14 +202,14 @@ export class Entry {
         })
 
         this.renderer = new WebGLRenderer()
-        await this.renderer.init({
+        await this.renderer!.init({
             width: 480,
             height: 270,
             backgroundColor: "#fff",
             resolution: 4
         })
 
-        const canvas = this.renderer.canvas
+        const canvas = this.renderer!.canvas
 
         parent.appendChild(canvas)
 

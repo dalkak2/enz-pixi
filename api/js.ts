@@ -11,7 +11,7 @@ import JSON5 from "https://esm.sh/json5@2.2.3?pin=v135"
 import { format } from "./util/format.ts"
 
 class PixiVisitor extends Visitor {
-    getInitData(project: Project) {
+    override getInitData(project: Project) {
         return {
             ...project,
             objects: project.objects.map(
@@ -22,7 +22,7 @@ class PixiVisitor extends Visitor {
             ),
         } as any
     }
-    visitObject(object: Object_): string {
+    override visitObject(object: Object_): string {
         const script = super.visitObject(object)
         const {
             id,
@@ -59,7 +59,7 @@ class PixiVisitor extends Visitor {
                 })
             }, Entry)`
     }
-    objectToExpressions({script}: Object_) {
+    override objectToExpressions({script}: Object_) {
         return this.scriptToExpressions(script)
             .map(expr => expr.replaceAll(`"$obj$"`, "this") as cg.Expression)
     }
@@ -68,7 +68,7 @@ class PixiVisitor extends Visitor {
             this.blockToExpression.bind(this)
         ).join("\n")
     }
-    normalBlockToExpression(block: Block) {
+    override normalBlockToExpression(block: Block) {
         const params = this.paramsToExpressions(block.params)
         const statements = block.statements?.map(
             this.blockGroupToExpressions.bind(this)
