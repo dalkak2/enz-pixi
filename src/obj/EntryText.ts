@@ -76,7 +76,7 @@ export class EntryText extends EntryBrush {
         }
     }
 
-    cloneGetters() {
+    override cloneGetters() {
         return {
             ...super.cloneGetters(),
             text: this.text,

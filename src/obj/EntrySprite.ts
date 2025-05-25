@@ -10,7 +10,7 @@ export class EntrySprite extends EntryBrush {
         this.pixiSprite = new Sprite()
         this.pixiSprite.anchor.set(0.5)
     }
-    clone(project: Entry) {
+    override clone(project: Entry) {
         const sprite = super.clone(project)
         sprite.pixiSprite.texture = this.pixiSprite.texture
         return sprite
