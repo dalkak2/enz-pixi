@@ -20,8 +20,6 @@ import {
     Project,
 } from "./deps/enz.ts"
 
-import "https://deno.land/std@0.210.0/dotenv/load.ts"
-
 const {
     hash,
     tag,

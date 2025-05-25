@@ -46,8 +46,8 @@ jobs:
       
       - name: Deploy Prod
         if: ${{ env.tag }}
-        run: deno run -A jsr:@deno/deployctl@1.13.1 deploy --token=$token --project=$project --entrypoint=mod.ts --prod
+        run: deno run -A jsr:@deno/deployctl@1.13.1 deploy --token=$token --project=$project --entrypoint=mod.ts --env=hash=${{ env.hash }} --env=tag=${{ env.tag }} --prod
 
       - name: Deploy Preview
         if: ${{ env.branch }}
-        run: deno run -A jsr:@deno/deployctl@1.13.1 deploy --token=$token --project=$project --entrypoint=mod.ts
+        run: deno run -A jsr:@deno/deployctl@1.13.1 deploy --token=$token --project=$project --entrypoint=mod.ts --env=hash=${{ env.hash }} --env=branch=${{ env.branch }}
