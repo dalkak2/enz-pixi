@@ -1,1 +1,1 @@
-export * from "https://esm.sh/v135/pixi.js@8.0.0-beta.11"
+export * from "https://esm.sh/pixi.js@8.9.2"

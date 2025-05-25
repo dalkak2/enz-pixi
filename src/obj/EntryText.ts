@@ -1,4 +1,4 @@
-import { Text } from "../../deps/pixi.ts"
+import { HTMLText } from "../../deps/pixi.ts"
 import type { EntryContainerData } from "./EntryContainer.ts"
 import { EntryBrush } from "./EntryBrush.ts"
 
@@ -16,7 +16,7 @@ export interface EntryTextData extends EntryContainerData {
 
 export class EntryText extends EntryBrush {
     
-    declare pixiSprite: Text
+    declare pixiSprite: HTMLText
 
     font
     lineBreak
@@ -87,8 +87,6 @@ export class EntryText extends EntryBrush {
     }
 
     init() {
-        this.pixiSprite = new Text({
-            renderMode: "html",
-        })
+        this.pixiSprite = new HTMLText()
     }
 }
