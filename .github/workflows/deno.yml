@@ -42,7 +42,7 @@ jobs:
         run: bash deploy/build.sh
 
       - name: Test Request
-        run: deno test -A --no-check mod.test.ts
+        run: deno test -A mod.test.ts
       
       - name: Deploy Prod
         if: ${{ env.tag }}
