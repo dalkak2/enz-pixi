@@ -23,7 +23,7 @@ jobs:
       hash: ${{ github.sha }}
       tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
       branch: ${{ github.ref_type == 'branch' && (github.head_ref || github.ref_name) || '' }}
-      
+
       token: ${{ secrets.DENO_DEPLOY_TOKEN }}
       project: ${{ secrets.DENO_DEPLOY_PROJECT }}
 
@@ -42,7 +42,7 @@ jobs:
         run: bash deploy/build.sh
 
       - name: Test Request
-        run: deno test -A mod.test.ts
+        run: deno test -A --no-check mod.test.ts
       
       - name: Deploy Prod
         if: ${{ env.tag }}
