@@ -49,5 +49,5 @@ jobs:
         run: deno run -A jsr:@deno/deployctl@1.13.1 deploy --token=$token --project=$project --entrypoint=mod.ts --prod
 
       - name: Deploy Preview
-        if: ${{ env.branch != 'main' }}
+        if: ${{ env.branch }}
         run: deno run -A jsr:@deno/deployctl@1.13.1 deploy --token=$token --project=$project --entrypoint=mod.ts
