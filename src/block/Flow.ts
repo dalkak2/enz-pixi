@@ -1,0 +1,48 @@
+import { Entry } from "../Entry.ts"
+import { EntryContainer } from "../obj/mod.ts"
+
+export class Flow extends Entry {
+    wait_second(sec: number) {
+        return new Promise(o => {
+            setTimeout(o, sec * 1000)
+        })
+    }
+    /*
+        These blocks are transpiled from server.
+        Check ../api/js.ts
+        ```
+        repeat_basic
+        repeat_inf
+        repeat_while_true
+        stop_repeat
+        _if
+        if_else
+        wait_until_true
+        ```
+    */
+    create_clone(targetId: string, obj: EntryContainer) {
+        const target =
+            targetId == "self"
+                ? obj
+                : this.objects[targetId]
+        target.clone(this)
+    }
+    when_clone_start(f: () => Promise<void>, obj: EntryContainer) {
+        obj.on("clone", () => f().catch((e: Error) => {
+            if (!obj.pixiSprite.destroyed) {
+                throw e
+            }
+        }))
+    }
+    delete_clone(obj: EntryContainer) {
+        if (obj.isClone) {
+            obj.destroy()
+        }
+    }
+    remove_all_clones(obj: EntryContainer) {
+        obj.children.forEach(child => {
+            child.destroy()
+        })
+        obj.children = []
+    }
+}

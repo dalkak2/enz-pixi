@@ -3,7 +3,7 @@ import {
     EventEmitter,
     Container,
 } from "../../deps/pixi.ts"
-import type { Entry } from "../Entry.ts"
+import type { Entry } from "../EntryState.ts"
 
 export interface EntryContainerData {
     x: number
