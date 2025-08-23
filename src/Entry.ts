@@ -1,7 +1,7 @@
 import {
     Start,
     Flow,
-    Movement,
+    Moving,
 } from "./block/mod.ts"
 import { Module } from "./Module.ts"
 
@@ -26,7 +26,7 @@ export const Entry = function (this: Entry, ...args: Args<typeof Module>) {
     this.modules = [
         Start,
         Flow,
-        Movement,
+        Moving,
 
         Module,
     ]

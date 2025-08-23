@@ -1,7 +1,7 @@
 import { EntryContainer } from "../mod.ts"
 import { Module, toRadian, toDegrees } from "../Module.ts"
 
-export class Movement extends Module {
+export class Moving extends Module {
     move_direction(n: number, obj: EntryContainer) {
         obj.x += n * Math.sin(toRadian(obj.direction))
         obj.y += n * Math.cos(toRadian(obj.direction))
