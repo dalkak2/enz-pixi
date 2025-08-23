@@ -1,6 +1,7 @@
 import {
     Start,
     Flow,
+    Movement,
 } from "./block/mod.ts"
 import { Module } from "./Module.ts"
 
@@ -25,6 +26,8 @@ export const Entry = function (this: Entry, ...args: Args<typeof Module>) {
     this.modules = [
         Start,
         Flow,
+        Movement,
+
         Module,
     ]
     this.modules.forEach(module => {
