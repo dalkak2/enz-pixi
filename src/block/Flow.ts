@@ -1,7 +1,7 @@
-import { Entry } from "../Entry.ts"
+import { Module } from "../Module.ts"
 import { EntryContainer } from "../obj/mod.ts"
 
-export class Flow extends Entry {
+export class Flow extends Module {
     wait_second(sec: number) {
         return new Promise(o => {
             setTimeout(o, sec * 1000)

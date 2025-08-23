@@ -1,4 +1,4 @@
-import { Entry } from "../Entry.ts"
+import { Module } from "../Module.ts"
 import { EntryContainer } from "../obj/mod.ts"
 
 const onAndTrackDestroy = (
@@ -25,7 +25,7 @@ const onAndTrackDestroy = (
     eventEmitter.on(eventName, ef)
 }
 
-export class Start extends Entry {
+export class Start extends Module {
         when_run_button_click(
             f: () => Promise<void>,
             obj: EntryContainer,
