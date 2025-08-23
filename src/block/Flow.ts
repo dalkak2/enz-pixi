@@ -1,11 +1,9 @@
-import { Module } from "../Module.ts"
+import { Module, wait_second } from "../Module.ts"
 import { EntryContainer } from "../obj/mod.ts"
 
 export class Flow extends Module {
-    wait_second(sec: number) {
-        return new Promise(o => {
-            setTimeout(o, sec * 1000)
-        })
+    async wait_second(sec: number) {
+        await wait_second(sec)
     }
     /*
         These blocks are transpiled from server.

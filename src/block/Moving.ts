@@ -1,5 +1,5 @@
-import { EntryContainer } from "../mod.ts"
 import { Module, toRadian, toDegrees } from "../Module.ts"
+import { EntryContainer } from "../obj/mod.ts"
 
 export class Moving extends Module {
     move_direction(n: number, obj: EntryContainer) {
