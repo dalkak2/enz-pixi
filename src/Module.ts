@@ -9,8 +9,6 @@ import {
     EntryContainer,
 } from "./obj/mod.ts"
 
-import { Timer } from "./Timer.ts"
-
 export const wait_second =
     (sec: number) =>
         new Promise(o => {
@@ -35,8 +33,6 @@ export class Module {
 
     pressedKeys: Record<number, boolean | undefined> = {}
     currentScene!: Container
-
-    timer = new Timer()
 
     isClicked = false
     mouse = {

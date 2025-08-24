@@ -1,7 +1,33 @@
 import { Module, toRadian, toDegrees } from "../Module.ts"
 import { EntryContainer, EntrySprite } from "../obj/mod.ts"
 
+class Timer {
+    checkpoint: number | false = false
+    acc = 0
+    get time() {
+        return this.checkpoint
+            ? this.acc + Date.now() - this.checkpoint
+            : this.acc
+    }
+    start() {
+        this.acc = this.time
+        this.checkpoint = Date.now()
+    }
+    stop() {
+        this.acc = this.time
+        this.checkpoint = false
+    }
+    reset() {
+        this.acc = 0
+        if (this.checkpoint) {
+            this.checkpoint = Date.now()
+        }
+    }
+}
+
 export class Calc extends Module {
+    timer = new Timer()
+    
     angle(n: number) {
         return Number(n)
     }
