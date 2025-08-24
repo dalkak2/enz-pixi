@@ -3,6 +3,7 @@ import {
     Flow,
     Moving,
     Looks,
+    Brush,
 } from "./block/mod.ts"
 import { Module } from "./Module.ts"
 
@@ -29,6 +30,7 @@ export const Entry = function (this: Entry, ...args: Args<typeof Module>) {
         Flow,
         Moving,
         Looks,
+        Brush,
 
         Module,
     ]
