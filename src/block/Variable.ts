@@ -1,6 +1,24 @@
 import { Module } from "../Module.ts"
 
 export class Variable extends Module {
+    variables: Record<string, string | number | (string | number)[]> = {}
+
+    // deno-lint-ignore require-await
+    override async init() {
+        this.variables = Object.fromEntries(
+            this.project.variables.map(
+                ({id, value, array, variableType}) => {
+                    return [
+                        id,
+                        variableType == "list"
+                            ? array?.map(({data}) => data)
+                            : value,
+                    ]
+                }
+            )
+        )
+    }
+    
     get_variable(id: string) {
         return this.variables[id]
     }

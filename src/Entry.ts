@@ -22,23 +22,46 @@ type StdModule = UnionToIntersection<
         : never
 >
 
-type Entry = StdModule & {
-    modules: (typeof Module)[]
-}
+type Entry = StdModule & GlobalModule
 
-export const Entry = function (this: Entry, ...args: Args<typeof Module>) {
-    Object.assign(
-        this,
-        new Module(...args),
-    )
-    this.modules = [
+class GlobalModule extends Module {
+    modules: (typeof Module)[] = [
         ...Object.values(Block),
         Module,
     ]
-    this.modules.forEach(module => {
-        Object.defineProperties(
-            this,
-            Object.getOwnPropertyDescriptors(module.prototype),
+    moduleInstances: Map<typeof Module, Module> =
+        new Map(this.modules.map(module => [module, new module()]))
+
+    assignModulesMixin(o: object) {
+        this.modules.forEach(module => {
+            Object.defineProperties(
+                this,
+                Object.getOwnPropertyDescriptors(module.prototype),
+            )
+        })
+        this.moduleInstances.forEach(instance => {
+            Object.assign(o, instance)
+        })
+    }
+}
+
+export const Entry = function (this: Entry, ...args: Args<typeof Module>) {
+    Object.assign(this, new Module(...args))
+    Object.assign(this, new GlobalModule(...args))
+    Object.defineProperties(
+        this,
+        Object.getOwnPropertyDescriptors(GlobalModule.prototype),
+    )
+    this.assignModulesMixin(this)
+
+    // @ts-expect-error:
+    this.init = async (parent: HTMLElement) => {
+        await this.defaultInit(parent)
+        await Promise.all(
+            this.modules.map(module =>
+                this.moduleInstances.get(module)!.init.call(this, parent)
+            )
         )
-    })
+    }
+
 } as unknown as { new(...args: Args<typeof Module>): Entry }

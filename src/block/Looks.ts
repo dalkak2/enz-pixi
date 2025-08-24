@@ -3,6 +3,10 @@ import {
     EntryContainer,
     EntrySprite,
 } from "../obj/mod.ts"
+import {
+    Assets,
+    Texture,
+} from "../../deps/pixi.ts"
 
 const mod =
     (a: number, n: number) =>
@@ -16,6 +20,40 @@ const numberNormalize =
             : Number(numOrStr) as number
 
 export class Looks extends Module {
+    textures: Record<string, Texture> = {}
+
+    override async init() {
+        this.textures = Object.fromEntries(await Promise.all(
+            this.project.objects.map(({sprite}) =>
+                sprite.pictures.map(
+                    async ({id, fileurl, filename, name}) => {
+                        let url = `/image/${
+                            filename
+                            ? (filename + `.png`)
+                            : fileurl!.substring(1)
+                        }`
+
+                        // for server-side svg rasterize
+                        if (url.endsWith(".svg")) {
+                            url += ".png"
+                        }
+
+                        await Assets.load(url)
+                        const texture = Texture.from(url)
+                        texture.label = name
+                        return [
+                            id,
+                            texture,
+                        ]
+                    }
+                )
+            )
+            .flat()
+        ))
+        Object.entries(this.objects).forEach(([_id, obj]) => {
+            (obj as EntrySprite).pixiSprite.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
+        })
+    }
     
     get_pictures(id: string) {
         return id

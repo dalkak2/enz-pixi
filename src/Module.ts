@@ -3,13 +3,10 @@ import {
     WebGLRenderer,
     Renderer,
     Container,
-    Assets,
-    Texture,
 } from "../deps/pixi.ts"
 
 import {
     EntryContainer,
-    EntrySprite,
 } from "./obj/mod.ts"
 
 import { Timer } from "./Timer.ts"
@@ -32,20 +29,8 @@ export class Module {
     project!: Project
     renderer?: Renderer
 
-    audioContext = new AudioContext()
-    gainNode = this.audioContext.createGain()
-    get volume() {
-        return this.gainNode.gain.value * 100
-    }
-    set volume(n: number) {
-        this.gainNode.gain.value = n / 100
-    }
-
     events: Record<string, (() => Promise<void>)[]> = {}
     scenes: Record<string, Container> = {}
-    variables: Record<string, string | number | (string | number)[]> = {}
-    textures: Record<string, Texture> = {}
-    sounds: Record<string, AudioBuffer> = {}
     objects: Record<string, EntryContainer> = {}
 
     pressedKeys: Record<number, boolean | undefined> = {}
@@ -60,8 +45,6 @@ export class Module {
     }
 
     loadProject(project: Project) {
-        this.gainNode.connect(this.audioContext.destination)
-
         this.project = project
 
         this.scenes = Object.fromEntries(
@@ -78,76 +61,17 @@ export class Module {
         )
         this.currentScene = Object.values(this.scenes)[0]
     }
+    // deno-lint-ignore no-unused-vars
     async init(parent: HTMLElement) {
+        // default - do nothing
+    }
+    // todo: refactor
+    async defaultInit(parent: HTMLElement) {
+        console.log(this, this.project)
         if (!this.project) {
             throw new Error("Module.init() is called before Module.loadProject()")
         }
 
-        this.variables = Object.fromEntries(
-            this.project.variables.map(
-                ({id, value, array, variableType}) => {
-                    return [
-                        id,
-                        variableType == "list"
-                            ? array?.map(({data}) => data)
-                            : value,
-                    ]
-                }
-            )
-        )
-        this.textures = Object.fromEntries(await Promise.all(
-            this.project.objects.map(({sprite}) =>
-                sprite.pictures.map(
-                    async ({id, fileurl, filename, name}) => {
-                        let url = `/image/${
-                            filename
-                            ? (filename + `.png`)
-                            : fileurl!.substring(1)
-                        }`
-
-                        // for server-side svg rasterize
-                        if (url.endsWith(".svg")) {
-                            url += ".png"
-                        }
-                        
-                        await Assets.load(url)
-                        const texture = Texture.from(url)
-                        texture.label = name
-                        return [
-                            id,
-                            texture,
-                        ]
-                    }
-                )
-            )
-            .flat()
-        ))
-        this.sounds = Object.fromEntries(await Promise.all(
-            this.project.objects.map(({sprite}) =>
-                sprite.sounds.map(
-                    async ({id, fileurl, filename, ext, name}) => {
-                        const url = `/sound/${
-                            filename
-                            ? (filename + (ext || ".mp3"))
-                            : fileurl!.substring(1)
-                        }`
-
-                        const audioBuffer = await fetch(url)
-                            .then(res => res.arrayBuffer())
-                            .then(buffer => this.audioContext.decodeAudioData(buffer))
-
-                        return [
-                            id,
-                            audioBuffer,
-                        ]
-                    }
-                )
-            )
-            .flat()
-        ))
-        Object.entries(this.objects).forEach(([_id, obj]) => {
-            (obj as EntrySprite).pixiSprite.texture = this.textures[obj.textureIds[obj.currentTextureIndex]]
-        })
         /*
         this.objects = Object.fromEntries(
             this.project.objects.toReversed().map(
@@ -239,19 +163,6 @@ export class Module {
     wait_tick() {
         return new Promise(o => {
             requestAnimationFrame(o)
-        })
-    }
-    soundStart(soundId: string, offset?: number, duration?: number) {
-        return new Promise(o => {
-            const source = this.audioContext.createBufferSource()
-            source.buffer = this.sounds[soundId]
-            source.connect(this.gainNode)
-            source.addEventListener("ended", o)
-            source.start(
-                this.audioContext.currentTime,
-                offset,
-                duration,
-            )
         })
     }
 }

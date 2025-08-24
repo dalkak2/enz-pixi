@@ -1,6 +1,66 @@
 import { Module } from "../Module.ts"
 
 export class Sound extends Module {
+    sounds: Record<string, AudioBuffer> = {}
+    
+    audioContext = new AudioContext()
+    gainNode = this.audioContext.createGain()
+    get volume() {
+        return this.gainNode.gain.value * 100
+    }
+    set volume(n: number) {
+        this.gainNode.gain.value = n / 100
+    }
+
+    constructor() {
+        super()
+        this.gainNode.connect(this.audioContext.destination)
+    }
+
+    override async init() {
+        this.sounds = Object.fromEntries(await Promise.all(
+            this.project.objects.map(({sprite}) =>
+                sprite.sounds.map(
+                    async ({id, fileurl, filename, ext, name}) => {
+                        const url = `/sound/${
+                            filename
+                            ? (filename + (ext || ".mp3"))
+                            : fileurl!.substring(1)
+                        }`
+
+                        const audioBuffer = await fetch(url)
+                            .then(res => res.arrayBuffer())
+                            .then(buffer => this.audioContext.decodeAudioData(buffer))
+
+                        return [
+                            id,
+                            audioBuffer,
+                        ]
+                    }
+                )
+            )
+            .flat()
+        ))
+    }
+
+    // util
+
+    soundStart(soundId: string, offset?: number, duration?: number) {
+        return new Promise(o => {
+            const source = this.audioContext.createBufferSource()
+            source.buffer = this.sounds[soundId]
+            source.connect(this.gainNode)
+            source.addEventListener("ended", o)
+            source.start(
+                this.audioContext.currentTime,
+                offset,
+                duration,
+            )
+        })
+    }
+
+    // blocks
+
     get_sounds(id: string) {
         return id
     }
