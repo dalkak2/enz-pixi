@@ -29,7 +29,7 @@ export const toDegrees =
         rad * 180 / Math.PI
 
 export class Module {
-    project
+    project!: Project
     renderer?: Renderer
 
     audioContext = new AudioContext()
@@ -41,7 +41,7 @@ export class Module {
         this.gainNode.gain.value = n / 100
     }
 
-    events: Record<string, (() => Promise<void>)[]>
+    events: Record<string, (() => Promise<void>)[]> = {}
     scenes: Record<string, Container> = {}
     variables: Record<string, string | number | (string | number)[]> = {}
     textures: Record<string, Texture> = {}
@@ -49,7 +49,7 @@ export class Module {
     objects: Record<string, EntryContainer> = {}
 
     pressedKeys: Record<number, boolean | undefined> = {}
-    currentScene: Container
+    currentScene!: Container
 
     timer = new Timer()
 
@@ -59,11 +59,10 @@ export class Module {
         y: 0,
     }
 
-    constructor(project: Project) {
+    loadProject(project: Project) {
         this.gainNode.connect(this.audioContext.destination)
 
         this.project = project
-        this.events = {}
 
         this.scenes = Object.fromEntries(
             this.project.scenes.map(
@@ -80,6 +79,10 @@ export class Module {
         this.currentScene = Object.values(this.scenes)[0]
     }
     async init(parent: HTMLElement) {
+        if (!this.project) {
+            throw new Error("Module.init() is called before Module.loadProject()")
+        }
+
         this.variables = Object.fromEntries(
             this.project.variables.map(
                 ({id, value, array, variableType}) => {
