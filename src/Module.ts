@@ -33,7 +33,12 @@ export class Module {
 
     currentScene!: Container
 
+    // Used in: Judgement
+    // Keep here cause "pointerdown" event used in Start
+    // todo: make it coherent with "keydown"
     isClicked = false
+
+    // Used in: Calc, Moving
     mouse = {
         x: 0,
         y: 0,
