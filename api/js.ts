@@ -20,6 +20,7 @@ class PixiVisitor extends Visitor {
             functions: project.functions.map(
                 ({content: _, ...rest}) => rest
             ),
+        // deno-lint-ignore no-explicit-any
         } as any
     }
     override visitObject(object: Object_): string {

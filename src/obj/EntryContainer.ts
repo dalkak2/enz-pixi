@@ -3,7 +3,7 @@ import {
     EventEmitter,
     Container,
 } from "../../deps/pixi.ts"
-import type { Entry } from "../Entry.ts"
+import type { Module } from "../Module.ts"
 
 export interface EntryContainerData {
     x: number
@@ -141,7 +141,7 @@ export abstract class EntryContainer extends EventEmitter {
             },
             objectType,
         }: Object_,
-        project: Entry,
+        project: Module,
     ) {
         const textureIds = pictures.map(
             ({id}) => id
@@ -182,7 +182,7 @@ export abstract class EntryContainer extends EventEmitter {
         }
     }
 
-    clone(project: Entry) {
+    clone(project: Module) {
         const sprite = new (this.constructor as new (data: EntryContainerData) => this)({
             ...this,
             ...this.cloneGetters(),
@@ -209,7 +209,7 @@ export abstract class EntryContainer extends EventEmitter {
      * @param relativePos 0: Back
      */
     addSibling(
-        project: Entry,
+        project: Module,
         target: Container,
         relativePos: number
     ) {

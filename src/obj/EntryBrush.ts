@@ -1,10 +1,12 @@
+// deno-lint-ignore-file no-self-assign
+
 import { EntryContainer } from "./EntryContainer.ts"
 import {
     Graphics,
     Color,
     type Container,
 } from "../../deps/pixi.ts"
-import type { Entry } from "../Entry.ts"
+import type { Module } from "../Module.ts"
 
 export abstract class EntryBrush extends EntryContainer {
     protected override dataUpdate(sprite: this): void {
@@ -74,7 +76,7 @@ export abstract class EntryBrush extends EntryContainer {
         }
     }
     override addSibling(
-        project: Entry,
+        project: Module,
         target: Container,
         relativePos: number
     ) {
