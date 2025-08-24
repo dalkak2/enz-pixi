@@ -2,6 +2,18 @@ import { Module } from "../Module.ts"
 import { EntryContainer } from "../obj/mod.ts"
 
 export class Judgement extends Module {
+    pressedKeys: Record<number, boolean | undefined> = {}
+
+    // deno-lint-ignore require-await
+    override async init() {
+        document.body.addEventListener("keydown", event => {
+            this.pressedKeys[event.keyCode] = true
+        })
+        document.body.addEventListener("keyup", event => {
+            this.pressedKeys[event.keyCode] = false
+        })
+    }
+
     /*
         These blocks are transpiled from server.
         Check ../api/js.ts

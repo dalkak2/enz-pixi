@@ -31,7 +31,6 @@ export class Module {
     scenes: Record<string, Container> = {}
     objects: Record<string, EntryContainer> = {}
 
-    pressedKeys: Record<number, boolean | undefined> = {}
     currentScene!: Container
 
     isClicked = false
@@ -83,13 +82,6 @@ export class Module {
             )
         )
         */
-
-        document.body.addEventListener("keydown", event => {
-            this.pressedKeys[event.keyCode] = true
-        })
-        document.body.addEventListener("keyup", event => {
-            this.pressedKeys[event.keyCode] = false
-        })
 
         this.renderer = new WebGLRenderer()
         await this.renderer!.init({
