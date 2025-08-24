@@ -32,7 +32,7 @@ export class EntryText extends EntryBrush {
         return this._colour
     }
     set colour(colour: string) {
-        this.pixiSprite.style.fill = colour
+        this.pixiSprite.style.fill = this._colour = colour
     }
 
     get textAlign() {
