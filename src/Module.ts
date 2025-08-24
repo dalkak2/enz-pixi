@@ -67,7 +67,6 @@ export class Module {
     }
     // todo: refactor
     async defaultInit(parent: HTMLElement) {
-        console.log(this, this.project)
         if (!this.project) {
             throw new Error("Module.init() is called before Module.loadProject()")
         }
@@ -123,7 +122,7 @@ export class Module {
                 this.mouse.y = 135 - e.globalY
             })
         })
-        
+
         const loop = () => {
             this.render()
             requestAnimationFrame(loop)
