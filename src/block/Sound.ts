@@ -21,7 +21,7 @@ export class Sound extends Module {
         this.sounds = Object.fromEntries(await Promise.all(
             this.project.objects.map(({sprite}) =>
                 sprite.sounds.map(
-                    async ({id, fileurl, filename, ext, name}) => {
+                    async ({id, fileurl, filename, ext, name: _}) => {
                         const url = `/sound/${
                             filename
                             ? (filename + (ext || ".mp3"))

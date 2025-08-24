@@ -1,3 +1,5 @@
+// deno-lint-ignore-file no-self-assign
+
 import { EntryContainer } from "./EntryContainer.ts"
 import {
     Graphics,
