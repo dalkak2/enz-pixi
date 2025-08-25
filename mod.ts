@@ -1,3 +1,5 @@
+// deno-lint-ignore-file require-await
+
 import { Hono } from "https://esm.sh/hono@4.7.10"
 import { etag } from "https://esm.sh/hono@4.7.10/etag"
 import { serveStatic } from "https://esm.sh/hono@4.7.10/deno"
@@ -44,6 +46,7 @@ app.get("/deps/*", serveStatic({ root: "./" }))
 // /image/lib/entryjs/images/
 // /image/lib/entry-js/images/
 app.get("/image/lib/*/images/*", async c => {
+    // cors not allowed
     const path = new URL(c.req.url).pathname
         .replace(/^\/image\//, "https://playentry.org/")
     return c.body(
@@ -58,22 +61,19 @@ app.get("/image/lib/*/images/*", async c => {
 app.get("/image/:id", async c => {
     const id = c.req.param("id")
     const [a,b,d,e] = id
-    return c.body(
-        (await api.image(
-            `https://playentry.org/uploads/${
-                a + b
-            }/${
-                d + e
-            }/image/${id}`
-        ))!,
-        {
-            headers: {
-                "cache-control": "max-age=31536000, public, immutable"
-            }
-        },
-    )
+
+    const path = `https://playentry.org/uploads/${
+            a + b
+        }/${
+            d + e
+        }/image/${id}`
+
+    c.header("Cache-Control", "public, max-age=3600")
+    return c.redirect(path)
 })
+
 app.get("/sound/lib/entry-js/images/*", async c => {
+    // cors not allowed.. maybe?
     const path = new URL(c.req.url).pathname
         .replace(/^\/sound\//, "https://playentry.org/")
     return c.body(
@@ -85,23 +85,19 @@ app.get("/sound/lib/entry-js/images/*", async c => {
         },
     )
 })
+
 app.get("/sound/:id", async c => {
     const id = c.req.param("id")
     const [a,b,d,e] = id
-    return c.body(
-        (await api.image(
-            `https://playentry.org/uploads/${
-                a + b
-            }/${
-                d + e
-            }/${id}`
-        ))!,
-        {
-            headers: {
-                "cache-control": "max-age=31536000, public, immutable"
-            }
-        },
-    )
+
+    const path = `https://playentry.org/uploads/${
+            a + b
+        }/${
+            d + e
+        }/${id}`
+    
+    c.header("Cache-Control", "public, max-age=3600")
+    return c.redirect(path)
 })
 
 app.get("/api/project/:id", async c => c.json(
