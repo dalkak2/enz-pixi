@@ -132,7 +132,7 @@ app.get("/api/js/:id", async c => {
         const label = `Generate ${c.req.param("id")}.js`
         console.time(label)
 
-        const result = c.body(api.js(project))
+        const result = c.body(api.js(project, "prettify" in c.req.query()))
         
         console.timeEnd(label)
         return result
