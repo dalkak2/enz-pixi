@@ -96,7 +96,7 @@ export class Calc extends Module {
             | "MOD"
     ) {
         if (op == "QUOTIENT") return Math.floor(a / b)
-        if (op == "MOD") return a % b
+        if (op == "MOD") return a - b * Math.floor(a / b)
         throw new Error("nope")
     }
     calc_operation(
