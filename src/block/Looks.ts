@@ -1,4 +1,4 @@
-import { Module, wait_second } from "../Module.ts"
+import { mod, Module, wait_second } from "../Module.ts"
 import {
     EntryContainer,
     EntrySprite,
@@ -7,10 +7,6 @@ import {
     Assets,
     Texture,
 } from "../../deps/pixi.ts"
-
-const mod =
-    (a: number, n: number) =>
-        ((a % n) + n) % n
 
 const numberNormalize =
     // TODO: convert in server

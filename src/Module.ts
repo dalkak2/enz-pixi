@@ -23,6 +23,10 @@ export const toDegrees =
     (rad: number) =>
         rad * 180 / Math.PI
 
+export const mod =
+    (a: number, n: number) =>
+        ((a % n) + n) % n
+
 export class Module {
     project!: Project
     renderer?: Renderer
