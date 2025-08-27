@@ -1,6 +1,7 @@
 import { EntryContainer } from "./EntryContainer.ts"
 import {
     Graphics,
+    StrokeInstruction,
     type Container,
 } from "../../deps/pixi.ts"
 import type { Module } from "../Module.ts"
@@ -15,20 +16,23 @@ export abstract class EntryBrush extends EntryContainer {
     hasStrokeBrush = false
     _strokeBrush?: Graphics
     _lineListener?: () => void
+
+    _strokeInst?: StrokeInstruction
+
     getStrokeBrush(onGraphicsInit?: (graphics: Graphics) => void) {
         if (!this._strokeBrush) {
             this._strokeBrush = new Graphics()
 
             this._lineListener = () => {
-                this._strokeBrush!.lineTo(
+                // todo: should use public method when pixi make it
+                this._strokeInst!.data.path.lineTo(
                     this.pixiSprite.x,
                     this.pixiSprite.y,
                 )
-                this._strokeBrush!.stroke({
-                    width: this.strokeThickness,
-                    color: this.strokeColor,
-                    alpha: 1 - this.brushTransparency / 100,
-                })
+                // @ts-expect-error:
+                this._strokeBrush!.context.onUpdate()
+                // @ts-expect-error:
+                this._strokeBrush!.context._tick = 0
             }
             onGraphicsInit?.(this._strokeBrush)
         }
@@ -55,5 +59,35 @@ export abstract class EntryBrush extends EntryContainer {
                 + relativePos
                 + (this.hasStrokeBrush ? -1 : 0)
         )
+    }
+
+    pushStrokeInst() {
+        (this._strokeBrush ||= new Graphics).moveTo(
+            this.pixiSprite.x,
+            this.pixiSprite.y,
+        )
+        this._strokeBrush!.stroke({
+            width: this.strokeThickness,
+            color: this.strokeColor,
+            alpha: 1 - this.brushTransparency / 100,
+        })
+
+        const insts = this._strokeBrush!.context.instructions
+        this._strokeInst = insts[insts.length-1] as StrokeInstruction
+    }
+    start_drawing(project: Module) {
+        const { lineListener } = this.getStrokeBrush(graphics => {
+            this.addSibling(project, graphics, 0)
+            this.hasStrokeBrush = true
+        })
+
+        this.pushStrokeInst()
+
+        this.on("move", lineListener)
+    }
+    stop_drawing() {
+        if (this._lineListener) {
+            this.off("move", this._lineListener)
+        }
     }
 }

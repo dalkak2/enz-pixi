@@ -7,29 +7,22 @@ export class Brush extends Module {
         return str
     }
     start_drawing(obj: EntryBrush) {
-        const { graphics, lineListener } = obj.getStrokeBrush(graphics => {
-            obj.addSibling(this, graphics, 0)
-            obj.hasStrokeBrush = true
-        })
-        graphics.moveTo(
-            obj.pixiSprite.x,
-            obj.pixiSprite.y,
-        )
-        obj.on("move", lineListener)
+        obj.start_drawing(this)
     }
     stop_drawing(obj: EntryBrush) {
-        if (obj._lineListener) {
-            obj.off("move", obj._lineListener)
-        }
+        obj.stop_drawing()
     }
     set_color(color: string, obj: EntryBrush) {
         obj.strokeColor = color
+        obj.pushStrokeInst()
     }
     change_thickness(n: number, obj: EntryBrush) {
         obj.strokeThickness += n
+        obj.pushStrokeInst()
     }
     set_thickness(n: number, obj: EntryBrush) {
         obj.strokeThickness = n
+        obj.pushStrokeInst()
     }
     change_brush_transparency(n: number, obj: EntryBrush) {
         obj.brushTransparency += n
