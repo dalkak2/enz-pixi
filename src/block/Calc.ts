@@ -1,4 +1,4 @@
-import { Module, toRadian, toDegrees } from "../Module.ts"
+import { Module, toRadian, toDegrees, mod } from "../Module.ts"
 import { EntryContainer, EntrySprite } from "../obj/mod.ts"
 
 class Timer {
@@ -96,7 +96,7 @@ export class Calc extends Module {
             | "MOD"
     ) {
         if (op == "QUOTIENT") return Math.floor(a / b)
-        if (op == "MOD") return a % b
+        if (op == "MOD") return mod(a, b)
         throw new Error("nope")
     }
     calc_operation(
@@ -132,7 +132,7 @@ export class Calc extends Module {
             case "acos":
             case "atan":
                 return toDegrees(Math[op](n))
-            case "unnatural": return n % 1
+            case "unnatural": return mod(n, 1)
             case "factorial": throw "Unimplemented: factorial"
             default: return Math[op](n)
         }

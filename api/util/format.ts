@@ -1,7 +1,7 @@
 import {
     createStreaming,
     GlobalConfiguration,
-} from "https://deno.land/x/dprint@0.2.0/mod.ts"
+} from "https://esm.sh/jsr/@dprint/formatter@0.4.1"
 
 const globalConfig: GlobalConfiguration = {
     indentWidth: 2,
@@ -9,7 +9,7 @@ const globalConfig: GlobalConfiguration = {
 }
 
 const tsFormatter = await createStreaming(
-    fetch("https://plugins.dprint.dev/typescript-0.88.6.wasm")
+    fetch("https://plugins.dprint.dev/typescript-0.95.10.wasm")
 )
 
 tsFormatter.setConfig(globalConfig, {
@@ -18,4 +18,7 @@ tsFormatter.setConfig(globalConfig, {
 
 export const format =
     (src: string) =>
-        tsFormatter.formatText("0.js", src)
+        tsFormatter.formatText({
+            filePath: "0.js",
+            fileText: src,
+        })

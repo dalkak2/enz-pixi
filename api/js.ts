@@ -175,7 +175,9 @@ export const jsUnformatted = (project: Project) => {
     return js
 }
 
-export const js = (project: Project) => {
+export const js = (project: Project, formatFlag = false) => {
     const src = jsUnformatted(project)
-    return format(src)
+    return formatFlag
+        ? format(src)
+        : src
 }
