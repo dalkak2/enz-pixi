@@ -107,9 +107,9 @@ export class Calc extends Module {
             | "sin"
             | "cos"
             | "tan"
-            | "asin"
-            | "acos"
-            | "atan"
+            | "asin_radian"
+            | "acos_radian"
+            | "atan_radian"
             | "log"
             | "ln"
             | "unnatural"
@@ -128,10 +128,12 @@ export class Calc extends Module {
             case "cos":
             case "tan":
                 return Math[op](toRadian(n))
-            case "asin":
-            case "acos":
-            case "atan":
-                return toDegrees(Math[op](n))
+            case "asin_radian":
+                return toDegrees(Math.asin(n))
+            case "acos_radian":
+                return toDegrees(Math.acos(n))
+            case "atan_radian":
+                return toDegrees(Math.atan(n))
             case "unnatural": return mod(n, 1)
             case "factorial": throw "Unimplemented: factorial"
             default: return Math[op](n)
