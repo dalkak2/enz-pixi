@@ -32,6 +32,7 @@ export class Brush extends Module {
     }
     set_fill_color(color: string, obj: EntryBrush) {
         obj.fillColor = color
+        obj.pushFillInst()
     }
     change_brush_transparency(n: number, obj: EntryBrush) {
         obj.brushTransparency += n

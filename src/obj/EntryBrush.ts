@@ -79,7 +79,8 @@ export abstract class EntryBrush extends EntryContainer {
     }
 
     pushStrokeInst() {
-        (this._graphics ||= new Graphics).moveTo(
+        this.getGraphics()
+        this._graphics!.moveTo(
             this.pixiSprite.x,
             this.pixiSprite.y,
         )
@@ -93,7 +94,8 @@ export abstract class EntryBrush extends EntryContainer {
         this._strokeInst = insts[insts.length-1] as StrokeInstruction
     }
     pushFillInst() {
-        (this._graphics ||= new Graphics).moveTo(
+        this.getGraphics()
+        this._graphics!.moveTo(
             this.pixiSprite.x,
             this.pixiSprite.y,
         )
