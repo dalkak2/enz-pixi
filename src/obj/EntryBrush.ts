@@ -2,6 +2,7 @@ import { EntryContainer } from "./EntryContainer.ts"
 import {
     Graphics,
     StrokeInstruction,
+    FillInstruction,
     type Container,
 } from "../../deps/pixi.ts"
 import type { Module } from "../Module.ts"
@@ -14,37 +15,54 @@ export abstract class EntryBrush extends EntryContainer {
     }
 
     hasStrokeBrush = false
-    _strokeBrush?: Graphics
-    _lineListener?: () => void
+    _graphics?: Graphics
+
+    _strokeListener?: () => void
+    _fillListener?: () => void
 
     _strokeInst?: StrokeInstruction
+    _fillInst?: FillInstruction
 
-    getStrokeBrush(onGraphicsInit?: (graphics: Graphics) => void) {
-        if (!this._strokeBrush) {
-            this._strokeBrush = new Graphics()
+    getGraphics() {
+        if (!this._graphics) {
+            this._graphics = new Graphics()
 
-            this._lineListener = () => {
+            this._strokeListener = () => {
                 // todo: should use public method when pixi make it
                 this._strokeInst!.data.path.lineTo(
                     this.pixiSprite.x,
                     this.pixiSprite.y,
                 )
                 // @ts-expect-error:
-                this._strokeBrush!.context.onUpdate()
+                this._graphics!.context.onUpdate()
                 // @ts-expect-error:
-                this._strokeBrush!.context._tick = 0
+                this._graphics!.context._tick = 0
             }
-            onGraphicsInit?.(this._strokeBrush)
+            this._fillListener = () => {
+                // todo: should use public method when pixi make it
+                this._fillInst!.data.path.lineTo(
+                    this.pixiSprite.x,
+                    this.pixiSprite.y,
+                )
+                // @ts-expect-error:
+                this._graphics!.context.onUpdate()
+                // @ts-expect-error:
+                this._graphics!.context._tick = 0
+            }
         }
         return {
-            graphics: this._strokeBrush!,
-            lineListener: this._lineListener!,
+            graphics: this._graphics!,
+            strokeListener: this._strokeListener!,
+            fillListener: this._fillListener!,
         }
     }
 
     strokeColor = "red"
+    fillColor = "red"
     strokeThickness = 1
     brushTransparency = 0
+
+    isGraphicsRegistered = false
 
     override addSibling(
         project: Module,
@@ -62,32 +80,78 @@ export abstract class EntryBrush extends EntryContainer {
     }
 
     pushStrokeInst() {
-        (this._strokeBrush ||= new Graphics).moveTo(
+        this.getGraphics()
+        this._graphics!.moveTo(
             this.pixiSprite.x,
             this.pixiSprite.y,
         )
-        this._strokeBrush!.stroke({
+        this._graphics!.stroke({
             width: this.strokeThickness,
             color: this.strokeColor,
             alpha: 1 - this.brushTransparency / 100,
         })
 
-        const insts = this._strokeBrush!.context.instructions
+        const insts = this._graphics!.context.instructions
         this._strokeInst = insts[insts.length-1] as StrokeInstruction
     }
+    pushFillInst() {
+        this.getGraphics()
+        this._graphics!.moveTo(
+            this.pixiSprite.x,
+            this.pixiSprite.y,
+        )
+        this._graphics!.fill({
+            color: this.fillColor,
+            alpha: 1 - this.brushTransparency / 100,
+        })
+
+        const insts = this._graphics!.context.instructions
+        this._fillInst = insts[insts.length-1] as FillInstruction
+    }
+
     start_drawing(project: Module) {
-        const { lineListener } = this.getStrokeBrush(graphics => {
+        const { graphics, strokeListener } = this.getGraphics()
+
+        if (!this.isGraphicsRegistered) {
             this.addSibling(project, graphics, 0)
             this.hasStrokeBrush = true
-        })
+            this.isGraphicsRegistered = true
+        }
 
         this.pushStrokeInst()
 
-        this.on("move", lineListener)
+        this.on("move", strokeListener)
     }
     stop_drawing() {
-        if (this._lineListener) {
-            this.off("move", this._lineListener)
+        if (this._strokeListener) {
+            this.off("move", this._strokeListener)
         }
+    }
+    start_fill(project: Module) {
+        const { graphics, fillListener } = this.getGraphics()
+
+        if (!this.isGraphicsRegistered) {
+            this.addSibling(project, graphics, 0)
+            // todo: is this needed?
+            // this.hasFillBrush = true
+            this.isGraphicsRegistered = true
+        }
+
+        this.pushFillInst()
+
+        this.on("move", fillListener)
+    }
+    stop_fill() {
+        if (this._fillListener) {
+            this.off("move", this._fillListener)
+        }
+    }
+    brush_erase_all() {
+        this._graphics?.destroy()
+        delete this._graphics
+        this.hasStrokeBrush = false
+        this.isGraphicsRegistered = false
+        this.stop_drawing()
+        this.stop_fill()
     }
 }

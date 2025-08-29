@@ -24,6 +24,16 @@ export class Brush extends Module {
         obj.strokeThickness = n
         obj.pushStrokeInst()
     }
+    start_fill(obj: EntryBrush) {
+        obj.start_fill(this)
+    }
+    stop_fill(obj: EntryBrush) {
+        obj.stop_fill()
+    }
+    set_fill_color(color: string, obj: EntryBrush) {
+        obj.fillColor = color
+        obj.pushFillInst()
+    }
     change_brush_transparency(n: number, obj: EntryBrush) {
         obj.brushTransparency += n
     }
@@ -34,9 +44,6 @@ export class Brush extends Module {
         obj.brushTransparency = n
     }
     brush_erase_all(obj: EntryBrush) {
-        obj._strokeBrush?.destroy()
-        delete obj._strokeBrush
-        obj.hasStrokeBrush = false
-        this.stop_drawing(obj)
+        obj.brush_erase_all()
     }
 }
