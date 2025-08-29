@@ -1,7 +1,24 @@
+import { EntryContainer } from "../mod.ts"
 import { Module } from "../Module.ts"
 
+class SoundInfo {
+    buffer
+    parentId
+    nodes = new Set<AudioBufferSourceNode>
+
+    constructor(buffer: AudioBuffer, parentId: string) {
+        this.buffer = buffer
+        this.parentId = parentId
+    }
+
+    stopAll() {
+        this.nodes.forEach(x => x.stop())
+        this.nodes.clear()
+    }
+}
+
 export class Sound extends Module {
-    sounds: Record<string, AudioBuffer> = {}
+    sounds: Map<string, SoundInfo> = new Map()
     
     audioContext = new AudioContext()
     gainNode = this.audioContext.createGain()
@@ -18,8 +35,8 @@ export class Sound extends Module {
     }
 
     override async init() {
-        this.sounds = Object.fromEntries(await Promise.all(
-            this.project.objects.map(({sprite}) =>
+        this.sounds = new Map(await Promise.all(
+            this.project.objects.map(({ sprite, ...obj }) =>
                 sprite.sounds.map(
                     async ({id, fileurl, filename, ext, name: _}) => {
                         const url = `/sound/${
@@ -34,8 +51,11 @@ export class Sound extends Module {
 
                         return [
                             id,
-                            audioBuffer,
-                        ]
+                            new SoundInfo(
+                                audioBuffer,
+                                obj.id,
+                            ),
+                        ] as const
                     }
                 )
             )
@@ -48,9 +68,17 @@ export class Sound extends Module {
     soundStart(soundId: string, offset?: number, duration?: number) {
         return new Promise(o => {
             const source = this.audioContext.createBufferSource()
-            source.buffer = this.sounds[soundId]
+
+            const { nodes, buffer } = this.sounds.get(soundId)!
+
+            nodes.add(source)
+
+            source.buffer = buffer
             source.connect(this.gainNode)
-            source.addEventListener("ended", o)
+            source.addEventListener("ended", e => {
+                o(e)
+                nodes.delete(source)
+            })
             source.start(
                 this.audioContext.currentTime,
                 offset,
@@ -105,7 +133,7 @@ export class Sound extends Module {
         )
     }
     get_sound_duration(soundId: string) {
-        return this.sounds[soundId].duration
+        return this.sounds.get(soundId)!.buffer.duration
     }
     get_sound_volume() {
         return this.volume
@@ -118,5 +146,23 @@ export class Sound extends Module {
     }
     play_bgm(soundId: string) {
         this.sound_something_with_block(soundId)
+    }
+    sound_silent_all(
+        target: "all" | "thisOnly" | "other_objects",
+        obj: EntryContainer,
+    ) {
+        if (target == "all") {
+            this.sounds.forEach(x => x.stopAll())
+        }
+        if (target == "thisOnly") {
+            this.sounds.values()
+                .filter(x => x.parentId == obj.id)
+                .forEach(x => x.stopAll())
+        }
+        if (target == "other_objects") {
+            this.sounds.values()
+                .filter(x => x.parentId != obj.id)
+                .forEach(x => x.stopAll())
+        }
     }
 }

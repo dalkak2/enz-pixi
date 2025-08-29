@@ -7,29 +7,36 @@ export class Brush extends Module {
         return str
     }
     start_drawing(obj: EntryBrush) {
-        const { graphics, lineListener } = obj.getStrokeBrush(graphics => {
-            obj.addSibling(this, graphics, 0)
-            obj.hasStrokeBrush = true
-        })
-        graphics.moveTo(
-            obj.pixiSprite.x,
-            obj.pixiSprite.y,
-        )
-        obj.on("move", lineListener)
+        obj.start_drawing(this)
     }
     stop_drawing(obj: EntryBrush) {
-        if (obj._lineListener) {
-            obj.off("move", obj._lineListener)
-        }
+        obj.stop_drawing()
     }
     set_color(color: string, obj: EntryBrush) {
         obj.strokeColor = color
+        obj.pushStrokeInst()
     }
     change_thickness(n: number, obj: EntryBrush) {
         obj.strokeThickness += n
+        obj.pushStrokeInst()
     }
     set_thickness(n: number, obj: EntryBrush) {
         obj.strokeThickness = n
+        obj.pushStrokeInst()
+    }
+    start_fill(obj: EntryBrush) {
+        obj.start_fill(this)
+    }
+    stop_fill(obj: EntryBrush) {
+        obj.stop_fill()
+    }
+    set_fill_color(color: string, obj: EntryBrush) {
+        obj.fillColor = color
+        obj.pushFillInst()
+    }
+    set_random_color(obj: EntryBrush) {
+        const c = () => Math.floor(Math.random()*256)
+        this.set_color(`rgb(${[c(), c(), c()]})`, obj)
     }
     change_brush_transparency(n: number, obj: EntryBrush) {
         obj.brushTransparency += n
@@ -41,9 +48,6 @@ export class Brush extends Module {
         obj.brushTransparency = n
     }
     brush_erase_all(obj: EntryBrush) {
-        obj._strokeBrush?.destroy()
-        delete obj._strokeBrush
-        obj.hasStrokeBrush = false
-        this.stop_drawing(obj)
+        obj.brush_erase_all()
     }
 }
