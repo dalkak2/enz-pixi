@@ -34,6 +34,10 @@ export class Brush extends Module {
         obj.fillColor = color
         obj.pushFillInst()
     }
+    set_random_color(obj: EntryBrush) {
+        const c = () => Math.floor(Math.random()*256)
+        this.set_color(`rgb(${[c(), c(), c()]})`, obj)
+    }
     change_brush_transparency(n: number, obj: EntryBrush) {
         obj.brushTransparency += n
     }
