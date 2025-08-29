@@ -23,7 +23,7 @@ export abstract class EntryBrush extends EntryContainer {
     _strokeInst?: StrokeInstruction
     _fillInst?: FillInstruction
 
-    getGraphics(onGraphicsInit?: (graphics: Graphics) => void) {
+    getGraphics() {
         if (!this._graphics) {
             this._graphics = new Graphics()
 
@@ -49,7 +49,6 @@ export abstract class EntryBrush extends EntryContainer {
                 // @ts-expect-error:
                 this._graphics!.context._tick = 0
             }
-            onGraphicsInit?.(this._graphics)
         }
         return {
             graphics: this._graphics!,
@@ -111,10 +110,7 @@ export abstract class EntryBrush extends EntryContainer {
     }
 
     start_drawing(project: Module) {
-        const { graphics, strokeListener } = this.getGraphics(graphics => {
-            this.addSibling(project, graphics, 0)
-            this.hasStrokeBrush = true
-        })
+        const { graphics, strokeListener } = this.getGraphics()
 
         if (!this.isGraphicsRegistered) {
             this.addSibling(project, graphics, 0)
