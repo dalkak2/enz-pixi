@@ -47,6 +47,7 @@ export class Brush extends Module {
         obj._graphics?.destroy()
         delete obj._graphics
         obj.hasStrokeBrush = false
+        obj.isGraphicsRegistered = false
         this.stop_drawing(obj)
         this.stop_fill(obj)
     }

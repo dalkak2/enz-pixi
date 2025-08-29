@@ -63,6 +63,8 @@ export abstract class EntryBrush extends EntryContainer {
     strokeThickness = 1
     brushTransparency = 0
 
+    isGraphicsRegistered = false
+
     override addSibling(
         project: Module,
         target: Container,
@@ -109,10 +111,16 @@ export abstract class EntryBrush extends EntryContainer {
     }
 
     start_drawing(project: Module) {
-        const { strokeListener } = this.getGraphics(graphics => {
+        const { graphics, strokeListener } = this.getGraphics(graphics => {
             this.addSibling(project, graphics, 0)
             this.hasStrokeBrush = true
         })
+
+        if (!this.isGraphicsRegistered) {
+            this.addSibling(project, graphics, 0)
+            this.hasStrokeBrush = true
+            this.isGraphicsRegistered = true
+        }
 
         this.pushStrokeInst()
 
@@ -124,12 +132,14 @@ export abstract class EntryBrush extends EntryContainer {
         }
     }
     start_fill(project: Module) {
-        const { fillListener } = this.getGraphics(graphics => {
+        const { graphics, fillListener } = this.getGraphics()
+
+        if (!this.isGraphicsRegistered) {
             this.addSibling(project, graphics, 0)
-            
             // todo: is this needed?
             // this.hasFillBrush = true
-        })
+            this.isGraphicsRegistered = true
+        }
 
         this.pushFillInst()
 
