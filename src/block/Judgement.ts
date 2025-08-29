@@ -67,4 +67,7 @@ export class Judgement extends Module {
     boolean_not(b: boolean) {
         return !b
     }
+    is_boost_mode() {
+        return true
+    }
 }
