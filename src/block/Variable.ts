@@ -23,8 +23,7 @@ export class Variable extends Module {
         return this.variables[id]
     }
     change_variable(id: string, value: number) {
-        // @ts-ignore: lol
-        this.variables[id] += Number(value)
+        this.variables[id] = Number(this.variables[id]) + Number(value)
     }
     set_variable(id: string, value: string | number) {
         this.variables[id] = value
