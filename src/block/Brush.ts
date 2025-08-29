@@ -44,11 +44,6 @@ export class Brush extends Module {
         obj.brushTransparency = n
     }
     brush_erase_all(obj: EntryBrush) {
-        obj._graphics?.destroy()
-        delete obj._graphics
-        obj.hasStrokeBrush = false
-        obj.isGraphicsRegistered = false
-        this.stop_drawing(obj)
-        this.stop_fill(obj)
+        obj.brush_erase_all()
     }
 }

@@ -150,4 +150,12 @@ export abstract class EntryBrush extends EntryContainer {
             this.off("move", this._fillListener)
         }
     }
+    brush_erase_all() {
+        this._graphics?.destroy()
+        delete this._graphics
+        this.hasStrokeBrush = false
+        this.isGraphicsRegistered = false
+        this.stop_drawing()
+        this.stop_fill()
+    }
 }
