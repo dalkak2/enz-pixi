@@ -15,7 +15,7 @@ class PixiVisitor extends Visitor {
         return {
             ...project,
             objects: project.objects.map(
-                ({sprite}) => ({sprite})
+                ({id, sprite}) => ({id, sprite})
             ),
             functions: project.functions.map(
                 ({content: _, ...rest}) => rest
