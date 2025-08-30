@@ -84,14 +84,21 @@ export abstract class EntryContainer extends EventEmitter {
     }
     get rotation() { return this.pixiSprite.angle }
     set rotation(a: number) { this.pixiSprite.angle = a }
-    get visible() { return this.pixiSprite.visible }
-    set visible(b: boolean) { this.pixiSprite.visible = b }
+
+    _visible = false
+    get visible() { return this._visible }
+    set visible(b: boolean) {
+        this._visible = b
+        this.pixiSprite.visible = b && this.transparency < 100
+    }
+    
     get transparency() {
         return (1 - this.pixiSprite.alpha) * 100
     }
     set transparency(n: number) {
         this.pixiSprite.alpha = 1 - (n / 100)
-        this.pixiSprite.visible = n < 100
+        // deno-lint-ignore no-self-assign
+        this.visible = this.visible // hide if transparent
     }
 
     _isClicked?: boolean
