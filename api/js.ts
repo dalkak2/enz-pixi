@@ -172,7 +172,7 @@ export const jsUnformatted = (project: Project) => {
             "await $1",
         )
         .replaceAll(
-            /let (.+?);/g,
+            /let (v_.+?);/g,
             "let $1 = 0;",
         )
     js = `import { init, EntrySprite, EntryText } from "/src/mod.ts"` + "\nexport const Entry =\n" + js
