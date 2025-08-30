@@ -171,6 +171,10 @@ export const jsUnformatted = (project: Project) => {
             /(Entry\.func_.{4}\()/g,
             "await $1",
         )
+        .replaceAll(
+            /let (.+?);/g,
+            "let $1 = 0;",
+        )
     js = `import { init, EntrySprite, EntryText } from "/src/mod.ts"` + "\nexport const Entry =\n" + js
     return js
 }
