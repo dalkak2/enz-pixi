@@ -91,6 +91,7 @@ export abstract class EntryContainer extends EventEmitter {
     }
     set transparency(n: number) {
         this.pixiSprite.alpha = 1 - (n / 100)
+        this.pixiSprite.visible = n < 100
     }
 
     _isClicked?: boolean
