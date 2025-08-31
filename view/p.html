@@ -5,27 +5,45 @@
         <style>
             body {
                 font-family: "Pretendard Variable";
+                --bg: oklch(0.4 0.06 160);
+                --fo: oklch(0.8 0.06 20);
             }
         </style>
     </head>
-    <body class="p(10) bg(#dee)">
-        <h1 class="500 font(30)">
+    <body class="p(10) bg(--bg) vbox(center) gap(5) c(--fo)">
+        <h1 class="500 font(30) w(100%)">
             enz-pixi
             <!-- VERSION_LABEL -->
         </h1>
         <app class="
-            inline-block
-            w(~100%)
-            h(~100%-45px)
-            aspect-ratio(16/9)
-            object-fit(contain)
-            r(5) b(2) clip
+            r(10) b(2) clip
+            flex-shrink(1)
+            vbox(center)
+            bg(--fo)
         ">
-            <div class="
-                block
-                w(1920)
-            "></div>
-        </div>
+            <canvas
+                class="
+                    flex-shrink(1)
+                    block
+                    aspect-ratio(16/9)
+                    r(10)
+                    clip
+                    bg(#fff)
+                "
+                width="1920"
+                height="1080"
+            >
+            </canvas>
+            <button class="
+                w(100)
+                p(10)
+                r(5)
+                align-self(center)
+                c(black)
+            ">
+                시작
+            </button>
+        </app>
 
         <!-- INSERT SCRIPT HERE -->
         

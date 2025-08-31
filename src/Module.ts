@@ -65,12 +65,11 @@ export class Module {
         )
         this.currentScene = Object.values(this.scenes)[0]
     }
-    // deno-lint-ignore no-unused-vars
-    async init(parent: HTMLElement) {
+    async init() {
         // default - do nothing
     }
     // todo: refactor
-    async defaultInit(parent: HTMLElement) {
+    async defaultInit(canvas: HTMLCanvasElement) {
         if (!this.project) {
             throw new Error("Module.init() is called before Module.loadProject()")
         }
@@ -97,12 +96,9 @@ export class Module {
             width: 480,
             height: 270,
             backgroundColor: "#fff",
-            resolution: 4
+            resolution: 4,
+            canvas,
         })
-
-        const canvas = this.renderer!.canvas
-
-        parent.appendChild(canvas)
 
         canvas.addEventListener("pointerdown", () => {
             this.isClicked = true

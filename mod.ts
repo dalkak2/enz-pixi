@@ -160,7 +160,7 @@ app.get("/p/:id", async c => c.html(
         <script type="module">
             import { Entry } from "/api/js/${c.req.param("id")}"
             await Entry.init(
-                document.querySelector("app")
+                document.querySelector("canvas")
             )
             Entry.start()
         </script>
