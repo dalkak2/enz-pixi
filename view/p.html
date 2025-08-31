@@ -5,30 +5,154 @@
         <style>
             body {
                 font-family: "Pretendard Variable";
+                font-variant-numeric: tabular-nums;
+                --bg: oklch(0.4 0.06 160);
+                --fo: oklch(0.8 0.06 20);
+                --fo2: oklch(0.9 0.03 20);
+                --lo: oklch(0.8 0.06 160)
             }
         </style>
     </head>
-    <body class="p(10) bg(#dee)">
-        <h1 class="500 font(30)">
+    <body class="p(15) bg(--bg) vbox(center) gap(5) c(--fo)">
+        <h1 class="500 font(30) w(100%) mt(-0.3em)">
             enz-pixi
             <!-- VERSION_LABEL -->
         </h1>
         <app class="
-            inline-block
-            w(~100%)
-            h(~100%-45px)
-            aspect-ratio(16/9)
-            object-fit(contain)
-            r(5) b(2) clip
+            r(12) b(4) clip
+            flex-shrink(1)
+            vbox(left)
+            bg(--fo)
         ">
-            <div class="
-                block
-                w(1920)
-            "></div>
-        </div>
+            <main class="
+                r(8) clip
+                h(100%-40px)
+                relative
+                c(--bg)
+                bg(--fo2)
+            ">
+                <loadinfo class="
+                    width(100%) height(100%)
+                    vpack absolute
+                    gap(10)
+                    bg(--fo2)
+                ">
+                    <style>
+                        bar {
+                            width: 200px;
+                            height: 30px;
+                            border: 2px solid var(--bg);
+                            border-radius: 15px;
+                            padding-left: 10px;
+                            background: linear-gradient(
+                                to right,
+                                var(--lo) calc(100% * var(--prog)),
+                                var(--fo2) calc(100% * var(--prog))
+                            );
+                            transition: 0.2s;
+                            --prog: 0;
+                        }
+                        bar::before {
+                            content: attr(got) "/" attr(need);
+                        }
+                    </style>
+                    Loading...
+                    <div class="hbox gap(10)">
+                        코드
+                        <bar></bar>
+                    </div>
+                    <div class="hbox gap(10)">
+                        그림
+                        <bar></bar>
+                    </div>
+                    <div class="hbox gap(10)">
+                        소리
+                        <bar></bar>
+                    </div>
+                </loadinfo>
+                <canvas
+                    class="h(100%)"
+                    width="1920"
+                    height="1080"
+                >
+                </canvas>
+            </main>
+            <button class="
+                h(40)
+                p(10) r(5)
+                fill(--bg)
+                play
+            ">
+                <style>
+                    .fill\(--bg\) {
+                        /* ?왜 adorablecss 안먹지.. */
+                        fill: var(--bg);
+                    }
+                    path {
+                        transition: 0.2s;
+                    }
+                    button {
+                        transition: 0.2s;
+                    }
+                    button:active {
+                        transform: scale(0.8);
+                    }
+                    button.play path {
+                        d: path("M0 0 L8.66 5 L8.66 5 L0 10 Z");
+                    }
+                    button.stop path {
+                        d: path("M0 0 L10 0 L10 10 L0 10 Z");
+                    }
+                </style>
+                <svg class="h(100%)" viewBox="0 0 10 10">
+                    <path d="M0 0 L8.66 5 L0 10 Z"/>
+                </svg>
+            </button>
+        </app>
+        <script>
+            const [$codeBar, $pictureBar, $soundBar] = document.querySelectorAll("bar")
 
-        <!-- INSERT SCRIPT HERE -->
-        
+            const updateBar = ($bar, {need, got}) => {
+                // `content:` doesn't support `var()`
+                // `calc()` doesn't support `attr()`
+                // thus we need to set both
+                // tihi
+                $bar.setAttribute("need", need)
+                $bar.setAttribute("got", got)
+                $bar.style.setProperty("--prog", got/need)
+            }
+
+            updateBar($codeBar, { got: 0, need: 1 })
+            updateBar($pictureBar, { got: 0, need: "?" })
+            updateBar($soundBar, { got: 0, need: "?" })
+        </script>
+        <script type="module">
+            import { Entry } from "/api/js/:id"
+            
+            updateBar($codeBar, { got: 1, need: 1 })
+
+            Entry.on("__loadStatusUpdate", () => {
+                const { picture, sound } = Entry._loadingStatus
+
+                updateBar($pictureBar, picture)
+                updateBar($soundBar, sound)
+            })
+
+            await Entry.init(
+                document.querySelector("canvas")
+            )
+
+            document.querySelector("loadinfo").style.display = "none"
+
+            const $play = document.querySelector("button")
+            let state = "play"
+            $play.addEventListener("click", () => {
+                if (state == "play") {
+                    $play.classList.replace("play", state = "stop")
+                    Entry.start()
+                }
+            })
+        </script>
         <script src="https://unpkg.com/adorable-css@1.4.3/index.js"></script>
     </body>
 </html>
