@@ -55,11 +55,11 @@ export const Entry = function (this: Entry, ...args: Args<typeof Module>) {
     this.assignModulesMixin(this)
 
     // @ts-expect-error:
-    this.init = async (parent: HTMLElement) => {
-        await this.defaultInit(parent)
+    this.init = async (canvas: HTMLCanvasElement) => {
+        await this.defaultInit(canvas)
         await Promise.all(
             this.modules.map(module =>
-                this.moduleInstances.get(module)!.init.call(this, parent)
+                this.moduleInstances.get(module)!.init.call(this)
             )
         )
     }
