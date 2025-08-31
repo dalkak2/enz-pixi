@@ -10,7 +10,7 @@
             }
         </style>
     </head>
-    <body class="p(10) bg(--bg) vbox(center) gap(5) c(--fo)">
+    <body class="p(15) bg(--bg) vbox(center) gap(5) c(--fo)">
         <h1 class="500 font(30) w(100%)">
             enz-pixi
             <!-- VERSION_LABEL -->
@@ -23,28 +23,23 @@
         ">
             <canvas
                 class="
-                    flex-shrink(1)
-                    block
-                    aspect-ratio(16/9)
-                    r(10)
-                    clip
+                    r(10) clip
                     bg(#fff)
+                    h(100%-40px)
                 "
                 width="1920"
                 height="1080"
             >
             </canvas>
             <button class="
-                w(100)
-                p(10)
-                r(5)
+                w(100) h(40)
+                p(10) r(5)
                 align-self(center)
-                c(black)
+                c(--bg)
             ">
                 시작
             </button>
         </app>
-
         <!-- INSERT SCRIPT HERE -->
         
         <script src="https://unpkg.com/adorable-css@1.4.3/index.js"></script>
