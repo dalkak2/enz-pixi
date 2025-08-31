@@ -11,7 +11,7 @@
         </style>
     </head>
     <body class="p(15) bg(--bg) vbox(center) gap(5) c(--fo)">
-        <h1 class="500 font(30) w(100%)">
+        <h1 class="500 font(30) w(100%) mt(-0.3em)">
             enz-pixi
             <!-- VERSION_LABEL -->
         </h1>
@@ -34,13 +34,50 @@
             <button class="
                 h(40)
                 p(10) r(5)
-                c(--bg)
+                fill(--bg)
+                play
             ">
-                시작
+                <style>
+                    .fill\(--bg\) {
+                        /* ?왜 adorablecss 안먹지.. */
+                        fill: var(--bg);
+                    }
+                    path {
+                        transition: 0.2s;
+                    }
+                    button {
+                        transition: 0.2s;
+                    }
+                    button:active {
+                        transform: scale(0.8);
+                    }
+                    button.play path {
+                        d: path("M0 0 L8.66 5 L8.66 5 L0 10 Z");
+                    }
+                    button.stop path {
+                        d: path("M0 0 L10 0 L10 10 L0 10 Z");
+                    }
+                </style>
+                <svg class="h(100%)" viewBox="0 0 10 10">
+                    <path d="M0 0 L8.66 5 L0 10 Z"/>
+                </svg>
             </button>
         </app>
-        <!-- INSERT SCRIPT HERE -->
-        
+        <script type="module">
+            import { Entry } from "/api/js/:id"
+            await Entry.init(
+                document.querySelector("canvas")
+            )
+
+            const $play = document.querySelector("button")
+            let state = "play"
+            $play.addEventListener("click", () => {
+                if (state == "play") {
+                    $play.classList.replace("play", state = "stop")
+                    Entry.start()
+                }
+            })
+        </script>
         <script src="https://unpkg.com/adorable-css@1.4.3/index.js"></script>
     </body>
 </html>

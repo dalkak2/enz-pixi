@@ -156,15 +156,7 @@ app.get("/p/:id", async c => c.html(
             "local"
         }`
     )
-    .replace("<!-- INSERT SCRIPT HERE -->", `
-        <script type="module">
-            import { Entry } from "/api/js/${c.req.param("id")}"
-            await Entry.init(
-                document.querySelector("canvas")
-            )
-            Entry.start()
-        </script>
-    `)
+    .replace(`"/api/js/:id"`, `"/api/js/${c.req.param("id")}"`)
 ))
 
 Deno.serve(app.fetch)
