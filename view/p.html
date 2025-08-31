@@ -5,6 +5,7 @@
         <style>
             body {
                 font-family: "Pretendard Variable";
+                font-variant-numeric: tabular-nums;
                 --bg: oklch(0.4 0.06 160);
                 --fo: oklch(0.8 0.06 20);
                 --fo2: oklch(0.9 0.03 20);
@@ -56,11 +57,15 @@
                         }
                     </style>
                     Loading...
-                    <div class="picture hbox gap(10)">
+                    <div class="hbox gap(10)">
+                        코드
+                        <bar></bar>
+                    </div>
+                    <div class="hbox gap(10)">
                         그림
                         <bar></bar>
                     </div>
-                    <div class="sound hbox gap(10)">
+                    <div class="hbox gap(10)">
                         소리
                         <bar></bar>
                     </div>
@@ -104,26 +109,33 @@
                 </svg>
             </button>
         </app>
-        <script type="module">
-            import { Entry } from "/api/js/:id"
+        <script>
+            const [$codeBar, $pictureBar, $soundBar] = document.querySelectorAll("bar")
 
-            const [$pictureBar, $soundBar] = document.querySelectorAll("bar")
-
-            Entry.on("__loadStatusUpdate", () => {
+            const updateBar = ($bar, {need, got}) => {
                 // `content:` doesn't support `var()`
                 // `calc()` doesn't support `attr()`
                 // thus we need to set both
                 // tihi
+                $bar.setAttribute("need", need)
+                $bar.setAttribute("got", got)
+                $bar.style.setProperty("--prog", got/need)
+            }
 
+            updateBar($codeBar, { got: 0, need: 1 })
+            updateBar($pictureBar, { got: 0, need: "?" })
+            updateBar($soundBar, { got: 0, need: "?" })
+        </script>
+        <script type="module">
+            import { Entry } from "/api/js/:id"
+            
+            updateBar($codeBar, { got: 1, need: 1 })
+
+            Entry.on("__loadStatusUpdate", () => {
                 const { picture, sound } = Entry._loadingStatus
 
-                $pictureBar.setAttribute("need", picture.need)
-                $pictureBar.setAttribute("got", picture.got)
-                $pictureBar.style.setProperty("--prog", picture.got/picture.need)
-
-                $soundBar.setAttribute("need", sound.need)
-                $soundBar.setAttribute("got", sound.got)
-                $soundBar.style.setProperty("--prog", sound.got/sound.need)
+                updateBar($pictureBar, picture)
+                updateBar($soundBar, sound)
             })
 
             await Entry.init(
