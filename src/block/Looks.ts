@@ -19,6 +19,10 @@ export class Looks extends Module {
     textures: Record<string, Texture> = {}
 
     override async init() {
+        this.need(
+            "picture",
+            this.project.objects.flatMap(x => x.sprite.pictures).length,
+        )
         this.textures = Object.fromEntries(await Promise.all(
             this.project.objects.map(({sprite}) =>
                 sprite.pictures.map(
@@ -33,8 +37,9 @@ export class Looks extends Module {
                         if (url.endsWith(".svg")) {
                             url += ".png"
                         }
-
                         await Assets.load(url)
+                        this.got("picture")
+
                         const texture = Texture.from(url)
                         texture.label = name
                         return [

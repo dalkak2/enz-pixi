@@ -35,6 +35,10 @@ export class Sound extends Module {
     }
 
     override async init() {
+        this.need(
+            "sound",
+            this.project.objects.flatMap(x => x.sprite.sounds).length,
+        )
         this.sounds = new Map(await Promise.all(
             this.project.objects.map(({ sprite, ...obj }) =>
                 sprite.sounds.map(
@@ -48,6 +52,7 @@ export class Sound extends Module {
                         const audioBuffer = await fetch(url)
                             .then(res => res.arrayBuffer())
                             .then(buffer => this.audioContext.decodeAudioData(buffer))
+                        this.got("sound")
 
                         return [
                             id,

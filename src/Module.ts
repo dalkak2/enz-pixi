@@ -157,4 +157,19 @@ export class Module {
             requestAnimationFrame(o)
         })
     }
+
+    // todo: refactor away of Module
+    _loadingStatus = {
+        picture: { need: 0, got: 0 },
+        sound: { need: 0, got: 0 },
+    }
+    
+    need(type: "picture" | "sound", count = 1) {
+        this._loadingStatus[type].need += count
+        this.emit("__loadStatusUpdate")
+    }
+    got(type: "picture" | "sound", count = 1) {
+        this._loadingStatus[type].got += count
+        this.emit("__loadStatusUpdate")
+    }
 }
