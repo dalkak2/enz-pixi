@@ -21,6 +21,8 @@ export interface EntryContainerData {
     scene: string
     objectType: string
     textureIds: string[]
+
+    variables: Map<string, string | number | (string | number)[]>
 }
 
 export abstract class EntryContainer extends EventEmitter {
@@ -36,6 +38,8 @@ export abstract class EntryContainer extends EventEmitter {
 
     parent?: EntryContainer
     children: EntryContainer[] = []
+
+    variables: Map<string, string | number | (string | number)[]>
 
     abstract pixiSprite: Container
 
@@ -57,6 +61,16 @@ export abstract class EntryContainer extends EventEmitter {
         this.scene = data.scene
         this.objectType = data.objectType
         this.textureIds = data.textureIds
+
+        this.variables = new Map(
+            data.variables.entries()
+                .map(([k, v]) => [
+                    k,
+                    Array.isArray(v)
+                        ? Array.from(v)
+                        : v
+                ])
+        )
     }
 
     /** Initialize this.pixiSprite */
@@ -165,6 +179,7 @@ export abstract class EntryContainer extends EventEmitter {
             isClone: false,
             scene,
             objectType,
+            variables: new Map(),
         })
         const pixiSprite = sprite.pixiSprite
         pixiSprite.scale.x = entity.scaleX
