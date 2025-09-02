@@ -18,7 +18,7 @@ export class Variable extends Module {
                 if (object == null) {
                     this.variables.set(id, v)
                 } else {
-                    this.objects[object].variables.set(id, v)
+                    this.objects[object]?.variables.set(id, v)
                 }
             }
         )
