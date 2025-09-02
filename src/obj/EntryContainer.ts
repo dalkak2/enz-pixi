@@ -221,8 +221,6 @@ export abstract class EntryContainer extends EventEmitter {
         ;(sprite.parent = this.parent || this).children.push(sprite)
 
         this.addSibling(project, sprite.pixiSprite, 0)
-        
-        sprite.emit("clone")
 
         return sprite
     }

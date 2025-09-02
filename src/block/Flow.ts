@@ -23,7 +23,8 @@ export class Flow extends Module {
             targetId == "self"
                 ? obj
                 : this.objects[targetId]
-        target.clone(this)
+        
+        target.clone(this).emit("clone")
     }
     when_clone_start(f: () => Promise<void>, obj: EntryContainer) {
         obj.on("clone", () => f().catch((e: Error) => {
