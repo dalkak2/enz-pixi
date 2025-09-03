@@ -36,6 +36,7 @@ export class Moving extends Module {
             const dt = Date.now() - prevT
             obj.x += dt / t * dx
             obj.y += dt / t * dy
+            obj.emit("move")
 
             prevT = Date.now()
 
