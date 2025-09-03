@@ -3,7 +3,7 @@ import { etag } from "https://esm.sh/hono@4.7.10/etag"
 import { serveStatic } from "https://esm.sh/hono@4.7.10/deno"
 
 import { esbuildTranspiler } from "https://esm.sh/@hono/esbuild-transpiler@0.1.3"
-import * as esbuild from "https://deno.land/x/esbuild@v0.19.5/wasm.js"
+import * as esbuild from "https://deno.land/x/esbuild@v0.25.9/wasm.js"
 
 import * as api from "./api/mod.ts"
 
@@ -28,7 +28,12 @@ const {
 
 app.use("/src/*", etag({weak: true}))
 if (env == "dev") {
-    app.get("/src/*", esbuildTranspiler({ esbuild }))
+    app.get("/src/*", esbuildTranspiler({
+        esbuild,
+        transformOptions: {
+            target: "es2024",
+        }
+    }))
     app.get("/src/*", serveStatic({ root: "./" }))
 } else {
     app.get("/src/*", serveStatic({
