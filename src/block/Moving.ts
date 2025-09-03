@@ -32,16 +32,38 @@ export class Moving extends Module {
         const startAt = Date.now()
         let prevT = startAt
 
-        while (Date.now() - startAt < t) {
-            const dt = Date.now() - prevT
-            obj.x += dt / t * dx
-            obj.y += dt / t * dy
-            obj.emit("move")
+        let accDx = 0
+        let accDy = 0
 
-            prevT = Date.now()
+        while (true) {
+            const now = Date.now()
+            const elapsed = now - startAt
+
+            if (elapsed >= t) break
+
+            const dt = now - prevT
+
+            const stepDx = dx * dt / t
+            const stepDy = dy * dt / t
+
+            obj.x += stepDx
+            obj.y += stepDy
+
+            accDx += stepDx
+            accDy += stepDy
+
+            obj.emit("move")
+            prevT = now
 
             await this.wait_tick()
         }
+
+        const remainingDx = dx - accDx
+        const remainingDy = dy - accDy
+
+        obj.x += remainingDx
+        obj.y += remainingDy
+        obj.emit("move")
     }
     locate_x(x: number, obj: EntryContainer) {
         obj.x = x
