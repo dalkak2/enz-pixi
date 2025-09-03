@@ -1,5 +1,6 @@
 import { EntryContainer } from "../mod.ts"
 import { Module } from "../Module.ts"
+import { yet } from "../util/blockDeco.ts"
 
 class SoundInfo {
     buffer
@@ -149,8 +150,14 @@ export class Sound extends Module {
     sound_volume_set(n: number) {
         this.volume = Math.min(Math.max(0, n), 100)
     }
-    play_bgm(soundId: string) {
-        this.sound_something_with_block(soundId)
+    @yet get_sound_speed() {
+        
+    }
+    @yet sound_speed_change() {
+
+    }
+    @yet sound_speed_set() {
+
     }
     sound_silent_all(
         target: "all" | "thisOnly" | "other_objects",
@@ -169,5 +176,11 @@ export class Sound extends Module {
                 .filter(x => x.parentId != obj.id)
                 .forEach(x => x.stopAll())
         }
+    }
+    play_bgm(soundId: string) {
+        this.sound_something_with_block(soundId)
+    }
+    @yet stop_bgm() {
+        
     }
 }

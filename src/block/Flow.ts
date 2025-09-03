@@ -1,6 +1,7 @@
 import { Module } from "../Module.ts"
 import { wait_second } from "../util/basic.ts"
 import { EntryContainer } from "../obj/mod.ts"
+import { yet } from "../util/blockDeco.ts"
 
 export class Flow extends Module {
     async wait_second(sec: number) {
@@ -19,6 +20,15 @@ export class Flow extends Module {
         wait_until_true
         ```
     */
+    @yet continue_repeat() {
+        
+    }
+    @yet stop_object() {
+
+    }
+    @yet restart_project() {
+
+    }
     create_clone(targetId: string, obj: EntryContainer) {
         const target =
             targetId == "self"

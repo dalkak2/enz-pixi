@@ -1,5 +1,6 @@
 import { Module } from "../Module.ts"
 import { EntryContainer } from "../obj/mod.ts"
+import { yet } from "../util/blockDeco.ts"
 
 export class Variable extends Module {
     variables = new Map<string, string | number | (string | number)[]>
@@ -39,6 +40,15 @@ export class Variable extends Module {
             : this.variables.set(id, value)
     }
     
+    @yet ask_and_wait() {
+        
+    }
+    @yet get_canvas_input_value() {
+
+    }
+    @yet set_visible_answer() {
+        
+    }
     get_variable(id: string, obj: EntryContainer) {
         return this._get(id, obj)
     }

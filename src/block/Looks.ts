@@ -8,6 +8,7 @@ import {
     Assets,
     Texture,
 } from "../../deps/pixi.ts"
+import { yet } from "../util/blockDeco.ts"
 
 const numberNormalize =
     // TODO: convert in server
@@ -130,7 +131,7 @@ export class Looks extends Module {
     ) {
         if (type == "transparency")
             obj.transparency += amount
-        else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
+        else console.error(`add_effect_amount - ${type} is not implemented yet.`)
     }
     change_effect_amount(
         type:
@@ -142,13 +143,22 @@ export class Looks extends Module {
     ) {
         if (type == "transparency")
             obj.transparency = amount
-        else throw new Error(`add_effect_amount - ${type} is not implemented yet.`)
+        else console.error(`add_effect_amount - ${type} is not implemented yet.`)
+    }
+    @yet erase_all_effects() {
+
     }
     change_scale_size(d: number, obj: EntryContainer) {
         obj.size += d
     }
     set_scale_size(newSize: number, obj: EntryContainer) {
         obj.size = newSize
+    }
+    @yet stretch_scale_size() {
+
+    }
+    @yet reset_scale_size() {
+        
     }
     flip_x(obj: EntryContainer) {
         obj.pixiSprite.scale.y *= -1

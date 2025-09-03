@@ -1,5 +1,6 @@
 import { Module } from "../Module.ts"
 import { EntryContainer } from "../obj/mod.ts"
+import { yet } from "../util/blockDeco.ts"
 
 export class Judgement extends Module {
     pressedKeys: Record<number, boolean | undefined> = {}
@@ -37,6 +38,9 @@ export class Judgement extends Module {
         }
         throw new Error("reach_something - mouse 제외 미구현")
     }
+    @yet is_type() {
+
+    }
     boolean_basic_operator(
         a: number | string,
         op:
@@ -69,5 +73,11 @@ export class Judgement extends Module {
     }
     is_boost_mode() {
         return true
+    }
+    @yet is_current_device_type() {
+
+    }
+    @yet is_touch_supported() {
+        
     }
 }

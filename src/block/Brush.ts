@@ -1,10 +1,14 @@
 import { Module } from "../Module.ts"
 import { EntryBrush } from "../obj/mod.ts"
+import { yet } from "../util/blockDeco.ts"
 
 // todo: Remove `extends Module`
 export class Brush extends Module {
     color(str: string) {
         return str
+    }
+    @yet brush_stamp() {
+
     }
     start_drawing(obj: EntryBrush) {
         obj.start_drawing(this)
