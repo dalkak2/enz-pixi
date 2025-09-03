@@ -56,8 +56,32 @@ export class Moving extends Module {
         obj.y = y
         obj.emit("move")
     }
-    @yet locate_xy_time() {
+    // todo: 일시정지 기능 추가할 시 Date.now() 대체해야함
+    async locate_xy_time(
+        t: number,
+        x: number,
+        y: number,
+        obj: EntryContainer,
+    ) {
+        const duration = t * 1000
+        const startAt = Date.now()
 
+        const startX = obj.x
+        const startY = obj.y
+
+        while (true) {
+            const now = Date.now()
+            const elapsed = now - startAt
+            const ratio = Math.min(elapsed / duration, 1)
+
+            obj.x = startX + (x - startX) * ratio
+            obj.y = startY + (y - startY) * ratio
+            obj.emit("move")
+
+            if (ratio >= 1) break
+
+            await this.wait_tick()
+        }
     }
     locate(objId: string, obj: EntryContainer) {
         if (objId == "mouse") {

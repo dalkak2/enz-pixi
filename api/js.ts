@@ -172,6 +172,10 @@ export const jsUnformatted = (project: Project) => {
             "await Entry.move_xy_time",
         )
         .replaceAll(
+            "Entry.locate_xy_time",
+            "await Entry.locate_xy_time",
+        )
+        .replaceAll(
             /(Entry\.func_.{4}\()/g,
             "await $1",
         )
