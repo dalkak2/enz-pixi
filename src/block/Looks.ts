@@ -1,4 +1,5 @@
-import { mod, Module, wait_second } from "../Module.ts"
+import { Module } from "../Module.ts"
+import { mod, wait_second } from "../util/basic.ts"
 import {
     EntryContainer,
     EntrySprite,

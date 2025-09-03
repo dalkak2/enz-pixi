@@ -1,4 +1,5 @@
-import { Module, wait_second } from "../Module.ts"
+import { Module } from "../Module.ts"
+import { wait_second } from "../util/basic.ts"
 import { EntryContainer } from "../obj/mod.ts"
 
 export class Flow extends Module {

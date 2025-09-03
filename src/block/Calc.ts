@@ -1,4 +1,5 @@
-import { Module, toRadian, toDegrees, mod } from "../Module.ts"
+import { Module } from "../Module.ts"
+import { toRadian, toDegrees, mod } from "../util/basic.ts"
 import { EntryContainer, EntrySprite } from "../obj/mod.ts"
 
 class Timer {

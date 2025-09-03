@@ -1,4 +1,5 @@
-import { Module, toRadian, toDegrees } from "../Module.ts"
+import { Module } from "../Module.ts"
+import { toRadian, toDegrees } from "../util/basic.ts"
 import { EntryContainer } from "../obj/mod.ts"
 
 export class Moving extends Module {
