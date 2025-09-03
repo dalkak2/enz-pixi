@@ -154,4 +154,8 @@ export abstract class EntryBrush extends EntryContainer {
         this.stop_drawing()
         this.stop_fill()
     }
+    override destroy() {
+        super.destroy()
+        this.brush_erase_all()
+    }
 }
