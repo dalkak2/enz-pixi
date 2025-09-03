@@ -20,8 +20,27 @@ export class Moving extends Module {
         obj.y += n
         obj.emit("move")
     }
-    @yet move_xy_time() {
+    // todo: 일시정지 기능 추가할 시 Date.now() 대체해야함
+    async move_xy_time(
+        t: number,
+        dx: number,
+        dy: number,
+        obj: EntryContainer,
+    ) {
+        t *= 1000
 
+        const startAt = Date.now()
+        let prevT = startAt
+
+        while (Date.now() - startAt < t) {
+            const dt = Date.now() - prevT
+            obj.x += dt / t * dx
+            obj.y += dt / t * dy
+
+            prevT = Date.now()
+
+            await this.wait_tick()
+        }
     }
     locate_x(x: number, obj: EntryContainer) {
         obj.x = x
