@@ -1,5 +1,6 @@
 import { Module } from "../Module.ts"
 import { EntryText } from "../obj/mod.ts"
+import { yet } from "../util/blockDeco.ts"
 
 export class Text extends Module {
     text_color(str: string) {
@@ -21,17 +22,17 @@ export class Text extends Module {
     text_prepend(str: string, obj: EntryText) {
         obj.text = str + obj.text
     }
-    text_change_effect() {
-        console.log("skip (todo):", "text_change_effect")
+    @yet text_change_effect() {
+
     }
-    text_change_font() {
-        console.log("skip (todo):", "text_change_font")
+    @yet text_change_font() {
+
     }
     text_change_font_color(color: string, obj: EntryText) {
         obj.colour = color
     }
-    text_change_bg_color() {
-        console.log("skip (todo):", "text_change_bg_color")
+    @yet text_change_bg_color() {
+        
     }
     text_flush(obj: EntryText) {
         obj.text = ""

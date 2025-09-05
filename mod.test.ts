@@ -22,6 +22,5 @@ Deno.test("build", async () => {
     await check("/src/obj/EntrySprite.ts")
     await check("/src/obj/EntryText.ts")
     await check("/src/mod.ts")
-    await check("/src/util.ts")
     await check("/deps/pixi.ts")
 })

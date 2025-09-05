@@ -1,5 +1,7 @@
-import { Module, toRadian, toDegrees } from "../Module.ts"
+import { Module } from "../Module.ts"
+import { toRadian, toDegrees } from "../util/basic.ts"
 import { EntryContainer } from "../obj/mod.ts"
+import { yet } from "../util/blockDeco.ts"
 
 export class Moving extends Module {
     move_direction(n: number, obj: EntryContainer) {
@@ -7,12 +9,60 @@ export class Moving extends Module {
         obj.y += n * Math.cos(toRadian(obj.direction))
         obj.emit("move")
     }
+    @yet bounce_wall() {
+
+    }
     move_x(n: number, obj: EntryContainer) {
         obj.x += n
         obj.emit("move")
     }
     move_y(n: number, obj: EntryContainer) {
         obj.y += n
+        obj.emit("move")
+    }
+    // todo: 일시정지 기능 추가할 시 Date.now() 대체해야함
+    async move_xy_time(
+        t: number,
+        dx: number,
+        dy: number,
+        obj: EntryContainer,
+    ) {
+        t *= 1000
+
+        const startAt = Date.now()
+        let prevT = startAt
+
+        let accDx = 0
+        let accDy = 0
+
+        while (true) {
+            const now = Date.now()
+            const elapsed = now - startAt
+
+            if (elapsed >= t) break
+
+            const dt = now - prevT
+
+            const stepDx = dx * dt / t
+            const stepDy = dy * dt / t
+
+            obj.x += stepDx
+            obj.y += stepDy
+
+            accDx += stepDx
+            accDy += stepDy
+
+            obj.emit("move")
+            prevT = now
+
+            await this.wait_tick()
+        }
+
+        const remainingDx = dx - accDx
+        const remainingDy = dy - accDy
+
+        obj.x += remainingDx
+        obj.y += remainingDy
         obj.emit("move")
     }
     locate_x(x: number, obj: EntryContainer) {
@@ -28,6 +78,33 @@ export class Moving extends Module {
         obj.y = y
         obj.emit("move")
     }
+    // todo: 일시정지 기능 추가할 시 Date.now() 대체해야함
+    async locate_xy_time(
+        t: number,
+        x: number,
+        y: number,
+        obj: EntryContainer,
+    ) {
+        const duration = t * 1000
+        const startAt = Date.now()
+
+        const startX = obj.x
+        const startY = obj.y
+
+        while (true) {
+            const now = Date.now()
+            const elapsed = now - startAt
+            const ratio = Math.min(elapsed / duration, 1)
+
+            obj.x = startX + (x - startX) * ratio
+            obj.y = startY + (y - startY) * ratio
+            obj.emit("move")
+
+            if (ratio >= 1) break
+
+            await this.wait_tick()
+        }
+    }
     locate(objId: string, obj: EntryContainer) {
         if (objId == "mouse") {
             obj.x = this.mouse.x
@@ -38,11 +115,20 @@ export class Moving extends Module {
         }
         obj.emit("move", obj)
     }
+    @yet locate_object_time() {
+
+    }
     rotate_relative(angle: number, obj: EntryContainer) {
         obj.rotation += angle
     }
     direction_relative(angle: number, obj: EntryContainer) {
         obj.direction += angle
+    }
+    @yet rotate_by_time() {
+
+    }
+    @yet direction_relative_duration() {
+        
     }
     rotate_absolute(angle: number, obj: EntryContainer) {
         obj.rotation = angle

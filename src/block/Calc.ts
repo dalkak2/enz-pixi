@@ -1,5 +1,7 @@
-import { Module, toRadian, toDegrees, mod } from "../Module.ts"
+import { Module } from "../Module.ts"
+import { toRadian, toDegrees, mod } from "../util/basic.ts"
 import { EntryContainer, EntrySprite } from "../obj/mod.ts"
+import { yet } from "../util/blockDeco.ts"
 
 class Timer {
     checkpoint: number | false = false
@@ -231,6 +233,9 @@ export class Calc extends Module {
     ) {
         return String(str)[type]()
     }
+    @yet get_block_count() {
+        
+    }
     change_rgb_to_hex(
         r: number,
         g: number,
@@ -242,5 +247,11 @@ export class Calc extends Module {
                     .toString(16)
                     .padStart(2, "0")
             ).join("")
+    }
+    @yet change_hex_to_rgb() {
+        
+    }
+    @yet get_boolean_value() {
+
     }
 }
