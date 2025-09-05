@@ -172,11 +172,26 @@ export class Sound extends Module {
     @yet sound_speed_set() {
 
     }
+    // todo: find more elegance way to do this
     sound_silent_all(
         target: "all" | "thisOnly" | "other_objects",
         obj: EntryContainer,
+    ): void
+    /**
+     * 예전 작품은 param 없이 '모든 소리 멈추기'임 (#105)
+     * @param obj 
+     */
+    sound_silent_all(obj: EntryContainer): void
+    sound_silent_all(
+        ...args: [
+            ...["all" | "thisOnly" | "other_objects"] | [],
+            EntryContainer,
+        ]
     ) {
-        if (target == "all") {
+        const target = args.slice(0, -1)[0] as "all" | "thisOnly" | "other_objects" | undefined
+        const obj = args.slice(-1)[0] as EntryContainer
+
+        if (target == "all" || target == undefined) {
             this.sounds.forEach(x => x.stopAll())
         }
         if (target == "thisOnly") {
