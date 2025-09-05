@@ -15,3 +15,10 @@ export const toDegrees =
 export const mod =
     (a: number, n: number) =>
         ((a % n) + n) % n
+
+export const numberNormalize =
+    // TODO: convert in server
+    (numOrStr: number | string): number | string =>
+        Number.isNaN(Number(numOrStr))
+            ? numOrStr as string
+            : Number(numOrStr) as number

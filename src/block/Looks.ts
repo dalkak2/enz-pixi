@@ -1,5 +1,9 @@
 import { Module } from "../Module.ts"
-import { mod, wait_second } from "../util/basic.ts"
+import {
+    mod,
+    wait_second,
+    numberNormalize,
+} from "../util/basic.ts"
 import {
     EntryContainer,
     EntrySprite,
@@ -9,13 +13,6 @@ import {
     Texture,
 } from "../../deps/pixi.ts"
 import { yet } from "../util/blockDeco.ts"
-
-const numberNormalize =
-    // TODO: convert in server
-    (numOrStr: number | string): number | string =>
-        Number.isNaN(Number(numOrStr))
-            ? numOrStr as string
-            : Number(numOrStr) as number
 
 export class Looks extends Module {
     textures: Record<string, Texture> = {}

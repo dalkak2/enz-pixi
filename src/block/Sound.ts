@@ -1,5 +1,6 @@
 import { EntryContainer } from "../mod.ts"
 import { Module } from "../Module.ts"
+import { numberNormalize } from "../util/basic.ts";
 import { yet } from "../util/blockDeco.ts"
 
 class SoundInfo {
@@ -71,11 +72,23 @@ export class Sound extends Module {
 
     // util
 
-    soundStart(soundId: string, offset?: number, duration?: number) {
+    getSound(soundIdOrIndex: string | number) {
+        soundIdOrIndex = numberNormalize(soundIdOrIndex)
+        if (typeof soundIdOrIndex == "string") {
+            return this.sounds.get(soundIdOrIndex)!
+        } else {
+            return this.sounds.values().toArray()[soundIdOrIndex-1]!
+        }
+    }
+    soundStart(
+        soundIdOrIndex: string | number,
+        offset?: number,
+        duration?: number,
+    ) {
         return new Promise(o => {
             const source = this.audioContext.createBufferSource()
 
-            const { nodes, buffer } = this.sounds.get(soundId)!
+            const { nodes, buffer } = this.getSound(soundIdOrIndex)
 
             nodes.add(source)
 
@@ -98,48 +111,48 @@ export class Sound extends Module {
     get_sounds(id: string) {
         return id
     }
-    sound_something_with_block(soundId: string) {
-        this.sound_something_wait_with_block(soundId)
+    sound_something_with_block(soundIdOrIndex: string | number) {
+        this.sound_something_wait_with_block(soundIdOrIndex)
     }
     sound_something_second_with_block(
-        soundId: string,
+        soundIdOrIndex: string | number,
         duration: number,
     ) {
-        this.sound_something_second_wait_with_block(soundId, duration)
+        this.sound_something_second_wait_with_block(soundIdOrIndex, duration)
     }
     sound_from_to(
-        soundId: string,
+        soundIdOrIndex: string | number,
         from: number,
         to: number,
     ) {
-        this.sound_from_to_and_wait(soundId, from, to)
+        this.sound_from_to_and_wait(soundIdOrIndex, from, to)
     }
-    async sound_something_wait_with_block(soundId: string) {
-        await this.soundStart(soundId)
+    async sound_something_wait_with_block(soundIdOrIndex: string | number) {
+        await this.soundStart(soundIdOrIndex)
     }
     async sound_something_second_wait_with_block(
-        soundId: string,
+        soundIdOrIndex: string | number,
         duration: number,
     ) {
         await this.soundStart(
-            soundId,
+            soundIdOrIndex,
             0,
             duration,
         )
     }
     async sound_from_to_and_wait(
-        soundId: string,
+        soundIdOrIndex: string | number,
         from: number,
         to: number,
     ) {
         await this.soundStart(
-            soundId,
+            soundIdOrIndex,
             from,
             to - from,
         )
     }
-    get_sound_duration(soundId: string) {
-        return this.sounds.get(soundId)!.buffer.duration
+    get_sound_duration(soundIdOrIndex: string | number) {
+        return this.getSound(soundIdOrIndex).buffer.duration
     }
     get_sound_volume() {
         return this.volume
@@ -177,8 +190,8 @@ export class Sound extends Module {
                 .forEach(x => x.stopAll())
         }
     }
-    play_bgm(soundId: string) {
-        this.sound_something_with_block(soundId)
+    play_bgm(soundIdOrIndex: string | number) {
+        this.sound_something_with_block(soundIdOrIndex)
     }
     @yet stop_bgm() {
         
